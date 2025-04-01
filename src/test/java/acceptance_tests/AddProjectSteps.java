@@ -1,6 +1,7 @@
 package acceptance_tests;
 
 import dtu.example.ui.*;
+import dtu.time_manager.app.Project;
 import dtu.time_manager.app.TimeManager;
 import dtu.time_manager.app.User;
 import io.cucumber.java.en.Given;
@@ -28,8 +29,8 @@ public class AddProjectSteps {
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
         try {
-        TimeManager.addProject(projectName);
-    } catch (Exception e) {
+            TimeManager.addProject(projectName);
+        } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
@@ -44,13 +45,15 @@ public class AddProjectSteps {
         try {
             TimeManager.addProject(projectName);
         } catch (Exception e) {
-                this.errorMessage.setErrorMessage(e.getMessage());
-            }
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
-    @Then("the project is not created")
-    public void theProjectIsNotCreated() {
+    @Then("the project with name {string} is not created")
+    public void theProjectIsNotCreated(String projectName) {
+        assertFalse(TimeManager.projectDuplicateExists(projectName));
     }
-    @Then("the error message ”A project with name {string} already exists in the system and two projects can’t have the same name.” is given")
+
+    @Then("the project error message {string} is given")
     public void theErrorMessageAProjectWithNameAlreadyExistsInTheSystemAndTwoProjectsCanTHaveTheSameNameIsGiven(String errorMessage) {
         assertEquals(errorMessage, this.errorMessage.getErrorMessage());
     }

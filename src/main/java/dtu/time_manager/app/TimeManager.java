@@ -34,4 +34,12 @@ public class TimeManager {
     public static boolean projectExists(String projectName) {
         return projects.stream().map(Project::getProjectName).anyMatch(name -> name.equals(projectName));
     }
+
+    public static boolean projectDuplicateExists(String projectName) {
+        long projectCount = projects.stream()
+                .map(Project::getProjectName)
+                .filter(name -> name.equals(projectName))
+                .count();
+        return projectCount > 1;
+    }
 }

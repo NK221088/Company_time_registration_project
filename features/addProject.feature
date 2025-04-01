@@ -11,5 +11,5 @@ Feature: Add project
     Given a user is logged in
     And a project with name "Project 1" exists in the system
     When a new project with name "Project 1" is added
-    Then the project is not created
-    And the error message "A project with name 'Project 1' already exists in the system and two projects can’t have the same name." is given
+    Then the project with name "Project 1" is not created
+    And the project error message "A project with name 'Project 1' already exists in the system and two projects can’t have the same name." is given
