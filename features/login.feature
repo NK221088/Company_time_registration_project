@@ -1,4 +1,6 @@
 Feature: Login
+  Description: A registered user logs in
+  Actors: User
 
   Scenario: A registered user logs in
     Given a users initials "huba" is registered in the system
