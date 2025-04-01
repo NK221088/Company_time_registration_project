@@ -24,7 +24,11 @@ public class TimeManager {
     }
 
     public static void addProject(String projectName) {
+       if (!projectExists(projectName)){
         projects.add(new Project(projectName));
+        } else {
+           throw new RuntimeException("A project with name '"+ projectName +"' already exists in the system and two projects can’t have the same name.");
+       }
     }
 
     public static boolean projectExists(String projectName) {
