@@ -6,6 +6,7 @@ Feature: Add project
     Given a user is logged in
     When a new project with name "Project 1" is added
     Then a project named "Project 1" should exist in the system
+    And the project is assigned a project id "24000"
 
   Scenario: Add a new project with an already existing name
     Given a user is logged in

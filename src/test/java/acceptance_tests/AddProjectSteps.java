@@ -1,6 +1,5 @@
 package acceptance_tests;
 
-import dtu.example.ui.*;
 import dtu.time_manager.app.Project;
 import dtu.time_manager.app.TimeManager;
 import dtu.time_manager.app.User;
@@ -29,7 +28,7 @@ public class AddProjectSteps {
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
         try {
-            TimeManager.addProject(projectName);
+            TimeManager.createProject(projectName);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -40,14 +39,22 @@ public class AddProjectSteps {
         assertTrue(TimeManager.projectExists(projectName));
     }
 
+    @Then("the project is assigned a project id {string}")
+    public void theProjectIsAssignedAProjectId(String ProjectID) {
+        Project project = TimeManager.getProjectFromID(ProjectID);
+        assertNotNull(project);
+    }
+
+
     @Given("a project with name {string} exists in the system")
     public void aProjectWithNameExistsInTheSystem(String projectName) {
         try {
-            TimeManager.addProject(projectName);
+            TimeManager.createProject(projectName);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
+
     @Then("the project with name {string} is not created")
     public void theProjectIsNotCreated(String projectName) {
         assertFalse(TimeManager.projectDuplicateExists(projectName));
