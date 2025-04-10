@@ -58,5 +58,9 @@ public class Project {
         return activities;
     }
 
+    public String toString() {
+        return projectName;
+    }
+
 
 }

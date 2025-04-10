@@ -14,4 +14,8 @@ public class User {
     public Object getUserInitials() {
         return user_initials;
     }
+
+    public String toString() {
+        return user_initials;
+    }
 }

@@ -13,7 +13,10 @@ public class TimeManager {
     private static Map<String, Project> projectMap = new HashMap<>();
     private static int projectCount = -1; // The counter starts at -1, to make sure the first project is assigned an id ending with 000
 
-
+    public TimeManager() {
+        User huba_user = new User("huba");
+        add(huba_user);
+    }
 
     public static void login(String userInitials) {
         if (users.stream().map(User::getUserInitials).anyMatch(initials -> initials.equals(userInitials))) {
@@ -22,6 +25,7 @@ public class TimeManager {
         }
         else {
             logged_in = "";
+            throw new RuntimeException("The user " + userInitials + " don't exist in the system.");
         }
     }
 
@@ -102,5 +106,9 @@ public class TimeManager {
 
     public static void getProjectReport(String projectID) {
         Project project = getProjectFromID(projectID); // Retrieve the project for which to generate the project report
+    }
+
+    public static List<Project> getProjects() {
+        return projects;
     }
 }
