@@ -2,13 +2,10 @@ package dtu.example.ui;
 
 import dtu.time_manager.app.TimeManager;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
-public class main {
+public class projectMenu {
     private TimeManager timeManager = new TimeManager();
 
     public void manageProjects(ActionEvent actionEvent) throws IOException {

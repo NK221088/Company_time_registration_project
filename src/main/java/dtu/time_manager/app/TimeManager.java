@@ -16,6 +16,7 @@ public class TimeManager {
     public TimeManager() {
         User huba_user = new User("huba");
         add(huba_user);
+        addProject(new Project());
     }
 
     public static void login(String userInitials) {
@@ -110,5 +111,10 @@ public class TimeManager {
 
     public static List<Project> getProjects() {
         return projects;
+    }
+
+    public void logout() {
+        // MAKE FUNCTIONs
+        return;
     }
 }

@@ -19,6 +19,15 @@ public class Project {
         this.activities = new ArrayList<>(); // Initializes the list to be empty
     }
 
+    public Project() {
+        this.projectID = "240000";
+        setProjectName("Project 1");
+        setProjectStartDate("01/01/2024");
+        setProjectEndDate("01/08/2024");
+        //addActivity(new Activity("Activity 1"));
+    }
+
+
     // Constructor without project name, delegates to the main one
     public Project(String projectID) {
         this("", projectID);
@@ -61,6 +70,5 @@ public class Project {
     public String toString() {
         return projectName;
     }
-
 
 }
