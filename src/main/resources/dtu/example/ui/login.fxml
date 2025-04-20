@@ -13,7 +13,7 @@
          <children>
             <Label text="Welcome to TimeManager" />
             <TextField fx:id="userInitials" prefHeight="0.0" prefWidth="152.0" promptText="User initials" />
-            <Button fx:id="primaryButton" onAction="#attemptLogin" text="Login" />
+            <Button fx:id="loginButton" onAction="#attemptLogin" text="Login" />
             <Label fx:id="errorMessage" text="Error Message" textFill="#df0a0a" />
          </children>
          <padding>

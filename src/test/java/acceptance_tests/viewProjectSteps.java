@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class viewProjectSteps {
     private ErrorMessageHolder errorMessage;
     private Project project;
+
     Map<String, Object> projectVariables = new HashMap<>();
 
 
@@ -24,8 +25,8 @@ public class viewProjectSteps {
         this.projectVariables = new HashMap<>(); // Initializes the map to be empty
     }
 
-    @Given("a project with project ID {string} exists in the system")
-    public void aProjectWithProjectIDExistsInTheSystem(String ProjectID) {
+    @Given("a project with project ID {string} and project name {string} and time interval {string} exists in the system")
+    public void aProjectWithProjectIDAndProjectNameAndTimeIntervalExistsInTheSystem(String ProjectID, String projectName, String timeInterval) {
         ProjectHelper projectHelper = new ProjectHelper();
         this.project = projectHelper.exampleProject(ProjectID);
         TimeManager.addProject(this.project);

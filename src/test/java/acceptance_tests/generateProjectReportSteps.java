@@ -1,0 +1,38 @@
+package acceptance_tests;
+
+
+import dtu.time_manager.app.Project;
+import dtu.time_manager.app.TimeManager;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class generateProjectReportSteps {
+    private ErrorMessageHolder errorMessage;
+    Map<String, Object> reportVariables = new HashMap<>();
+
+    @Given("that the project with project ID {string} has activities")
+    public void thatTheProjectWithProjectIDHasActivities(String projectID) {
+        Project project = TimeManager.getProjectFromID(projectID);
+        assertNotNull(project.getActivities());
+    }
+    @When("the user generates the project report for the project with project ID {string}")
+    public void theUserGeneratesTheProjectReportForTheProjectWithProjectID(String projectID) {
+    try {
+        this.reportVariables = TimeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
+    } catch (Exception e) {
+        this.errorMessage.setErrorMessage(e.getMessage());
+    }
+    }
+    @Then("the project report is generated showing both the time spent for each activity in the project with project ID {string} and the total time spent on the project")
+    public void theProjectReportIsGeneratedShowingBothTheTimeSpentForEachActivityInTheProjectWithProjectIDAndTheTotalTimeSpentOnTheProject(String projectID) {
+    boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities");
+    assertTrue(keysExist);
+    }
+}

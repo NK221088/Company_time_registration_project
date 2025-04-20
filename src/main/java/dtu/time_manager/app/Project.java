@@ -20,10 +20,10 @@ public class Project {
     }
 
     public Project() {
-        this.projectID = "240000";
+        this.projectID = "25001";
         setProjectName("Project 1");
-        setProjectStartDate("01/01/2024");
-        setProjectEndDate("01/08/2024");
+        setProjectStartDate("01/01/2025");
+        setProjectEndDate("01/08/2025");
         //addActivity(new Activity("Activity 1"));
     }
 

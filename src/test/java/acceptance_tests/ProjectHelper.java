@@ -11,8 +11,8 @@ public class ProjectHelper {
         int projectCount = TimeManager.getProjectCount();
         Project project = new Project(projectID);
         project.setProjectName("Project 1");
-        project.setProjectStartDate("01/01/2024");
-        project.setProjectEndDate("01/08/2024");
+        project.setProjectStartDate("01/01/2025");
+        project.setProjectEndDate("01/08/2025");
         project.addActivity(new Activity("Activity 1"));
         return project;
     }

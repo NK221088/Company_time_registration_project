@@ -29,7 +29,12 @@ public class LoginSteps {
     }
     @When("the user types in their initials {string}")
     public void theUserTypesInTheirInitials(String user_initials) {
-        TimeManager.login(user_initials);
+        try {
+            TimeManager.login(user_initials);
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+
     }
 
     @Then("they are logged into the system")

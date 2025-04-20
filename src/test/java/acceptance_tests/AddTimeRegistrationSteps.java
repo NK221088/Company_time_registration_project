@@ -17,28 +17,28 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddTimeRegistrationSteps {
-    @Given("an activity exists")
-    public void anActivityExists() {
-
-    }
-    @When("the user selects an activity")
-    public void theUserSelectsAnActivity() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-    @When("enters a valid number of hours")
-    public void entersAValidNumberOfHours() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-    @When("enters a valid date")
-    public void entersAValidDate() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-    @Then("the Time Registration is added")
-    public void theTimeRegistrationIsAdded() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
+//    @Given("an activity exists")
+//    public void anActivityExists() {
+//
+//    }
+//    @When("the user selects an activity")
+//    public void theUserSelectsAnActivity() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//    @When("enters a valid number of hours")
+//    public void entersAValidNumberOfHours() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//    @When("enters a valid date")
+//    public void entersAValidDate() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//    @Then("the Time Registration is added")
+//    public void theTimeRegistrationIsAdded() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
 }

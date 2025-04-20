@@ -4,7 +4,7 @@ Feature: Add activity
 
 Scenario: Successful addition of activity to project
   Given a user is logged in
-  And a project with project ID "24000" exists in the system
+  And a project with project ID "24000" and project name "Project 1" and time interval "01/01/2025 - 01/08/2025" exists in the system
   When the user views the project with project ID "24000"
   And adds an activity named "Activity 1" to the project named "Project 1"
   Then the activity named "Activity 1" should be added to the project named "Project 1"

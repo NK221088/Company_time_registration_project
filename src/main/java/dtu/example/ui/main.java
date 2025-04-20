@@ -11,7 +11,7 @@ import java.io.IOException;
 public class main {
     private TimeManager timeManager = new TimeManager();
 
-    public void manageProjects(ActionEvent actionEvent) throws IOException {
+    public void projectMenu(ActionEvent actionEvent) throws IOException {
         App.setRoot("projectMenu");
     }
 

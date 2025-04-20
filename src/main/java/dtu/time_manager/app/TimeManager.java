@@ -11,7 +11,7 @@ public class TimeManager {
     private static List<User> users = new ArrayList<>();
     private static List<Project> projects = new ArrayList<>();
     private static Map<String, Project> projectMap = new HashMap<>();
-    private static int projectCount = -1; // The counter starts at -1, to make sure the first project is assigned an id ending with 000
+    private static int projectCount = 0;
 
     public TimeManager() {
         User huba_user = new User("huba");
@@ -66,7 +66,7 @@ public class TimeManager {
     public static int getProjectCount() {return projectCount;}
 
     public static String createProjectID(int projectCount) {
-        String projectID = "24" + String.format("%03d", projectCount); // We pad with leading zeros to make sure all ids have the same length
+        String projectID = "25" + String.format("%03d", projectCount); // We pad with leading zeros to make sure all ids have the same length
         return projectID;
     }
 
@@ -105,8 +105,16 @@ public class TimeManager {
     }
 
 
-    public static void getProjectReport(String projectID) {
+    public static Map getProjectReport(String projectID) {
         Project project = getProjectFromID(projectID); // Retrieve the project for which to generate the project report
+        Map<String, Object> reportVariables = new HashMap<>();
+        reportVariables.put("Project Name", project.getProjectName()); // Insert the name in the report
+        reportVariables.put("Project ID", projectID); // Insert the project ID in the report
+        List<Activity> activities = project.getActivities();
+        reportVariables.put("Project Activities", activities); // List all the activities in the project
+
+
+        return reportVariables;
     }
 
     public static List<Project> getProjects() {
