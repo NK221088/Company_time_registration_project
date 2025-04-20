@@ -24,7 +24,8 @@ public class Project {
         setProjectName("Project 1");
         setProjectStartDate("01/01/2025");
         setProjectEndDate("01/08/2025");
-        //addActivity(new Activity("Activity 1"));
+        this.activities = new ArrayList<>(); // Initializes the list to be empty
+        addActivity(new Activity("Activity 1"));
     }
 
 

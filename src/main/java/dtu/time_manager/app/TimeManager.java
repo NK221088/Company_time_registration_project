@@ -13,7 +13,7 @@ public class TimeManager {
     private static Map<String, Project> projectMap = new HashMap<>();
     private static int projectCount = 0;
 
-    public TimeManager() {
+    static {
         User huba_user = new User("huba");
         add(huba_user);
         addProject(new Project());
@@ -121,7 +121,7 @@ public class TimeManager {
         return projects;
     }
 
-    public void logout() {
+    public static void logout() {
         // MAKE FUNCTIONs
         return;
     }

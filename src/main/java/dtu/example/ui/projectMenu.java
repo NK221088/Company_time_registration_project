@@ -14,36 +14,46 @@ import java.io.IOException;
 import java.util.Map;
 
 public class projectMenu {
-    private TimeManager timeManager = new TimeManager();
-
     @FXML
-    private ChoiceBox projectContainer;
+    private ChoiceBox<Project> projectContainer;
 
     @FXML
     private Text projectInfo;
 
     @FXML
     private void initialize() {
-        timeManager.getProjects().forEach(project -> projectContainer.getItems().add(project));
+        projectContainer.getItems().clear(); // <-- Clear existing items
+        TimeManager.getProjects().forEach(project -> projectContainer.getItems().add(project));
     }
 
     public void backToProjectMenu(ActionEvent actionEvent) throws IOException {
-        App.setRoot("projectMenu");
+        App.setRoot("main");
     }
 
-    public void showInformation(InputMethodEvent inputMethodEvent) {
-        String dropDownName = projectContainer.getValue().toString();
-        Project proj = timeManager.getProjectFromName(dropDownName);
+    public void showInformation(ActionEvent actionEvent) {
+        // Retrieve the selected project from the ChoiceBox
+        Project selectedProject = projectContainer.getValue();
 
-        projectInfo.setText(timeManager.viewProject(proj.getProjectID()).toString());
+        // If a project is selected, display the project info
+        if (selectedProject != null) {
+            String projectName = selectedProject.toString();
+            Project proj = TimeManager.getProjectFromName(projectName);
+
+            // Update the Text node with the project's information
+            projectInfo.setText(TimeManager.viewProject(proj.getProjectID()).toString());
+        } else {
+            // If no project is selected, clear the text or show a message
+            projectInfo.setText("No project selected.");
+        }
     }
+
 
     public void projectReport(ActionEvent actionEvent) {
-        Object selectedItem = projectContainer.getValue();
-        if (selectedItem != null) {
-            String projectName = selectedItem.toString();
+        Project selectedProject = TimeManager.getProjectFromName(projectContainer.getValue().toString());
+        if (selectedProject != null) {
+            String projectName = selectedProject.toString();
             try {
-                Map<String, Object> projectReport = TimeManager.getProjectReport(projectName);
+                Map<String, Object> projectReport = TimeManager.getProjectReport(selectedProject.getProjectID());
 
                 // Build the string to show on screen
                 StringBuilder reportText = new StringBuilder();
