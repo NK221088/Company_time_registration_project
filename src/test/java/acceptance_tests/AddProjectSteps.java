@@ -25,6 +25,14 @@ public class AddProjectSteps {
 //        ---------
         assertNotEquals(TimeManager.logged_in, "");
     }
+    @Given("the current year is {int}")
+    public void theCurrentYearIs(Integer year) {
+       assertEquals(2025, year);
+    }
+    @Given("the current project count is {int}")
+    public void theCurrentProjectCountIs(Integer projectCount) {
+        assertEquals(TimeManager.getProjectCount(),projectCount);
+    }
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
         try {

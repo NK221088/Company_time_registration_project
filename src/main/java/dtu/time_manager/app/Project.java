@@ -21,7 +21,7 @@ public class Project {
 
     public Project() {
         this.projectID = "25001";
-        setProjectName("Project 1");
+        setProjectName("Project 2");
         setProjectStartDate("01/01/2025");
         setProjectEndDate("01/08/2025");
         this.activities = new ArrayList<>(); // Initializes the list to be empty
