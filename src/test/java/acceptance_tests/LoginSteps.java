@@ -22,7 +22,7 @@ public class LoginSteps {
         this.time_manager = new TimeManager();
     }
 
-    @Given("a users initials {string} is registered in the system")
+    @Given("a user's initials {string} is registered in the system")
     public void aUsersInitialsIsRegisteredInTheSystem(String user_initials) {
         this.user_initials = user_initials;
         user = new User(user_initials);
@@ -42,7 +42,7 @@ public class LoginSteps {
         assertEquals(TimeManager.logged_in, user_initials);
     }
 
-    @Given("a users initials {string} is not registered in the system")
+    @Given("a user's initials {string} is not registered in the system")
     public void aUsersInitialsIsNotRegisteredInTheSystem(String string) {
     }
     @Then("they are not logged into the system")

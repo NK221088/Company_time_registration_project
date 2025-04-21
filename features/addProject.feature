@@ -4,9 +4,11 @@ Feature: Add project
 
   Scenario: Add a new project
     Given a user is logged in
+    And the current year is "2025"
+    And 
     When a new project with name "Project 1" is added
     Then a project named "Project 1" should exist in the system
-    And the project is assigned a project id "24000"
+    And the project is assigned a project id "25001"
 
   Scenario: Add a new project with an already existing name
     Given a user is logged in
