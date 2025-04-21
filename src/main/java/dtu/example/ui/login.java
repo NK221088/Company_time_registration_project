@@ -9,8 +9,6 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 
 public class login {
-    private TimeManager timeManager = new TimeManager();
-
     @FXML
     private TextField userInitials;
 
@@ -25,13 +23,13 @@ public class login {
     @FXML
     private void attemptLogin() throws IOException {
         try {
-            timeManager.login(userInitials.getText());
+            TimeManager.login(userInitials.getText());
             App.setRoot("main");
             errorMessage.setVisible(false);
         } catch (Exception e) {
             errorMessage.setText(e.getMessage());
             errorMessage.setVisible(true);
         }
-        System.out.println(timeManager.logged_in);
+        System.out.println(TimeManager.logged_in);
     }
 }

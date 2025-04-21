@@ -13,7 +13,11 @@ public class ProjectHelper {
         project.setProjectName("Project 1");
         project.setProjectStartDate("01/01/2025");
         project.setProjectEndDate("01/08/2025");
-        project.addActivity(new Activity("Activity 1"));
+        try {
+            project.addActivity(new Activity("Activity 1"));
+        } catch (Exception e) {
+
+        }
         return project;
     }
 }
