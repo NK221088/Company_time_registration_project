@@ -55,4 +55,25 @@ public class AddActivitySteps {
 
     }
 
+    @Given("that the project with project ID {string} have a registered activity with name {string}")
+    public void thatTheProjectWithProjectIDHaveARegisteredActivityWithName(String projectID, String activityName) {
+        Project project = TimeManager.getProjectFromID(projectID);
+        Activity activity = new Activity(activityName);
+        try {
+            project.addActivity(activity);
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+
+    @Then("the activity should not be added to the project")
+    public void theActivityShouldNotBeAddedToTheProject() {
+        assertFalse(errorMessage.getErrorMessage().isEmpty());
+    }
+
+    @Then("the activity error message {string} is given")
+    public void theActivityErrorMessageIsGiven(String expectedErrorMessage) {
+        assertEquals(expectedErrorMessage, errorMessage.getErrorMessage());
+    }
+
 }

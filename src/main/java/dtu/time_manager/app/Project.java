@@ -25,7 +25,11 @@ public class Project {
         setProjectStartDate("01/01/2025");
         setProjectEndDate("01/08/2025");
         this.activities = new ArrayList<>(); // Initializes the list to be empty
-        addActivity(new Activity("Activity 1"));
+        try {
+            addActivity(new Activity("Activity 1"));
+        } catch (Exception e) {
+
+        }
     }
 
 
@@ -60,7 +64,17 @@ public class Project {
         return endDate;
     }
 
-    public void addActivity(Activity activity) {
+    public void addActivity(Activity activity) throws Exception {
+        boolean duplicateExists = activities.stream()
+                .anyMatch(existingActivity ->
+                        existingActivity.getActivityName().equals(activity.getActivityName()));
+
+        if (duplicateExists) {
+            throw new Exception("An activity with name '" + activity.getActivityName() +
+                    "' already exists within '" + this.projectName +
+                    "' two activities cannot exist with the same name within the same project.");
+        }
+
         activities.add(activity);
     }
 
