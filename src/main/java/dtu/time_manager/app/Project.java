@@ -24,7 +24,7 @@ public class Project {
         setProjectName("Project 1");
         setProjectStartDate("01/01/2025");
         setProjectEndDate("01/08/2025");
-        //addActivity(new Activity("Activity 1"));
+//        addActivity(new Activity("Activity 1"));
     }
 
 

@@ -11,6 +11,7 @@ public class TimeManager {
     private static List<User> users = new ArrayList<>();
     private static List<Project> projects = new ArrayList<>();
     private static Map<String, Project> projectMap = new HashMap<>();
+    private static List<TimeRegistration> time_registrations = new ArrayList<>();
     private static int projectCount = 0;
 
     public TimeManager() {
@@ -124,5 +125,9 @@ public class TimeManager {
     public void logout() {
         // MAKE FUNCTIONs
         return;
+    }
+
+    public void addTimeRegistration(TimeRegistration timeRegistration) {
+        time_registrations.add(timeRegistration);
     }
 }

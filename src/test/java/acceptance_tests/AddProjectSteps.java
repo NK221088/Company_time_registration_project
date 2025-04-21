@@ -19,14 +19,14 @@ public class AddProjectSteps {
 
     @Given("a user is logged in")
     public void aUserIsLoggedIn() {
-//        CHANGE THIS
         new User("huba");
         TimeManager.login("huba");
-//        ---------
-        assertNotEquals(TimeManager.logged_in, "");
+        assertNotEquals("", TimeManager.logged_in);
     }
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
+        Project project = new Project(projectName, projectName);
+
         try {
             TimeManager.createProject(projectName);
         } catch (Exception e) {
