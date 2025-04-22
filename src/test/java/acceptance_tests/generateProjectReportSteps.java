@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class generateProjectReportSteps {
     private ErrorMessageHolder errorMessage;
@@ -22,22 +21,17 @@ public class generateProjectReportSteps {
     @Given("that the project with project ID {string} has an activity named {string}")
     public void thatTheProjectWithProjectIDHasAnActivityNamed(String projectID, String activityName) {
         Project project = TimeManager.getProjectFromID(projectID);
-        List<Activity> activities= project.getActivities();
-        boolean activityIsInProject = activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName));
-        assertTrue(activityIsInProject);
+        // Returns null if activity doesn't exist in project
+        assertNotNull(project.getActivityFromName(activityName));
     }
 
     @When("the user generates the project report for the project with project ID {string}")
     public void theUserGeneratesTheProjectReportForTheProjectWithProjectID(String projectID) {
-    try {
         this.reportVariables = TimeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
-    } catch (Exception e) {
-        this.errorMessage.setErrorMessage(e.getMessage());
-    }
     }
     @Then("the project report is generated showing both the time spent for each activity in the project with project ID {string} and the total time spent on the project")
     public void theProjectReportIsGeneratedShowingBothTheTimeSpentForEachActivityInTheProjectWithProjectIDAndTheTotalTimeSpentOnTheProject(String projectID) {
-    boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities");
-    assertTrue(keysExist);
+        boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities");
+        assertTrue(keysExist);
     }
 }

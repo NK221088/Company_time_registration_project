@@ -44,7 +44,7 @@ public class assignActivitySteps {
     public void theUserWithInitialsIsAssignedToTheActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
-        List<User> users = activity.getUsers();
+        List<User> users = activity.getAssignedUsers();
         assertTrue(users.contains(userInitials));
     }
     @Then("the user with initials {string}'s count of assigned activities is incremented")

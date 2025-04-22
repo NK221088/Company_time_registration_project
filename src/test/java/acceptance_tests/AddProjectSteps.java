@@ -21,24 +21,23 @@ public class AddProjectSteps {
     public void aUserIsLoggedIn() {
         TimeManager.addUser(new User("huba"));
         TimeManager.login("huba");
-        assertNotEquals("", TimeManager.getCurrentUser());
+        assertNotNull(TimeManager.getCurrentUser());
     }
     @Given("the current year is {int}")
     public void theCurrentYearIs(Integer year) {
        assertEquals(2025, year);
     }
-//    @Given("the current project count is {int}")
-//    public void theCurrentProjectCountIs(Integer projectCount) {
-//        System.out.println(projectCount);
-//        assertEquals(TimeManager.getProjectCount(), projectCount);
-//    }
+    @Given("the current project count is {int}")
+    public void theCurrentProjectCountIs(Integer projectCount) {
+        assertEquals(TimeManager.getProjectCount(), projectCount);
+    }
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
-//        try {
-//            TimeManager.addProject(new Project(projectName));
-//        } catch (Exception e) {
-//            this.errorMessage.setErrorMessage(e.getMessage());
-//        }
+        try {
+            TimeManager.addProject(new Project(projectName));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
 
     @Then("a project named {string} should exist in the system")

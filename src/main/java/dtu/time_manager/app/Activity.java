@@ -8,22 +8,32 @@ public class Activity {
 
     private String ActivityName;
     private ArrayList<User> assignedUsers = new ArrayList<>();
-    private Long expectedWorkHours;
+    private double expectedWorkHours;
 
     public Activity(String ActivityName) {
         this.ActivityName = ActivityName;
     }
 
-    public void setExpectedHours(Long ExpectedHours) {this.expectedWorkHours = ExpectedHours;}
+    public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }
+    public double getExpectedWorkHours() { return this.expectedWorkHours;}
 
-    public ArrayList<User> getUsers() { return this.assignedUsers;}
-    public Long getExpectedWorkHours() { return this.expectedWorkHours;}
+    public double getAssignedWorkHours() {
+        double assignedWorkHours = 0.0;
+        for (User user : getAssignedUsers()) {
+            for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {
+                assignedWorkHours += timeReg.getRegisteredHours();
+            }
+        }
+        return assignedWorkHours;
+    }
+
+    public ArrayList<User> getAssignedUsers() { return this.assignedUsers;}
     public String getActivityName() { return this.ActivityName;}
 
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
         info.put("Name", getActivityName());
-        info.put("Assigned Users", getUsers());
+        info.put("Assigned Users", getAssignedUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
 
         return info;
@@ -32,9 +42,6 @@ public class Activity {
     public void assignUser(String userInitials) {
         User user = TimeManager.getUser(userInitials);
         assignedUsers.add(user);
-
-
-
     }
 }
 

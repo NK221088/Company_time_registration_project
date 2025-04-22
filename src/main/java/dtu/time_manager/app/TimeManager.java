@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TimeManager {
     public static User current_user;
@@ -52,8 +54,14 @@ public class TimeManager {
             projectMap.put(project.getProjectID(), project);
             projects.add(project);
         } else {
+            decProjectCount();
             throw new RuntimeException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
+    }
+
+    private static void decProjectCount() {
+        projectCount--;
+//        perhaps project count should only be incremented IF the project is valid to begin with, which would make this function superfluous
     }
 
     public static List<Project> getProjects() {
@@ -116,8 +124,13 @@ public class TimeManager {
         reportVariables.put("Project Name", project.getProjectName()); // Insert the name in the report
         reportVariables.put("Project ID", projectID); // Insert the project ID in the report
         List<Activity> activities = project.getActivities();
-        reportVariables.put("Project Activities", activities); // List all the activities in the project
+        Map<Activity, Double> map = project.getActivities().stream()
+        .collect(Collectors.toMap(
+                Function.identity(),        // key mapping function
+                Activity::getAssignedWorkHours   // value mapping function
+        ));
 
+        reportVariables.put("Project Activities", activities); // List all the activities in the project
 
         return reportVariables;
     }

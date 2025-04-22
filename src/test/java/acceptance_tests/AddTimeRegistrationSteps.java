@@ -41,7 +41,7 @@ public class AddTimeRegistrationSteps {
             registeredDate
         );
 
-        assertEquals(registeredActivity, dataTable.cell(1, 0));
+        assertEquals(registeredActivity.getActivityName(), dataTable.cell(1, 0));
         assertEquals(Integer.toString(registeredHours), dataTable.cell(1, 1));
         assertEquals(registeredDate.toString(), dataTable.cell(1, 2));
 
