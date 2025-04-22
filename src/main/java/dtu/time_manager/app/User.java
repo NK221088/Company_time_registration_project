@@ -25,6 +25,6 @@ public class User {
         ArrayList<TimeRegistration> timeReg = new ArrayList<>();
         timeReg.add(timeRegistration);
 
-        activity_registrations.put(timeRegistration.getRegisteredActivity(), new ArrayList<TimeRegistration>);
+//        activity_registrations.put(timeRegistration.getRegisteredActivity(), new ArrayList<TimeRegistration>);
     }
 }

@@ -1,6 +1,7 @@
 package acceptance_tests;
 
 
+import dtu.time_manager.app.Activity;
 import dtu.time_manager.app.Project;
 import dtu.time_manager.app.TimeManager;
 import io.cucumber.java.en.Given;
@@ -8,6 +9,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,11 +19,14 @@ public class generateProjectReportSteps {
     private ErrorMessageHolder errorMessage;
     Map<String, Object> reportVariables = new HashMap<>();
 
-    @Given("that the project with project ID {string} has activities")
-    public void thatTheProjectWithProjectIDHasActivities(String projectID) {
+    @Given("that the project with project ID {string} has an activity named {string}")
+    public void thatTheProjectWithProjectIDHasAnActivityNamed(String projectID, String activityName) {
         Project project = TimeManager.getProjectFromID(projectID);
-        assertNotNull(project.getActivities());
+        List<Activity> activities= project.getActivities();
+        boolean activityIsInProject = activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName));
+        assertTrue(activityIsInProject);
     }
+
     @When("the user generates the project report for the project with project ID {string}")
     public void theUserGeneratesTheProjectReportForTheProjectWithProjectID(String projectID) {
     try {

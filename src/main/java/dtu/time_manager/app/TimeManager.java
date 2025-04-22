@@ -40,6 +40,9 @@ public class TimeManager {
             throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
         }
     }
+    public static List<User> getUsers() {
+        return users;
+    }
     public static User getCurrentUser() {
         return current_user;
     }

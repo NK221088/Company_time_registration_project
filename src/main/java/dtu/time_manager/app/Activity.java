@@ -15,7 +15,6 @@ public class Activity {
     }
 
     public void setExpectedHours(Long ExpectedHours) {this.expectedWorkHours = ExpectedHours;}
-    public void addAssignedUser(User user) {assignedUsers.add(user);}
 
     public ArrayList<User> getUsers() { return this.assignedUsers;}
     public Long getExpectedWorkHours() { return this.expectedWorkHours;}
@@ -30,5 +29,12 @@ public class Activity {
         return info;
     }
 
+    public void assignUser(String userInitials) {
+        User user = TimeManager.getUser(userInitials);
+        assignedUsers.add(user);
+
+
+
+    }
 }
 
