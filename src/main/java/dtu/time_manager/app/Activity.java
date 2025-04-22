@@ -7,18 +7,19 @@ import java.util.*;
 public class Activity {
 
     private String ActivityName;
-    private ArrayList<User> users = new ArrayList<>();
+    private ArrayList<User> assignedUsers = new ArrayList<>();
     private Long expectedWorkHours;
 
     public Activity(String ActivityName) {
         this.ActivityName = ActivityName;
     }
 
-    public String getActivityName() {
-        return this.ActivityName;
-    }
-    public ArrayList<User> getUsers() { return this.users;}
+    public void setExpectedHours(Long ExpectedHours) {this.expectedWorkHours = ExpectedHours;}
+    public void addUser(User user) {assignedUsers.add(user);}
+
+    public ArrayList<User> getUsers() { return this.assignedUsers;}
     public Long getExpectedWorkHours() { return this.expectedWorkHours;}
+    public String getActivityName() { return this.ActivityName;}
 
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
