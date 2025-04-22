@@ -73,6 +73,9 @@ public class Project {
     public List<Activity> getActivities() {
         return activities;
     }
+    public Activity getActivityFromName(String activityName) {
+        return getActivities().stream().filter(activity -> activity.getActivityName().equals(activityName)).findFirst().orElse(null);
+    }
 
     private String formatID(int count) {
         return "25" + String.format("%03d", count);

@@ -10,7 +10,6 @@ public class Activity {
     private ArrayList<User> users = new ArrayList<>();
     private Long expectedWorkHours;
 
-    // Constructor with project name
     public Activity(String ActivityName) {
         this.ActivityName = ActivityName;
     }

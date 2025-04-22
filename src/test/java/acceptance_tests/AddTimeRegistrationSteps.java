@@ -16,23 +16,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddTimeRegistrationSteps {
-    private String registeredName;
+    private Activity registeredActivity;
     private int registeredHours;
     private LocalDate registeredDate;
 
-    @Given("an activity named {string} exists")
-    public void anActivityNamedExists(String activityName) {
-//        TimeManager.getProjects().getFirst().addActivity(new Activity(activityName));
-        assertEquals(TimeManager
-                .getProjects().getFirst()
-                .getActivities().getFirst()
-                .getActivityName(), activityName);
-    }
-    @When("the user selects the {string} activity")
-    public void theUserSelectsTheActivity(String activityName) {
-        try {
-        registeredName = activityName;
-        } catch (Exception e) {}
+    @When("the user selects the activity {string} in project {string}")
+    public void theUserSelectsTheActivityInProject(String activityName, String projectName) {
+        registeredActivity = TimeManager.getProjectFromName(projectName).getActivityFromName(activityName);
     }
     @When("the user enters {string} hours")
     public void theUserEntersHours(String activityHours) {
@@ -40,19 +30,18 @@ public class AddTimeRegistrationSteps {
     }
     @When("the user selects the date {string}")
     public void theUserSelectsTheDate(String activityDate) {
-//        String[] splitDate = activityDate.split("[-]");
         registeredDate = LocalDate.parse(activityDate);
     }
     @Then("a new Time Registration is added with:")
     public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) {
         TimeRegistration time_registration = new TimeRegistration(
             TimeManager.getCurrentUser(),
-            registeredName,
+            registeredActivity,
             registeredHours,
             registeredDate
         );
 
-        assertEquals(registeredName, dataTable.cell(1, 0));
+        assertEquals(registeredActivity, dataTable.cell(1, 0));
         assertEquals(Integer.toString(registeredHours), dataTable.cell(1, 1));
         assertEquals(registeredDate.toString(), dataTable.cell(1, 2));
 

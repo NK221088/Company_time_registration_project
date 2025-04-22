@@ -4,8 +4,9 @@ Feature: Add Time Registration
 
   Scenario: Register a new Time Registration
     Given a user is logged in
-    And an activity named "Activity 1" exists
-    When the user selects the "Activity 1" activity
+    And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
+    And that the project with project ID "25001" has an activity named "Activity 1"
+    When the user selects the activity "Activity 1" in project "Project 1"
     And the user enters "4" hours
     And the user selects the date "2025-04-20"
     Then a new Time Registration is added with:
