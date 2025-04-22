@@ -83,4 +83,25 @@ public class assignActivitySteps {
         assertFalse(users.contains(user));
     }
 
+    @Given("that the user with initials {string} is assigned to an activity named {string} in the project named {string}")
+    public void thatTheUserWithInitialsIsAssignedToAnActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
+        Project project = TimeManager.getProjectFromName(projectName);
+        Activity activity = project.getActivityFromName(activityName);
+        List<User> assignedUsers = activity.getUsers();
+        assertTrue(assignedUsers.contains(TimeManager.getUser(userInitials)));
+    }
+
+    @Then("the user with initials {string} is only assigned to the activity named {string} in the project named {string} once")
+    public void theUserWithInitialsIsOnlyAssignedToTheActivityNamedInTheProjectNamedOnce(String userInitials, String activityName, String projectName) {
+        Project project = TimeManager.getProjectFromName(projectName);
+        Activity activity = project.getActivityFromName(activityName);
+        List<User> assignedusers = activity.getUsers();
+        User user = TimeManager.getUser(userInitials);
+        long countOfUser = assignedusers.stream()
+                .map(User::getUserInitials)
+                .filter(name -> name.equals(userInitials))
+                .count();
+        assertEquals(1, countOfUser);
+    }
+
 }

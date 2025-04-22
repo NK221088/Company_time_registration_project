@@ -43,7 +43,9 @@ public class Activity {
         User user = TimeManager.getUser(userInitials);
         Integer activityCount = user.getActivityCount();
         if (activityCount < 20){
-
+            if(assignedUsers.contains(user)){
+                throw new RuntimeException(userInitials + " is already assigned to the activity " + getActivityName());
+            }
             assignedUsers.add(user);
             user.incrementActivityCount();
         } else {

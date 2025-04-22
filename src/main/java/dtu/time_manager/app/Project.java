@@ -23,7 +23,7 @@ public class Project {
         project.setProjectStartDate(LocalDate.parse("2025-01-01"));
         project.setProjectEndDate(LocalDate.parse("2025-01-08"));
         try {
-            for (int i = 0; i < numberOfActivities; i++) {
+            for (int i = 1; i <= numberOfActivities; i++) {
                 project.addActivity(new Activity("Activity "+String.valueOf(i)));
             }
         } catch (Exception e) {

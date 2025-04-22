@@ -20,6 +20,7 @@ public class TimeManager {
     static {
         addUser(new User("huba"));
         addUser(new User("isak"));
+        addUser(new User("bria"));
         addProject(Project.exampleProject("Project 1", 1));
         addProject(Project.exampleProject("Project 2", 20));
         Project project = getProjectFromName("Project 2");
@@ -27,7 +28,12 @@ public class TimeManager {
         for (Activity activity : activities) {
             activity.assignUser("isak");
         }
-    }
+        Project project1 = getProjectFromName("Project 1");
+        List<Activity> activities1 = project1.getActivities();
+        for (Activity activity : activities1) {
+            activity.assignUser("bria");
+        }
+        }
 
     public static void login(String userInitials) {
         try {
@@ -137,6 +143,7 @@ public class TimeManager {
         ));
 
         reportVariables.put("Project Activities", activities); // List all the activities in the project
+
 
         return reportVariables;
     }
