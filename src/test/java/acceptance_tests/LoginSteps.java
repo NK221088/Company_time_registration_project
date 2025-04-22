@@ -37,7 +37,7 @@ public class LoginSteps {
 
     @Then("they are logged into the system")
     public void theyAreLoggedIntoTheSystem() {
-        assertEquals(TimeManager.logged_in, user_initials);
+        assertEquals(TimeManager.getCurrentUser().getUserInitials(), user_initials);
     }
 
     @Given("a user's initials {string} is not registered in the system")
@@ -45,7 +45,7 @@ public class LoginSteps {
     }
     @Then("they are not logged into the system")
     public void theyAreNotLoggedIntoTheSystem() {
-        assertNotEquals(TimeManager.logged_in, user_initials);
+        assertNotEquals(TimeManager.getCurrentUser(), user_initials);
     }
     @Then("the error message {string} is given")
     public void theErrorMessageIsGiven(String errorMessage) {

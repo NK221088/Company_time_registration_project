@@ -21,7 +21,7 @@ public class AddProjectSteps {
     public void aUserIsLoggedIn() {
         TimeManager.addUser(new User("huba"));
         TimeManager.login("huba");
-        assertNotEquals("", TimeManager.logged_in);
+        assertNotEquals("", TimeManager.getCurrentUser());
     }
     @Given("the current year is {int}")
     public void theCurrentYearIs(Integer year) {

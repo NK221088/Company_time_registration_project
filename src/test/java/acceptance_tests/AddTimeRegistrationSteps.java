@@ -30,7 +30,9 @@ public class AddTimeRegistrationSteps {
     }
     @When("the user selects the {string} activity")
     public void theUserSelectsTheActivity(String activityName) {
+        try {
         registeredName = activityName;
+        } catch (Exception e) {}
     }
     @When("the user enters {string} hours")
     public void theUserEntersHours(String activityHours) {
@@ -38,18 +40,16 @@ public class AddTimeRegistrationSteps {
     }
     @When("the user selects the date {string}")
     public void theUserSelectsTheDate(String activityDate) {
-        String[] splitDate = activityDate.split("[-]");
-        registeredDate = LocalDate.of(
-                Integer.parseInt(splitDate[0]),
-                Integer.parseInt(splitDate[1]),
-                Integer.parseInt(splitDate[2]));
+//        String[] splitDate = activityDate.split("[-]");
+        registeredDate = LocalDate.parse(activityDate);
     }
     @Then("a new Time Registration is added with:")
     public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) {
         TimeRegistration time_registration = new TimeRegistration(
-                registeredName,
-                registeredHours,
-                registeredDate
+            TimeManager.getCurrentUser(),
+            registeredName,
+            registeredHours,
+            registeredDate
         );
 
         assertEquals(registeredName, dataTable.cell(1, 0));
