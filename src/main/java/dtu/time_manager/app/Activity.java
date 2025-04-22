@@ -32,6 +32,7 @@ public class Activity {
     public void assignUser(String userInitials) {
         User user = TimeManager.getUser(userInitials);
         assignedUsers.add(user);
+        user.incrementActivityCount();
 
 
 

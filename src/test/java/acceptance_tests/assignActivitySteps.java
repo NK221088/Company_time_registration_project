@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class assignActivitySteps {
     private ErrorMessageHolder errorMessage;
+    Integer projectCountBeforeAssign;
 
     @Given("a user with initials {string} and a user with initials {string} is registered in the system")
     public void aUserWithInitialsAndAUserWithInitialsIsRegisteredInTheSystem(String userInitials1, String userInitials2) {
@@ -32,6 +33,8 @@ public class assignActivitySteps {
     }
     @When("a the user with initials {string} assigns the user with initials {string} to an activity named {string} in the project named {string}")
     public void aTheUserWithInitialsAssignsTheUserWithInitialsToAnActivityNamedInTheProjectNamed(String userInitials1, String userInitials2, String activityName, String projectName) {
+        User user = TimeManager.getUser(userInitials2);
+        this.projectCountBeforeAssign = user.getActivityCount();
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
         try {
@@ -45,11 +48,12 @@ public class assignActivitySteps {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
         List<User> users = activity.getUsers();
-        assertTrue(users.contains(userInitials));
+        User user = TimeManager.getUser(userInitials);
+        assertTrue(users.contains(user));
     }
     @Then("the user with initials {string}'s count of assigned activities is incremented")
-    public void theUserWithInitialsSCountOfAssignedActivitiesIsIncremented(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void theUserWithInitialsSCountOfAssignedActivitiesIsIncremented(String userInitials) {
+        User user = TimeManager.getUser(userInitials);
+        assertEquals(projectCountBeforeAssign+1, user.getActivityCount());
     }
 }
