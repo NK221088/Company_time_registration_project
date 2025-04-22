@@ -18,12 +18,14 @@ public class Project {
         projectID = formatID(TimeManager.incProjectCount());
     }
 
-    public static Project exampleProject(String projectName) {
+    public static Project exampleProject(String projectName, Integer numberOfActivities) {
         Project project = new Project(projectName);
         project.setProjectStartDate(LocalDate.parse("2025-01-01"));
         project.setProjectEndDate(LocalDate.parse("2025-01-08"));
         try {
-            project.addActivity(new Activity("Activity 1"));
+            for (int i = 0; i < numberOfActivities; i++) {
+                project.addActivity(new Activity("Activity "+String.valueOf(i)));
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

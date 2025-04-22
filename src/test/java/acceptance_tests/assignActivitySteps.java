@@ -10,11 +10,15 @@ import io.cucumber.java.en.When;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class assignActivitySteps {
     private ErrorMessageHolder errorMessage;
+    Integer projectCountBeforeAssign;
+
+    public assignActivitySteps(ErrorMessageHolder errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     @Given("a user with initials {string} and a user with initials {string} is registered in the system")
     public void aUserWithInitialsAndAUserWithInitialsIsRegisteredInTheSystem(String userInitials1, String userInitials2) {
@@ -30,8 +34,15 @@ public class assignActivitySteps {
         User user = TimeManager.getUser(userInitials);
         assertEquals(TimeManager.getCurrentUser(), user);
     }
-    @When("a the user with initials {string} assigns the user with initials {string} to an activity named {string} in the project named {string}")
-    public void aTheUserWithInitialsAssignsTheUserWithInitialsToAnActivityNamedInTheProjectNamed(String userInitials1, String userInitials2, String activityName, String projectName) {
+    @Given("the user with initials {string}'s count of currently assigned activities is {int}")
+    public void theUserWithInitialsSCountOfCurrentlyAssignedActivitiesIs(String userInitials, Integer activityCount) {
+        User user = TimeManager.getUser(userInitials);
+        assertEquals(user.getActivityCount(), activityCount);
+    }
+    @When("the user with initials {string} assigns the user with initials {string} to an activity named {string} in the project named {string}")
+    public void theUserWithInitialsAssignsTheUserWithInitialsToAnActivityNamedInTheProjectNamed(String userInitials1, String userInitials2, String activityName, String projectName) {
+        User user = TimeManager.getUser(userInitials2);
+        this.projectCountBeforeAssign = user.getActivityCount();
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
         try {
@@ -47,9 +58,18 @@ public class assignActivitySteps {
         List<User> users = activity.getAssignedUsers();
         assertTrue(users.contains(userInitials));
     }
+
     @Then("the user with initials {string}'s count of assigned activities is incremented")
-    public void theUserWithInitialsSCountOfAssignedActivitiesIsIncremented(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void theUserWithInitialsSCountOfAssignedActivitiesIsIncremented(String userInitials) {
+        User user = TimeManager.getUser(userInitials);
+        assertEquals(projectCountBeforeAssign+1, user.getActivityCount());
+    }
+
+    @Given("a user with initials {string} is registered in the system")
+    public void aUserWithInitialsIsRegisteredInTheSystem(String userInitials) {
+        List<User> users = TimeManager.getUsers();
+        User user = TimeManager.getUser(userInitials);
+        boolean contains = users.contains(user);
+        assertTrue(contains);
     }
 }

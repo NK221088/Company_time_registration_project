@@ -8,14 +8,20 @@ import java.util.Map;
 public class User {
     private String user_initials;
     private Map<Activity, List<TimeRegistration>> activity_registrations = new HashMap<Activity, List<TimeRegistration>>();
+    private Integer activityCount;
 
     public User(String userInitials) {
         this.user_initials = userInitials;
         TimeManager.addUser(this);
+        this.activityCount = 0;
     }
 
     public Object getUserInitials() {
         return user_initials;
+    }
+
+    public Integer getActivityCount() {
+        return activityCount;
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
@@ -35,5 +41,9 @@ public class User {
 
     public String toString() {
         return user_initials;
+    }
+
+    public void incrementActivityCount() {
+        activityCount++;
     }
 }

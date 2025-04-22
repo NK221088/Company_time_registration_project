@@ -42,6 +42,19 @@ public class Activity {
     public void assignUser(String userInitials) {
         User user = TimeManager.getUser(userInitials);
         assignedUsers.add(user);
+
+        Integer activityCount = user.getActivityCount();
+        if (activityCount < 20){
+
+            assignedUsers.add(user);
+            user.incrementActivityCount();
+        } else {
+            throw new RuntimeException(userInitials + " is already assigned to the maximum number of 20 activities");
+        }
+
+
+
+
     }
 }
 
