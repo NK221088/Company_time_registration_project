@@ -8,25 +8,40 @@ import java.util.List;
 import java.util.Map;
 
 public class TimeManager {
-    public static String logged_in = "";
+    public static User current_user;
     private static List<User> users = new ArrayList<>();
     private static List<Project> projects = new ArrayList<>();
     private static Map<String, Project> projectMap = new HashMap<>();
     private static List<TimeRegistration> time_registrations = new ArrayList<>();
     private static int projectCount = 0;
 
+    static {
+        addUser(new User("huba"));
+        addProject(Project.exampleProject("Project 1"));
+        addProject(Project.exampleProject("Project 2"));
+    }
+
     public static void login(String userInitials) {
-        if (users.stream().map(User::getUserInitials).anyMatch(initials -> initials.equals(userInitials))) {
-            logged_in = userInitials;
-        } else {
-            logged_in = "";
-            throw new RuntimeException("The user " + userInitials + " don't exist in the system.");
+        try {
+            current_user = getUser(userInitials);
+        } catch (Exception e) {
+            throw e;
         }
     }
     public static void addUser(User user) {
         if (!users.contains(user)) {
             users.add(user);
         }
+    }
+    public static User getUser(String user_initials) {
+        try {
+            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
+        } catch (Exception _) {
+            throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
+        }
+    }
+    public static User getCurrentUser() {
+        return current_user;
     }
 
     public static void addProject(Project project) {
@@ -111,5 +126,6 @@ public class TimeManager {
 
     public static void addTimeRegistration(TimeRegistration timeRegistration) {
         time_registrations.add(timeRegistration);
+//        this function needs to
     }
 }
