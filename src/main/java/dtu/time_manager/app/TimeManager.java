@@ -17,9 +17,16 @@ public class TimeManager {
 
     static {
         addUser(new User("huba"));
-        addProject(Project.exampleProject("Project 1"));
-        addProject(Project.exampleProject("Project 2"));
-    }
+        addUser(new User("isak"));
+        addProject(Project.exampleProject("Project 1", 1));
+        addProject(Project.exampleProject("Project 2", 20));
+        Project project = getProjectFromName("Project 2");
+        List<Activity> activities = project.getActivities();
+        for (Activity activity : activities) {
+            activity.assignUser("isak");
+        }
+
+        }
 
     public static void login(String userInitials) {
         try {
