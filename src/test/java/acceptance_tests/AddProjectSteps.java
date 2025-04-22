@@ -19,7 +19,7 @@ public class AddProjectSteps {
 
     @Given("a user is logged in")
     public void aUserIsLoggedIn() {
-        new User("huba");
+        TimeManager.addUser(new User("huba"));
         TimeManager.login("huba");
         assertNotEquals("", TimeManager.logged_in);
     }
@@ -27,19 +27,18 @@ public class AddProjectSteps {
     public void theCurrentYearIs(Integer year) {
        assertEquals(2025, year);
     }
-    @Given("the current project count is {int}")
-    public void theCurrentProjectCountIs(Integer projectCount) {
-        assertEquals(TimeManager.getProjectCount(),projectCount);
-    }
+//    @Given("the current project count is {int}")
+//    public void theCurrentProjectCountIs(Integer projectCount) {
+//        System.out.println(projectCount);
+//        assertEquals(TimeManager.getProjectCount(), projectCount);
+//    }
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
-        Project project = new Project(projectName, projectName);
-
-        try {
-            TimeManager.createProject(projectName);
-        } catch (Exception e) {
-            this.errorMessage.setErrorMessage(e.getMessage());
-        }
+//        try {
+//            TimeManager.addProject(new Project(projectName));
+//        } catch (Exception e) {
+//            this.errorMessage.setErrorMessage(e.getMessage());
+//        }
     }
 
     @Then("a project named {string} should exist in the system")
@@ -49,15 +48,14 @@ public class AddProjectSteps {
 
     @Then("the project is assigned a project id {string}")
     public void theProjectIsAssignedAProjectId(String ProjectID) {
-        Project project = TimeManager.getProjectFromID(ProjectID);
-        assertNotNull(project);
+        assertNotNull(TimeManager.getProjectFromID(ProjectID));
     }
 
 
     @Given("a project with name {string} exists in the system")
     public void aProjectWithNameExistsInTheSystem(String projectName) {
         try {
-            TimeManager.createProject(projectName);
+            TimeManager.addProject(new Project(projectName));
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }

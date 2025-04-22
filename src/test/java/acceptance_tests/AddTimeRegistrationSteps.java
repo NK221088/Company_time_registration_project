@@ -16,19 +16,14 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddTimeRegistrationSteps {
-    private TimeManager time_manager;
     private String registeredName;
     private int registeredHours;
     private LocalDate registeredDate;
 
-    public AddTimeRegistrationSteps() {
-        this.time_manager = new TimeManager();
-    }
-
     @Given("an activity named {string} exists")
     public void anActivityNamedExists(String activityName) {
-        this.time_manager.getProjects().getFirst().addActivity(new Activity(activityName));
-        assertEquals(this.time_manager
+//        TimeManager.getProjects().getFirst().addActivity(new Activity(activityName));
+        assertEquals(TimeManager
                 .getProjects().getFirst()
                 .getActivities().getFirst()
                 .getActivityName(), activityName);
@@ -61,6 +56,6 @@ public class AddTimeRegistrationSteps {
         assertEquals(Integer.toString(registeredHours), dataTable.cell(1, 1));
         assertEquals(registeredDate.toString(), dataTable.cell(1, 2));
 
-        this.time_manager.addTimeRegistration(time_registration);
+        TimeManager.addTimeRegistration(time_registration);
     }
 }

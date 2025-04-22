@@ -1,5 +1,6 @@
 package dtu.time_manager.app;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -14,43 +15,31 @@ public class TimeManager {
     private static List<TimeRegistration> time_registrations = new ArrayList<>();
     private static int projectCount = 0;
 
-    static {
-        User huba_user = new User("huba");
-        add(huba_user);
-        addProject(new Project());
-    }
-
     public static void login(String userInitials) {
         if (users.stream().map(User::getUserInitials).anyMatch(initials -> initials.equals(userInitials))) {
             logged_in = userInitials;
-
-        }
-        else {
+        } else {
             logged_in = "";
             throw new RuntimeException("The user " + userInitials + " don't exist in the system.");
         }
     }
-
-    public static void add(User user) {
-        users.add(user);
+    public static void addUser(User user) {
+        if (!users.contains(user)) {
+            users.add(user);
+        }
     }
 
-    public static void createProject(String projectName) {
-       if (!projectExists(projectName)){
-        projectCount++; // Update the projectCount variable to keep track of the number of projects - mostly for use in the creation of a projectID
-
-        String projectID = createProjectID(projectCount);
-        Project project = new Project(projectName, projectID);
-
-        projects.add(project);
-        projectMap.put(project.getProjectID(), project); // Add the projects to the hashmap for easy identification
+    public static void addProject(Project project) {
+        if (!projectExists(project.getProjectName())) {
+            projectMap.put(project.getProjectID(), project);
+            projects.add(project);
         } else {
-           throw new RuntimeException("A project with name '"+ projectName +"' already exists in the system and two projects can’t have the same name.");
-       }
+            throw new RuntimeException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
+        }
     }
 
-    public static boolean projectExists(String projectName) {
-        return projects.stream().map(Project::getProjectName).anyMatch(name -> name.equals(projectName));
+    public static List<Project> getProjects() {
+        return projects;
     }
 
     public static Project getProjectFromID(String projectID) {
@@ -64,32 +53,36 @@ public class TimeManager {
                 .orElse(null); // If no project is found, return null
     }
 
-    public static int getProjectCount() {return projectCount;}
+    public static int incProjectCount() {
+        return ++projectCount;
+    }
 
-    public static String createProjectID(int projectCount) {
-        String projectID = "25" + String.format("%03d", projectCount); // We pad with leading zeros to make sure all ids have the same length
-        return projectID;
+    public static int getProjectCount() {
+        return projectCount;
+    }
+
+    public static boolean projectExists(String projectName) {
+        return projects.stream().map(Project::getProjectName).anyMatch(name -> name.equals(projectName));
     }
 
     public static boolean projectDuplicateExists(String projectName) {
-        long projectCount = projects.stream()
+        long counted = projects.stream()
                 .map(Project::getProjectName)
                 .filter(name -> name.equals(projectName))
                 .count();
-        return projectCount > 1;
+        return counted > 1;
     }
 
     public static Map viewProject(String projectID) {
         Map<String, Object> projectVariables = new HashMap<>();
-        
+
         Project project = projectMap.get(projectID);
         String projectName = project.getProjectName();
 
-        String startDate = project.getStartDate();
-        String endDate = project.getEndDate();
-        String projectInterval = startDate + " - " + endDate; // Formatting the project interval so it looks correct
+        LocalDate startDate = project.getStartDate();
+        LocalDate endDate = project.getEndDate();
+        String projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
         List<Activity> activities = project.getActivities();
-
 
         projectVariables.put("Project name", projectName);
         projectVariables.put("Project ID", projectID);
@@ -98,13 +91,6 @@ public class TimeManager {
 
         return projectVariables;
     }
-
-    public static void addProject(Project project) {
-        String projectID = project.getProjectID();
-        projectMap.put(projectID, project);
-        projects.add(project);
-    }
-
 
     public static Map getProjectReport(String projectID) {
         Project project = getProjectFromID(projectID); // Retrieve the project for which to generate the project report
@@ -118,16 +104,12 @@ public class TimeManager {
         return reportVariables;
     }
 
-    public static List<Project> getProjects() {
-        return projects;
-    }
-
     public static void logout() {
-        // MAKE FUNCTIONs
+        // MAKE FUNCTION
         return;
     }
 
-    public void addTimeRegistration(TimeRegistration timeRegistration) {
+    public static void addTimeRegistration(TimeRegistration timeRegistration) {
         time_registrations.add(timeRegistration);
     }
 }

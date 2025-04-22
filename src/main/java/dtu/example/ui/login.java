@@ -30,6 +30,5 @@ public class login {
             errorMessage.setText(e.getMessage());
             errorMessage.setVisible(true);
         }
-        System.out.println(TimeManager.logged_in);
     }
 }

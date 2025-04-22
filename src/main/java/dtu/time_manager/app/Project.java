@@ -1,89 +1,88 @@
 package dtu.time_manager.app;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 
 public class Project {
     private String projectName;
     private String projectID;
-    private String startDate;
-    private String endDate;
-    private List<Activity> activities;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private List<Activity> activities = new ArrayList<>();
 
-    // Constructor with project name
-    public Project(String projectName, String projectID) {
+    public Project(String projectName) {
         this.projectName = projectName;
-        this.projectID = projectID;
-        this.startDate = ""; // Initializes the start date to be an empty string
-        this.endDate = ""; // Initializes the end date to be an empty string
-        this.activities = new ArrayList<>(); // Initializes the list to be empty
+        projectID = formatID(TimeManager.incProjectCount());
     }
 
-    public Project() {
-        this.projectID = "25001";
-        setProjectName("Project 2");
-        setProjectStartDate("01/01/2025");
-        setProjectEndDate("01/08/2025");
-        this.activities = new ArrayList<>(); // Initializes the list to be empty
+    public static Project exampleProject(String projectName) {
+        Project project = new Project(projectName);
+        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
+        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
         try {
-            addActivity(new Activity("Activity 1"));
+            project.addActivity(new Activity("Activity 1"));
         } catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
+        return project;
     }
-
-
-    // Constructor without project name, delegates to the main one
-    public Project(String projectID) {
-        this("", projectID);
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public String getProjectID() {return projectID;}
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+    public String getProjectName() {
+        return projectName;
+    }
 
-    public void setProjectStartDate(String startDate) {
+    public void setProjectID(String projectID) {
+        this.projectID = projectID;
+    }
+    public String getProjectID() { return projectID; }
+
+    public void setProjectStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
-
-    public void setProjectEndDate(String endDate) {
+    public void setProjectEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
-
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
-
-    public String getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void addActivity(Activity activity) throws Exception {
-        boolean duplicateExists = activities.stream()
-                .anyMatch(existingActivity ->
-                        existingActivity.getActivityName().equals(activity.getActivityName()));
 
-        if (duplicateExists) {
-            throw new Exception("An activity with name '" + activity.getActivityName() +
+    public boolean activityDuplicateExists(String activityName) {
+        return activities.stream().anyMatch(existingActivity ->
+                existingActivity.getActivityName().equals(activityName));
+    }
+    public void addActivity(Activity activity) throws Exception {
+        if (!activityDuplicateExists(activity.getActivityName())) {
+            activities.add(activity);
+        } else {
+            throw new Exception(
+                    "An activity with name '" + activity.getActivityName() +
                     "' already exists within '" + this.projectName +
                     "' two activities cannot exist with the same name within the same project.");
         }
-
-        activities.add(activity);
     }
-
     public List<Activity> getActivities() {
         return activities;
     }
 
-    public String toString() {
-        return projectName;
+    private String formatID(int count) {
+        return "25" + String.format("%03d", count);
     }
 
+    public String toString() {
+        if (Objects.equals(projectName, "")) {
+            return projectID;
+        } else {
+            return projectName;
+        }
+    }
 }

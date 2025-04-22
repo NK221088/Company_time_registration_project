@@ -14,12 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LoginSteps {
     private User user;
     private String user_initials;
-    private TimeManager time_manager;
     private ErrorMessageHolder errorMessage;
 
     public LoginSteps(ErrorMessageHolder errorMessage) {
         this.errorMessage = errorMessage;
-        this.time_manager = new TimeManager();
     }
 
     @Given("a user's initials {string} is registered in the system")
@@ -27,6 +25,7 @@ public class LoginSteps {
         this.user_initials = user_initials;
         user = new User(user_initials);
     }
+
     @When("the user types in their initials {string}")
     public void theUserTypesInTheirInitials(String user_initials) {
         try {
@@ -34,7 +33,6 @@ public class LoginSteps {
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
-
     }
 
     @Then("they are logged into the system")
