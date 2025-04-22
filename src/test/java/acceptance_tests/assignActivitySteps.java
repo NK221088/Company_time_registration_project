@@ -56,7 +56,7 @@ public class assignActivitySteps {
     public void theUserWithInitialsIsAssignedToTheActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
-        List<User> users = activity.getUsers();
+        List<User> users = activity.getAssignedUsers();
         User user = TimeManager.getUser(userInitials);
         assertTrue(users.contains(user));
     }
@@ -78,7 +78,7 @@ public class assignActivitySteps {
     public void theUserWithInitialsIsNotAssignedToTheActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
-        List<User> users = activity.getUsers();
+        List<User> users = activity.getAssignedUsers();
         User user = TimeManager.getUser(userInitials);
         assertFalse(users.contains(user));
     }
@@ -87,7 +87,7 @@ public class assignActivitySteps {
     public void thatTheUserWithInitialsIsAssignedToAnActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
-        List<User> assignedUsers = activity.getUsers();
+        List<User> assignedUsers = activity.getAssignedUsers();
         assertTrue(assignedUsers.contains(TimeManager.getUser(userInitials)));
     }
 
@@ -95,7 +95,7 @@ public class assignActivitySteps {
     public void theUserWithInitialsIsOnlyAssignedToTheActivityNamedInTheProjectNamedOnce(String userInitials, String activityName, String projectName) {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
-        List<User> assignedusers = activity.getUsers();
+        List<User> assignedusers = activity.getAssignedUsers();
         User user = TimeManager.getUser(userInitials);
         long countOfUser = assignedusers.stream()
                 .map(User::getUserInitials)
