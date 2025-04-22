@@ -48,15 +48,17 @@ public class assignActivitySteps {
         try {
             activity.assignUser(userInitials2); // If no exception is thrown, the option is available
         } catch (Exception e) {
-            this.errorMessage.setErrorMessage(e.getMessage());
+            System.out.println(e.getMessage());
+            errorMessage.setErrorMessage(e.getMessage());
         }
     }
     @Then("the user with initials {string} is assigned to the activity named {string} in the project named {string}")
     public void theUserWithInitialsIsAssignedToTheActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
         Project project = TimeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
-        List<User> users = activity.getAssignedUsers();
-        assertTrue(users.contains(userInitials));
+        List<User> users = activity.getUsers();
+        User user = TimeManager.getUser(userInitials);
+        assertTrue(users.contains(user));
     }
 
     @Then("the user with initials {string}'s count of assigned activities is incremented")
@@ -72,4 +74,13 @@ public class assignActivitySteps {
         boolean contains = users.contains(user);
         assertTrue(contains);
     }
+    @Then("the user with initials {string} is not assigned to the activity named {string} in the project named {string}")
+    public void theUserWithInitialsIsNotAssignedToTheActivityNamedInTheProjectNamed(String userInitials, String activityName, String projectName) {
+        Project project = TimeManager.getProjectFromName(projectName);
+        Activity activity = project.getActivityFromName(activityName);
+        List<User> users = activity.getUsers();
+        User user = TimeManager.getUser(userInitials);
+        assertFalse(users.contains(user));
+    }
+
 }
