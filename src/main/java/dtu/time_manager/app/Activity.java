@@ -15,7 +15,7 @@ public class Activity {
     }
 
     public void setExpectedHours(Long ExpectedHours) {this.expectedWorkHours = ExpectedHours;}
-    public void addUser(User user) {assignedUsers.add(user);}
+    public void addAssignedUser(User user) {assignedUsers.add(user);}
 
     public ArrayList<User> getUsers() { return this.assignedUsers;}
     public Long getExpectedWorkHours() { return this.expectedWorkHours;}
@@ -24,7 +24,7 @@ public class Activity {
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
         info.put("Name", getActivityName());
-        info.put("Users", getUsers());
+        info.put("Assigned Users", getUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
 
         return info;
