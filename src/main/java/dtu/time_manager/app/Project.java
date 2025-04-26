@@ -39,9 +39,6 @@ public class Project {
         return projectName;
     }
 
-    public void setProjectID(String projectID) {
-        this.projectID = projectID;
-    }
     public String getProjectID() { return projectID; }
 
     public void setProjectStartDate(LocalDate startDate) {

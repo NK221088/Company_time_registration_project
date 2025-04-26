@@ -52,5 +52,9 @@ public class Activity {
             throw new RuntimeException(userInitials + " is already assigned to the maximum number of 20 activities");
         }
     }
+
+    public String toString() {
+        return ActivityName;
+    }
 }
 

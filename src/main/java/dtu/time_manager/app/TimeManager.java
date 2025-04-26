@@ -117,11 +117,17 @@ public class TimeManager {
 
         Project project = projectMap.get(projectID);
         String projectName = project.getProjectName();
+        List<Activity> activities = project.getActivities();
 
         LocalDate startDate = project.getStartDate();
         LocalDate endDate = project.getEndDate();
-        String projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
-        List<Activity> activities = project.getActivities();
+        String projectInterval;
+
+        if (startDate != null) {
+            projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
+        } else {
+            projectInterval = "";
+        }
 
         projectVariables.put("Project name", projectName);
         projectVariables.put("Project ID", projectID);
