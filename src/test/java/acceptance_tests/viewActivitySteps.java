@@ -20,13 +20,10 @@ public class viewActivitySteps {
 
     @When("select an activity with name {string} from project ID {string}")
     public void selectAnActivityWithNameFromProjectID(String activityName, String projectID) {
-        this.test_user = new User("huba");
-        TimeManager.addUser(test_user);
+        this.test_user = TimeManager.getUser("huba");
         this.test_project = TimeManager.getProjectFromID(projectID);
         this.activity = new Activity(activityName);
         this.activity.assignUser("huba");
-
-
     }
 
 
@@ -47,6 +44,7 @@ public class viewActivitySteps {
     public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) {
         this.test_time_registration = new TimeRegistration(this.test_user, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
         Double test_hoursSpent = this.activity.getAssignedWorkHours();
+
         assertEquals(Double.parseDouble(assignedWorkHours), test_hoursSpent);
     }
 
