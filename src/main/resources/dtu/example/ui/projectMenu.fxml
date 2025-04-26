@@ -18,16 +18,23 @@
       <children>
          <Label text="Select a project:" />
          <ChoiceBox fx:id="projectContainer" onAction="#showInformation" prefWidth="150.0" />
+         <Button fx:id="addProjectBotton" onAction="#addProject" prefHeight="25.0" prefWidth="142.0" text="Add project" />
          <Button fx:id="generateProejctReportbutton" onAction="#projectReport" text="Generate project Report" />
-         <Button fx:id="returnToMainMenuButton" onAction="#backToProjectMenu" text="Return to main menu" />
+         <Button fx:id="returnToMainMenuButton" onAction="#backToProjectMenu" prefHeight="25.0" prefWidth="145.0" text="Return to main menu" />
       </children>
    </VBox>
 
    <!-- Right side: Project information -->
    <VBox alignment="CENTER_LEFT" spacing="10.0">
       <children>
-         <Label text="Project Information:" />
          <Text fx:id="projectInfo" wrappingWidth="300.0" />
+      </children>
+   </VBox>
+   <VBox alignment="CENTER" spacing="20.0">
+      <children>
+         <Label text="Project options" />
+         <Button fx:id="addActivitybutton" onAction="#addActivity" prefHeight="25.0" prefWidth="142.0" text="Add Activity" />
+         <Button fx:id="generateProejctReportbutton2" onAction="#projectReport" text="Generate project Report" />
       </children>
    </VBox>
 </HBox>
