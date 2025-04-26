@@ -42,6 +42,7 @@ public class TimeManager {
             throw e;
         }
     }
+
     public static void addUser(User user) {
         if (!users.contains(user)) {
             users.add(user);
