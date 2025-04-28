@@ -17,7 +17,7 @@ public class User {
     }
 
     public String getUserInitials() {
-        return user_initials;
+        return this.user_initials;
     }
 
     public Integer getActivityCount() {
