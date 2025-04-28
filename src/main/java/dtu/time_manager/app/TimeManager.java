@@ -166,8 +166,7 @@ public class TimeManager {
     }
 
     public static void logout() {
-        // MAKE FUNCTION
-        return;
+        current_user = null;
     }
 
     public static void addTimeRegistration(TimeRegistration timeRegistration) {

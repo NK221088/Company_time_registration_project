@@ -23,6 +23,7 @@ public class Activity {
             for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {
                 assignedWorkHours += timeReg.getRegisteredHours();
             }
+            System.out.println(user);
         }
         return assignedWorkHours;
     }
