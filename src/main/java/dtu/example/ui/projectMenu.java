@@ -1,9 +1,6 @@
 package dtu.example.ui;
 
-import dtu.time_manager.app.Activity;
-import dtu.time_manager.app.Project;
-import dtu.time_manager.app.TimeManager;
-import dtu.time_manager.app.User;
+import dtu.time_manager.app.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,16 +60,25 @@ public class projectMenu {
         Map<String, Object> activityInfo = activity.viewActivity();
 
         // Display activity name
-        Label nameLabel = new Label("Activity name: " + activityInfo.get("Name"));
+        HBox nameBox = new HBox(5);
+        Label nameTitleLabel = new Label("Activity name:");
+        Label nameValueLabel = new Label((String) activityInfo.get("Name"));
+        setupEditableActivityName(nameValueLabel, activity);
+        nameBox.getChildren().addAll(nameTitleLabel, nameValueLabel);
 
         // Display expected work hours
-        Label expectedHoursLabel = new Label("Expected work hours: " + activityInfo.get("ExpectedWorkHours"));
+        HBox expectedHoursBox = new HBox(5);
+        Label expectedHoursTitleLabel = new Label("Expected work hours:");
+        Label expectedHoursValueLabel = new Label(activityInfo.get("ExpectedWorkHours") + " hours");
+        setupEditableExpectedHours(expectedHoursValueLabel, activity);
+        expectedHoursBox.getChildren().addAll(expectedHoursTitleLabel, expectedHoursValueLabel);
 
         // Display assigned work hours
         Label assignedHoursLabel = new Label("Assigned work hours: " + activityInfo.get("AssignedWorkHours"));
 
         // Add the basic info to the container
-        projectInfoStatusContainer.getChildren().addAll(nameLabel, expectedHoursLabel, assignedHoursLabel);
+        projectInfoStatusContainer.getChildren().addAll(nameBox, expectedHoursBox, assignedHoursLabel);
+
 
         // Display assigned users
         @SuppressWarnings("unchecked")
@@ -97,16 +103,6 @@ public class projectMenu {
             Label noUsersLabel = new Label("No users assigned to this activity.");
             projectInfoStatusContainer.getChildren().add(noUsersLabel);
         }
-
-        // Add button to set expected work hours
-        Button setExpectedHoursButton = new Button("Set Expected Hours");
-        setExpectedHoursButton.setOnAction(e -> showSetExpectedHoursDialog(activity));
-        projectInfoStatusContainer.getChildren().add(setExpectedHoursButton);
-
-        // Add button to assign user to this activity
-        Button assignUserButton = new Button("Assign User");
-        assignUserButton.setOnAction(e -> showAssignUserDialog(activity));
-        projectInfoStatusContainer.getChildren().add(assignUserButton);
     }
 
     // Method to show dialog for setting expected work hours
@@ -366,7 +362,8 @@ public class projectMenu {
                 reportText.append("===================================\n");
                 reportText.append("          PROJECT REPORT           \n");
                 reportText.append("===================================\n\n");
-                reportText.append("Generated on: ").append(java.time.LocalDateTime.now().toString()).append("\n\n");
+                reportText.append("Generated on: ").append(getFormattedCurrentDateTime()).append("\n\n");
+
 
                 // Project Details Section
                 reportText.append("PROJECT DETAILS\n");
@@ -382,11 +379,9 @@ public class projectMenu {
                 if (activities != null && !activities.isEmpty()) {
                     for (int i = 0; i < activities.size(); i++) {
                         Activity activity = activities.get(i);
-                        reportText.append(i+1).append(". ").append(activity.getActivityName()).append("\n");
-                        reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
-                        reportText.append("   Assigned Work Hours: ").append(activity.getAssignedWorkHours()).append(" hours\n");
+                        reportText.append(i + 1).append(". ").append(activity.getActivityName()).append("\n");
 
-                        // Get all assigned users
+                        // Get all assigned users (moved up right after Activity Name)
                         ArrayList<User> assignedUsers = activity.getAssignedUsers();
                         if (assignedUsers != null && !assignedUsers.isEmpty()) {
                             reportText.append("   Assigned Users: ");
@@ -401,11 +396,16 @@ public class projectMenu {
                             reportText.append("   Assigned Users: None\n");
                         }
 
+                        // Now show work hours after users
+                        reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
+                        reportText.append("   Assigned Work Hours: ").append(activity.getAssignedWorkHours()).append(" hours\n");
+
                         reportText.append("\n");
                     }
                 } else {
                     reportText.append("No activities defined for this project.\n\n");
                 }
+
 
                 // Additional Project Info
                 reportText.append("ADDITIONAL INFORMATION\n");
@@ -679,4 +679,191 @@ public class projectMenu {
         dialog.setResultConverter(dialogButton -> null); // Handle assignment manually
         dialog.showAndWait();
     }
+
+    private void setupEditableActivityName(Label nameValueLabel, Activity activity) {
+        nameValueLabel.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                TextField textField = new TextField(activity.getActivityName());
+                textField.setOnAction(e -> {
+                    activity.setActivityName(textField.getText());
+                    showActivityInformation(activity); // Refresh view
+                });
+                textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+                    if (!isNowFocused) {
+                        activity.setActivityName(textField.getText());
+                        showActivityInformation(activity); // Refresh view
+                    }
+                });
+
+                HBox parent = (HBox) nameValueLabel.getParent();
+                int index = parent.getChildren().indexOf(nameValueLabel);
+                parent.getChildren().set(index, textField);
+                textField.requestFocus();
+            }
+        });
+    }
+
+    private void setupEditableExpectedHours(Label expectedHoursValueLabel, Activity activity) {
+        expectedHoursValueLabel.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                String currentText = expectedHoursValueLabel.getText().replace(" hours", "").trim();
+                TextField textField = new TextField(currentText);
+                textField.setOnAction(e -> {
+                    try {
+                        double newHours = Double.parseDouble(textField.getText());
+                        activity.setExpectedWorkHours(newHours);
+                        showActivityInformation(activity); // Refresh view
+                    } catch (NumberFormatException ex) {
+                        showError("Please enter a valid number for expected hours.");
+                    }
+                });
+                textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+                    if (!isNowFocused) {
+                        try {
+                            double newHours = Double.parseDouble(textField.getText());
+                            activity.setExpectedWorkHours(newHours);
+                            showActivityInformation(activity); // Refresh view
+                        } catch (NumberFormatException ex) {
+                            showError("Please enter a valid number for expected hours.");
+                        }
+                    }
+                });
+
+                HBox parent = (HBox) expectedHoursValueLabel.getParent();
+                int index = parent.getChildren().indexOf(expectedHoursValueLabel);
+                parent.getChildren().set(index, textField);
+                textField.requestFocus();
+            }
+        });
+    }
+
+    private String getFormattedCurrentDateTime() {
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+        int day = now.getDayOfMonth();
+        int month = now.getMonthValue();
+        int year = now.getYear();
+        int hour = now.getHour();
+        int minute = now.getMinute();
+
+        String[] monthNames = {
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+        };
+
+        String monthName = monthNames[month - 1];
+
+        // Pad single-digit minutes with a leading zero
+        String minuteFormatted = (minute < 10) ? "0" + minute : String.valueOf(minute);
+
+        return day + " " + monthName + " " + year + " at " + hour + ":" + minuteFormatted;
+    }
+
+    public void addTimeRegistration(ActionEvent actionEvent) {
+        Activity selectedActivity = activityContainer.getValue();
+        if (selectedActivity == null) {
+            showError("Please select an activity first before registering time.");
+            return;
+        }
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Add Time Registration");
+        dialog.setHeaderText("Enter time registration details:");
+
+        ButtonType registerButtonType = new ButtonType("Register", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(registerButtonType, ButtonType.CANCEL);
+
+        // --- Create clean inputs ---
+
+        // 1. User choice box
+        ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
+        userChoiceBox.getItems().addAll(TimeManager.getUsers());
+        userChoiceBox.setValue(TimeManager.getCurrentUser()); // Default to current user
+
+        // 2. Hours choice box
+        ChoiceBox<Integer> hoursChoiceBox = new ChoiceBox<>();
+        for (int i = 1; i <= 24; i++) {  // or you can allow more if needed
+            hoursChoiceBox.getItems().add(i);
+        }
+        hoursChoiceBox.setValue(1);
+
+        // 3. Date picker (non-editable)
+        DatePicker datePicker = new DatePicker();
+        datePicker.setEditable(false);
+        datePicker.setPromptText("Select Date");
+
+        // Optionally restrict future dates
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (date.isAfter(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); // Optional: pink color for disabled
+                }
+            }
+        });
+
+        // --- Layout ---
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("User:"), 0, 0);
+        grid.add(userChoiceBox, 1, 0);
+        grid.add(new Label("Hours:"), 0, 1);
+        grid.add(hoursChoiceBox, 1, 1);
+        grid.add(new Label("Date:"), 0, 2);
+        grid.add(datePicker, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(userChoiceBox::requestFocus);
+
+        final Button registerButton = (Button) dialog.getDialogPane().lookupButton(registerButtonType);
+        registerButton.addEventFilter(ActionEvent.ACTION, event -> {
+            User selectedUser = userChoiceBox.getValue();
+            Integer hours = hoursChoiceBox.getValue();
+            LocalDate date = datePicker.getValue();
+
+            if (selectedUser == null) {
+                showError("Please select a user.");
+                event.consume();
+                return;
+            }
+
+            if (hours == null || hours <= 0) {
+                showError("Please select valid hours.");
+                event.consume();
+                return;
+            }
+
+            if (date == null) {
+                showError("Please select a date.");
+                event.consume();
+                return;
+            }
+
+            try {
+                TimeRegistration timeRegistration = new TimeRegistration(selectedUser, selectedActivity, hours, date);
+                TimeManager.addTimeRegistration(timeRegistration);
+
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Success");
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Time registered successfully!");
+                successAlert.showAndWait();
+
+                showActivityInformation(selectedActivity);
+
+            } catch (IllegalArgumentException e) {
+                showError(e.getMessage());
+                event.consume();
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> null);
+        dialog.showAndWait();
+    }
+
+
 }

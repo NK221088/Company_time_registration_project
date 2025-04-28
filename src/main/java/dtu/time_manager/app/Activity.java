@@ -58,5 +58,9 @@ public class Activity {
     public String toString() {
         return ActivityName;
     }
+
+    public void setActivityName(String activityName) {
+        this.ActivityName = activityName;
+    }
 }
 
