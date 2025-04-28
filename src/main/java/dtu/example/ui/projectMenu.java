@@ -379,9 +379,11 @@ public class projectMenu {
                 if (activities != null && !activities.isEmpty()) {
                     for (int i = 0; i < activities.size(); i++) {
                         Activity activity = activities.get(i);
-                        reportText.append(i + 1).append(". ").append(activity.getActivityName()).append("\n");
+                        reportText.append(i+1).append(". ").append(activity.getActivityName()).append("\n");
+                        reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
+                        reportText.append("   Assigned Work Hours: ").append(activity.getAssignedWorkHours()).append(" hours\n");
 
-                        // Get all assigned users (moved up right after Activity Name)
+                        // Get all assigned users
                         ArrayList<User> assignedUsers = activity.getAssignedUsers();
                         if (assignedUsers != null && !assignedUsers.isEmpty()) {
                             reportText.append("   Assigned Users: ");
