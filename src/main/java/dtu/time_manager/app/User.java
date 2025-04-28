@@ -16,8 +16,8 @@ public class User {
         this.activityCount = 0;
     }
 
-    public Object getUserInitials() {
-        return user_initials;
+    public String getUserInitials() {
+        return this.user_initials;
     }
 
     public Integer getActivityCount() {

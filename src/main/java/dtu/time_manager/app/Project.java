@@ -12,11 +12,22 @@ public class Project {
     private LocalDate startDate;
     private LocalDate endDate;
     private List<Activity> activities = new ArrayList<>();
+    private User projectLead;
 
     public Project(String projectName) {
         this.projectName = projectName;
         projectID = formatID(TimeManager.incProjectCount());
     }
+
+    public void assignProjectLead(User projectLead) {
+        this.projectLead = projectLead;
+    }
+
+    public User getProjectLead() {
+        return this.projectLead;
+    }
+
+
 
     public static Project exampleProject(String projectName, Integer numberOfActivities) {
         Project project = new Project(projectName);

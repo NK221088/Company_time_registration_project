@@ -44,14 +44,13 @@ public class viewActivitySteps {
     public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) {
         this.test_time_registration = new TimeRegistration(this.test_user, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
         Double test_hoursSpent = this.activity.getAssignedWorkHours();
-
         assertEquals(Double.parseDouble(assignedWorkHours), test_hoursSpent);
     }
 
     @Then("the initials of the developer or developers {string} working on the {string} is shown")
-    public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String activityName, String user) {
-        ArrayList<User> Users = this.activity.getAssignedUsers();
-        assertTrue(Users.contains(user));
+    public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String user, String activityName) {
+        ArrayList<User> test_users = this.activity.getAssignedUsers();
+        assertTrue(test_users.contains(TimeManager.getUser(user)));
     }
 
 }
