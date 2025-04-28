@@ -142,6 +142,16 @@ public class TimeManager {
         Map<String, Object> reportVariables = new HashMap<>();
         reportVariables.put("Project Name", project.getProjectName()); // Insert the name in the report
         reportVariables.put("Project ID", projectID); // Insert the project ID in the report
+        LocalDate startDate = project.getStartDate();
+        LocalDate endDate = project.getEndDate();
+        String projectInterval;
+
+        if (startDate != null) {
+            projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
+        } else {
+            projectInterval = "";
+        }
+        reportVariables.put("Project interval", projectInterval);
         List<Activity> activities = project.getActivities();
         Map<Activity, Double> map = project.getActivities().stream()
         .collect(Collectors.toMap(

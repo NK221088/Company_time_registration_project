@@ -35,6 +35,7 @@ public class Activity {
         info.put("Name", getActivityName());
         info.put("Assigned Users", getAssignedUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
+        info.put("AssignedWorkHours", getAssignedWorkHours());
 
         return info;
     }

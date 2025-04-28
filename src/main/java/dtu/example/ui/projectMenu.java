@@ -3,6 +3,7 @@ package dtu.example.ui;
 import dtu.time_manager.app.Activity;
 import dtu.time_manager.app.Project;
 import dtu.time_manager.app.TimeManager;
+import dtu.time_manager.app.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,12 +18,16 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class projectMenu {
     @FXML
     private ChoiceBox<Project> projectContainer;
+
+    @FXML
+    private ChoiceBox<Activity> activityContainer;
 
     @FXML
     private VBox projectInfoStatusContainer;
@@ -33,8 +38,168 @@ public class projectMenu {
 
     @FXML
     private void initialize() {
-        projectContainer.getItems().clear(); // <-- Clear existing items
+        projectContainer.getItems().clear();
         TimeManager.getProjects().forEach(project -> projectContainer.getItems().add(project));
+
+        // Add listener for project selection to update activity dropdown
+        projectContainer.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            updateActivityChoices(newVal);
+        });
+
+        // Add listener for activity selection to show activity info
+        activityContainer.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                showActivityInformation(newVal);
+            }
+        });
+    }
+
+    // Method to display activity information
+    private void showActivityInformation(Activity activity) {
+        if (activity == null) return;
+
+        projectInfoStatusContainer.getChildren().clear();
+
+        Map<String, Object> activityInfo = activity.viewActivity();
+
+        // Display activity name
+        Label nameLabel = new Label("Activity name: " + activityInfo.get("Name"));
+
+        // Display expected work hours
+        Label expectedHoursLabel = new Label("Expected work hours: " + activityInfo.get("ExpectedWorkHours"));
+
+        // Display assigned work hours
+        Label assignedHoursLabel = new Label("Assigned work hours: " + activityInfo.get("AssignedWorkHours"));
+
+        // Add the basic info to the container
+        projectInfoStatusContainer.getChildren().addAll(nameLabel, expectedHoursLabel, assignedHoursLabel);
+
+        // Display assigned users
+        @SuppressWarnings("unchecked")
+        ArrayList<User> assignedUsers = (ArrayList<User>) activityInfo.get("Assigned Users");
+
+        if (assignedUsers != null && !assignedUsers.isEmpty()) {
+            Label usersHeader = new Label("Assigned users:");
+            projectInfoStatusContainer.getChildren().add(usersHeader);
+
+            // Create a VBox to contain all users
+            VBox usersContainer = new VBox(5);
+            usersContainer.setPadding(new Insets(0, 0, 0, 15)); // Add some indentation
+
+            // Add each user to the container
+            for (User user : assignedUsers) {
+                Label userLabel = new Label("• " + user.getUserInitials());
+                usersContainer.getChildren().add(userLabel);
+            }
+
+            projectInfoStatusContainer.getChildren().add(usersContainer);
+        } else {
+            Label noUsersLabel = new Label("No users assigned to this activity.");
+            projectInfoStatusContainer.getChildren().add(noUsersLabel);
+        }
+
+        // Add button to set expected work hours
+        Button setExpectedHoursButton = new Button("Set Expected Hours");
+        setExpectedHoursButton.setOnAction(e -> showSetExpectedHoursDialog(activity));
+        projectInfoStatusContainer.getChildren().add(setExpectedHoursButton);
+
+        // Add button to assign user to this activity
+        Button assignUserButton = new Button("Assign User");
+        assignUserButton.setOnAction(e -> showAssignUserDialog(activity));
+        projectInfoStatusContainer.getChildren().add(assignUserButton);
+    }
+
+    // Method to show dialog for setting expected work hours
+    private void showSetExpectedHoursDialog(Activity activity) {
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Set Expected Work Hours");
+        dialog.setHeaderText("Enter expected work hours for " + activity.getActivityName() + ":");
+
+        ButtonType setButtonType = new ButtonType("Set", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(setButtonType, ButtonType.CANCEL);
+
+        TextField hoursField = new TextField();
+        hoursField.setPromptText("Hours");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("Hours:"), 0, 0);
+        grid.add(hoursField, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(hoursField::requestFocus);
+
+        final Button setButton = (Button) dialog.getDialogPane().lookupButton(setButtonType);
+        setButton.addEventFilter(ActionEvent.ACTION, event -> {
+            try {
+                double hours = Double.parseDouble(hoursField.getText());
+                activity.setExpectedWorkHours(hours);
+                showActivityInformation(activity);
+            } catch (NumberFormatException e) {
+                showError("Please enter a valid number for hours.");
+                event.consume();
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> null);
+        dialog.showAndWait();
+    }
+
+    // Method to show dialog for assigning users
+    private void showAssignUserDialog(Activity activity) {
+        Dialog<User> dialog = new Dialog<>();
+        dialog.setTitle("Assign User to Activity");
+        dialog.setHeaderText("Select a user to assign to " + activity.getActivityName() + ":");
+
+        ButtonType assignButtonType = new ButtonType("Assign", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(assignButtonType, ButtonType.CANCEL);
+
+        ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
+        userChoiceBox.getItems().addAll(TimeManager.getUsers());
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("User:"), 0, 0);
+        grid.add(userChoiceBox, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        final Button assignButton = (Button) dialog.getDialogPane().lookupButton(assignButtonType);
+        assignButton.addEventFilter(ActionEvent.ACTION, event -> {
+            User selectedUser = userChoiceBox.getValue();
+
+            if (selectedUser == null) {
+                showError("Please select a user to assign.");
+                event.consume();
+                return;
+            }
+
+            try {
+                activity.assignUser(selectedUser.getUserInitials());
+                showActivityInformation(activity);
+            } catch (RuntimeException e) {
+                showError(e.getMessage());
+                event.consume();
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> null);
+        dialog.showAndWait();
+    }
+
+    // Method to update activity choices when a project is selected
+    private void updateActivityChoices(Project selectedProject) {
+        activityContainer.getItems().clear();
+
+        if (selectedProject != null) {
+            List<Activity> activities = selectedProject.getActivities();
+            if (activities != null && !activities.isEmpty()) {
+                activityContainer.getItems().addAll(activities);
+            }
+        }
     }
 
     public void backToProjectMenu(ActionEvent actionEvent) throws IOException {
@@ -90,6 +255,10 @@ public class projectMenu {
             Label noActivitiesLabel = new Label("No activities for this project.");
             projectInfoStatusContainer.getChildren().add(noActivitiesLabel);
         }
+        // Clear activity selection when showing project info
+        activityContainer.getSelectionModel().clearSelection();
+
+
     }
     private void setupEditableName(Label nameLabel, Project project) {
         nameLabel.setOnMouseClicked(event -> {
@@ -188,16 +357,72 @@ public class projectMenu {
             String projectName = selectedProject.toString();
             try {
                 Map<String, Object> projectReport = TimeManager.getProjectReport(selectedProject.getProjectID());
+                List<Activity> activities = selectedProject.getActivities();
 
-                // Build the report text for the file only (not for display)
+                // Build the report text with better formatting
                 StringBuilder reportText = new StringBuilder();
-                for (Map.Entry<String, Object> entry : projectReport.entrySet()) {
-                    String key = entry.getKey();
-                    String value = (entry.getValue() != null) ? entry.getValue().toString() : "null";
-                    reportText.append(key).append(": ").append(value).append("\n");
+
+                // Add a title and timestamp
+                reportText.append("===================================\n");
+                reportText.append("          PROJECT REPORT           \n");
+                reportText.append("===================================\n\n");
+                reportText.append("Generated on: ").append(java.time.LocalDateTime.now().toString()).append("\n\n");
+
+                // Project Details Section
+                reportText.append("PROJECT DETAILS\n");
+                reportText.append("-----------------------------------\n");
+                reportText.append("Project Name: ").append(projectReport.get("Project Name")).append("\n");
+                reportText.append("Project ID: ").append(projectReport.get("Project ID")).append("\n");
+                reportText.append("Time Period: ").append(projectReport.get("Project interval")).append("\n\n");
+
+                // Activity Details Section
+                reportText.append("ACTIVITY DETAILS\n");
+                reportText.append("-----------------------------------\n");
+
+                if (activities != null && !activities.isEmpty()) {
+                    for (int i = 0; i < activities.size(); i++) {
+                        Activity activity = activities.get(i);
+                        reportText.append(i+1).append(". ").append(activity.getActivityName()).append("\n");
+                        reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
+                        reportText.append("   Assigned Work Hours: ").append(activity.getAssignedWorkHours()).append(" hours\n");
+
+                        // Get all assigned users
+                        ArrayList<User> assignedUsers = activity.getAssignedUsers();
+                        if (assignedUsers != null && !assignedUsers.isEmpty()) {
+                            reportText.append("   Assigned Users: ");
+                            for (int j = 0; j < assignedUsers.size(); j++) {
+                                reportText.append(assignedUsers.get(j));
+                                if (j < assignedUsers.size() - 1) {
+                                    reportText.append(", ");
+                                }
+                            }
+                            reportText.append("\n");
+                        } else {
+                            reportText.append("   Assigned Users: None\n");
+                        }
+
+                        reportText.append("\n");
+                    }
+                } else {
+                    reportText.append("No activities defined for this project.\n\n");
                 }
 
-                // Save to downloads folder instead of project directory
+                // Additional Project Info
+                reportText.append("ADDITIONAL INFORMATION\n");
+                reportText.append("-----------------------------------\n");
+
+                // Add other relevant information from the project report
+                for (Map.Entry<String, Object> entry : projectReport.entrySet()) {
+                    String key = entry.getKey();
+                    // Skip keys we've already included above
+                    if (!key.equals("Project Name") && !key.equals("Project ID") && !key.equals("Project interval")
+                            && !key.equals("Project Activities")) {
+                        String value = (entry.getValue() != null) ? entry.getValue().toString() : "Not available";
+                        reportText.append(key).append(": ").append(value).append("\n");
+                    }
+                }
+
+                // Save to downloads folder
                 String userHome = System.getProperty("user.home");
                 String downloadsPath = userHome + "/Downloads/";
                 String fileName = downloadsPath + projectName.replaceAll("\\s+", "_") + "_report.txt";
@@ -205,22 +430,24 @@ public class projectMenu {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
                     writer.write(reportText.toString());
 
-                    // Store the current project info text
-                    String currentInfo = projectInfoStatus.getText();
+                    // Show a confirmation dialog
+                    Alert confirmationAlert = new Alert(Alert.AlertType.INFORMATION);
+                    confirmationAlert.setTitle("Report Generated");
+                    confirmationAlert.setHeaderText(null);
+                    confirmationAlert.setContentText("Project report for \"" + projectName + "\" has been generated and saved to your Downloads folder.");
+                    confirmationAlert.showAndWait();
 
-                    // Show a brief confirmation message while preserving existing info
-                    projectInfoStatus.setText(currentInfo + "\n\n(Report saved to Downloads folder.)");
+                    // Also update the status label
+                    projectInfoStatus.setText("Project report generated successfully and saved to Downloads folder.");
 
-                    // Remove only the confirmation part after 3 seconds
+                    // Clear the status message after 3 seconds
                     new Thread(() -> {
                         try {
                             Thread.sleep(3000);
-                            javafx.application.Platform.runLater(() -> {
-                                // Check if our confirmation message is still there
+                            Platform.runLater(() -> {
                                 String text = projectInfoStatus.getText();
-                                if (text.endsWith("(Report saved to Downloads folder.)")) {
-                                    // Restore just the original project info without the confirmation
-                                    projectInfoStatus.setText(currentInfo);
+                                if (text.equals("Project report generated successfully and saved to Downloads folder.")) {
+                                    projectInfoStatus.setText("");
                                 }
                             });
                         } catch (InterruptedException e) {
@@ -229,46 +456,15 @@ public class projectMenu {
                     }).start();
 
                 } catch (IOException e) {
-                    // Store the current project info text
-                    String currentInfo = projectInfoStatus.getText();
-
-                    // Show error while preserving existing info
-                    projectInfoStatus.setText(currentInfo + "\n\n(Error saving report file to Downloads folder.)");
+                    showError("Error saving report file to Downloads folder: " + e.getMessage());
                     e.printStackTrace();
                 }
             } catch (Exception e) {
-                // Store the current project info text
-                String currentInfo = projectInfoStatus.getText();
-
-                // Show error while preserving existing info
-                projectInfoStatus.setText(currentInfo + "\n\n(Error generating project report.)");
+                showError("Error generating project report: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            // Preserve any existing text in projectInfoStatus
-            String currentInfo = projectInfoStatus.getText();
-            if (currentInfo == null || currentInfo.isEmpty() || currentInfo.equals("No project selected.")) {
-                projectInfoStatus.setText("Please select a project first.");
-            } else {
-                projectInfoStatus.setText(currentInfo + "\n\n(Please select a project first.)");
-            }
-
-            // Clear only the message after 3 seconds if needed
-            new Thread(() -> {
-                try {
-                    Thread.sleep(3000);
-                    javafx.application.Platform.runLater(() -> {
-                        String text = projectInfoStatus.getText();
-                        if (text.endsWith("(Please select a project first.)")) {
-                            projectInfoStatus.setText(text.replace("\n\n(Please select a project first.)", ""));
-                        } else if (text.equals("Please select a project first.")) {
-                            projectInfoStatus.setText("");
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }).start();
+            showError("Please select a project first before generating a report.");
         }
     }
 
@@ -414,4 +610,73 @@ public class projectMenu {
         dialog.showAndWait();
     }
 
+    public void assignEmployee(ActionEvent actionEvent) {
+        Project selectedProject = projectContainer.getValue();
+
+        if (selectedProject == null) {
+            showError("Please select a project first before assigning an employee.");
+            return;
+        }
+
+        List<Activity> activities = selectedProject.getActivities();
+
+        if (activities == null || activities.isEmpty()) {
+            showError("The selected project has no activities. Please add an activity first.");
+            return;
+        }
+
+        List<User> users = TimeManager.getUsers();
+
+        if (users == null || users.isEmpty()) {
+            showError("No users available to assign. Please add users to the system first.");
+            return;
+        }
+
+        Dialog<User> dialog = new Dialog<>();
+        dialog.setTitle("Assign Employee");
+        dialog.setHeaderText("Select an employee to assign to the first activity:");
+
+        ButtonType assignButtonType = new ButtonType("Assign", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(assignButtonType, ButtonType.CANCEL);
+
+        ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
+        userChoiceBox.getItems().addAll(users);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("Employee:"), 0, 0);
+        grid.add(userChoiceBox, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        final Button assignButton = (Button) dialog.getDialogPane().lookupButton(assignButtonType);
+        assignButton.addEventFilter(ActionEvent.ACTION, event -> {
+            User selectedUser = userChoiceBox.getValue();
+
+            if (selectedUser == null) {
+                showError("Please select an employee to assign.");
+                event.consume();
+                return;
+            }
+
+            try {
+                Activity firstActivity = activities.get(0);
+                firstActivity.assignUser(selectedUser.getUserInitials());
+
+                // Show confirmation
+                projectInfoStatus.setText("Employee " + selectedUser.getUserInitials() + " assigned to activity " +
+                        firstActivity.getActivityName() + " successfully.");
+
+                // Refresh view
+                showInformation(null);
+            } catch (Exception e) {
+                showError("Error assigning employee: " + e.getMessage());
+                event.consume();
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> null); // Handle assignment manually
+        dialog.showAndWait();
+    }
 }
