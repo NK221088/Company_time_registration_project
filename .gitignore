@@ -1,0 +1,9 @@
+# Ignore compiled class files
+*.class
+
+# IntelliJ project files
+.idea/
+*.iml
+
+# Maven target directory
+target/
