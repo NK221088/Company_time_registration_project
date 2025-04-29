@@ -13,6 +13,7 @@ public class TimeManager {
     public static User current_user;
     private static List<User> users = new ArrayList<>();
     private static List<Project> projects = new ArrayList<>();
+    private static List<Activity> independentActivities = new ArrayList<>();
     private static Map<String, Project> projectMap = new HashMap<>();
     private static List<TimeRegistration> time_registrations = new ArrayList<>();
     private static int projectCount = 0;
@@ -191,4 +192,15 @@ public class TimeManager {
     public static List<TimeRegistration> getTimeRegistrations() {
         return time_registrations;
     }
+
+    public void addIndependentActivity(Activity activity) throws Exception {
+        if (!independentActivities.stream().anyMatch(a -> a.getActivityName().equals(activity.getActivityName()))) {
+            independentActivities.add(activity);
+        } else {
+            throw new RuntimeException(
+                "An independent activity with name '" + activity.getActivityName() + "' already exists."
+            );
+        }
+    }
+    public List<Activity> getIndependentActivities() { return independentActivities; }
 }
