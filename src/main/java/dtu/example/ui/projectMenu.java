@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -137,7 +137,6 @@ public class projectMenu {
         });
     }
 
-    // Method to display activity information
     private void showActivityInformation(Activity activity) {
         if (activity == null) return;
 
@@ -145,12 +144,42 @@ public class projectMenu {
 
         Map<String, Object> activityInfo = activity.viewActivity();
 
-        // Display activity name
+        // Display activity name (no change)
         HBox nameBox = new HBox(5);
         Label nameTitleLabel = new Label("Activity name:");
         Label nameValueLabel = new Label((String) activityInfo.get("Name"));
         setupEditableActivityName(nameValueLabel, activity);
         nameBox.getChildren().addAll(nameTitleLabel, nameValueLabel);
+
+        // Display time interval - UPDATED
+        HBox timeIntervalBox = new HBox(5);
+        Label timeIntervalTitleLabel = new Label("Time interval:");
+
+        LocalDate startDate = (LocalDate) activityInfo.get("StartTime");
+        LocalDate endDate = (LocalDate) activityInfo.get("EndTime");
+
+        String startTime = (startDate != null)
+                ? "Week " + startDate.get(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear()) + ", " + startDate.getYear()
+                : "";
+
+        String endTime = (endDate != null)
+                ? "Week " + endDate.get(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear()) + ", " + endDate.getYear()
+                : "";
+
+        String intervalText;
+        if (!startTime.isEmpty() && !endTime.isEmpty()) {
+            intervalText = startTime + " to " + endTime;
+        } else if (!startTime.isEmpty()) {
+            intervalText = startTime + " onwards";
+        } else if (!endTime.isEmpty()) {
+            intervalText = "Until " + endTime;
+        } else {
+            intervalText = "Not defined";
+        }
+
+        Label timeIntervalValueLabel = new Label(intervalText);
+        setupEditableTimeInterval(timeIntervalValueLabel, activity);
+        timeIntervalBox.getChildren().addAll(timeIntervalTitleLabel, timeIntervalValueLabel);
 
         // Display expected work hours
         HBox expectedHoursBox = new HBox(5);
@@ -163,8 +192,7 @@ public class projectMenu {
         Label assignedHoursLabel = new Label("Registered work hours: " + activityInfo.get("WorkedHours"));
 
         // Add the basic info to the container
-        projectInfoStatusContainer.getChildren().addAll(nameBox, expectedHoursBox, assignedHoursLabel);
-
+        projectInfoStatusContainer.getChildren().addAll(nameBox, timeIntervalBox, expectedHoursBox, assignedHoursLabel);
         // Display assigned users
         @SuppressWarnings("unchecked")
         ArrayList<User> assignedUsers = (ArrayList<User>) activityInfo.get("Assigned employees");
@@ -1138,4 +1166,122 @@ public class projectMenu {
 
     public void unassignEmployee(ActionEvent actionEvent) {
     }
+
+    private void setupEditableTimeInterval(Label timeIntervalLabel, Activity activity) {
+        timeIntervalLabel.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                // Create a custom dialog for week selection
+                Dialog<Pair<LocalDate, LocalDate>> dialog = new Dialog<>();
+                dialog.setTitle("Set Activity Time Interval");
+                dialog.setHeaderText("Select start and end weeks for activity: " + activity.getActivityName());
+
+                // Set the button types
+                ButtonType confirmButtonType = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
+
+                // Create week selection UI
+                GridPane grid = new GridPane();
+                grid.setHgap(10);
+                grid.setVgap(10);
+                grid.setPadding(new Insets(20, 150, 10, 10));
+
+                // Create week spinners
+                ComboBox<String> startWeekCombo = createWeekComboBox();
+                ComboBox<Integer> startYearCombo = createYearComboBox();
+                ComboBox<String> endWeekCombo = createWeekComboBox();
+                ComboBox<Integer> endYearCombo = createYearComboBox();
+
+                // Set current values if available
+                setInitialWeekValues(activity.getActivityStartTime(), startWeekCombo, startYearCombo);
+                setInitialWeekValues(activity.getActivityEndTime(), endWeekCombo, endYearCombo);
+
+                // Add to grid
+                grid.add(new Label("Start Week:"), 0, 0);
+                grid.add(startWeekCombo, 1, 0);
+                grid.add(new Label("Start Year:"), 0, 1);
+                grid.add(startYearCombo, 1, 1);
+                grid.add(new Label("End Week:"), 0, 2);
+                grid.add(endWeekCombo, 1, 2);
+                grid.add(new Label("End Year:"), 0, 3);
+                grid.add(endYearCombo, 1, 3);
+
+                dialog.getDialogPane().setContent(grid);
+
+                // Convert the result to dates when confirmed
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == confirmButtonType) {
+                        LocalDate startDate = convertWeekToDate(startWeekCombo.getValue(), startYearCombo.getValue());
+                        LocalDate endDate = convertWeekToDate(endWeekCombo.getValue(), endYearCombo.getValue());
+                        return new Pair<>(startDate, endDate);
+                    }
+                    return null;
+                });
+
+                // Process the result
+                Optional<Pair<LocalDate, LocalDate>> result = dialog.showAndWait();
+                result.ifPresent(dates -> {
+                    if (dates.getKey() != null) {
+                        activity.setActivityStartTime(dates.getKey());
+                    }
+                    if (dates.getValue() != null) {
+                        activity.setActivityEndTime(dates.getValue());
+                    }
+                    showActivityInformation(activity);
+                });
+            }
+        });
+    }
+
+    // Helper methods for week selection
+    private ComboBox<String> createWeekComboBox() {
+        ComboBox<String> weekCombo = new ComboBox<>();
+        // Populate with weeks 1-53
+        for (int i = 1; i <= 53; i++) {
+            weekCombo.getItems().add("Week " + i);
+        }
+        // Add an empty option
+        weekCombo.getItems().add(0, "");
+        weekCombo.setPromptText("Select Week");
+        return weekCombo;
+    }
+
+    private ComboBox<Integer> createYearComboBox() {
+        ComboBox<Integer> yearCombo = new ComboBox<>();
+        // Populate with reasonable year range
+        int currentYear = LocalDate.now().getYear();
+        for (int i = currentYear - 5; i <= currentYear + 10; i++) {
+            yearCombo.getItems().add(i);
+        }
+        // Add an empty option
+        yearCombo.getItems().add(0, null);
+        yearCombo.setPromptText("Select Year");
+        return yearCombo;
+    }
+
+    private void setInitialWeekValues(LocalDate date, ComboBox<String> weekCombo, ComboBox<Integer> yearCombo) {
+        if (date != null) {
+            int week = date.get(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear());
+            int year = date.getYear();
+            weekCombo.setValue("Week " + week);
+            yearCombo.setValue(year);
+        } else {
+            weekCombo.setValue("");
+            yearCombo.setValue(null);
+        }
+    }
+
+    private LocalDate convertWeekToDate(String weekString, Integer year) {
+        if (weekString == null || weekString.isEmpty() || year == null) {
+            return null;
+        }
+
+        // Extract week number from "Week X" format
+        int week = Integer.parseInt(weekString.replace("Week ", ""));
+
+        // Convert week/year to a date (first day of the week)
+        return LocalDate.ofYearDay(year, 1)
+                .with(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear(), week)
+                .with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+    }
+
 }

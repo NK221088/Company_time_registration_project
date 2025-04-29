@@ -47,7 +47,15 @@ public class viewActivitySteps {
         Double test_hoursSpent = this.activity.getWorkedHours();
         assertEquals(Double.parseDouble(assignedWorkHours), test_hoursSpent);
     }
-
+//    @Then("the start date is shown")
+//    public void theStartDateIsShown() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//    @Then("the end date is shown")
+//    public void theEndDateIsShown() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
 //    @Then("the assigned users are shown")
 //    public void theAssignedUsersAreShown() {
 //        assertNotNull(this.projectVariables.get("Assigned employees"));

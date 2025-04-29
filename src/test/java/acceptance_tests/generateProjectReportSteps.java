@@ -34,6 +34,11 @@ public class generateProjectReportSteps {
         boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities") && this.reportVariables.containsKey("Expected hours") && this.reportVariables.containsKey("Worked hours");
         assertTrue(keysExist);
     }
+    @Then("the activities' time intervals")
+    public void theActivitiesTimeIntervals() {
+        boolean keysExist = this.reportVariables.containsKey("Activity intervals");
+        assertTrue(keysExist);
+    }
     @Then("the users assigned to activities in the project")
     public void theUsersAssignedToActivitiesInTheProject() {
         boolean keysExist = this.reportVariables.containsKey("Assigned employees");

@@ -1,5 +1,6 @@
 package dtu.time_manager.app;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.*;
@@ -10,6 +11,8 @@ public class Activity {
     private ArrayList<User> assignedUsers = new ArrayList<>();
     private ArrayList<User> workingUsers = new ArrayList<>();
     private double expectedWorkHours;
+    private LocalDate activityStartTime;
+    private LocalDate activityEndTime;
 
     public Activity(String ActivityName) {
         this.ActivityName = ActivityName;
@@ -38,6 +41,8 @@ public class Activity {
         info.put("Contributing employees", getWorkingUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
         info.put("WorkedHours", getWorkedHours());
+        info.put("StartTime", getActivityStartTime());
+        info.put("EndTime", getActivityEndTime());
 
         return info;
     }
@@ -70,6 +75,22 @@ public class Activity {
 
     public void setActivityName(String activityName) {
         this.ActivityName = activityName;
+    }
+
+    public LocalDate getActivityStartTime() {
+        return activityStartTime;
+    }
+
+    public void setActivityStartTime(LocalDate activityStartTime) {
+        this.activityStartTime = activityStartTime;
+    }
+
+    public LocalDate getActivityEndTime() {
+        return activityEndTime;
+    }
+
+    public void setActivityEndTime(LocalDate activityEndTime) {
+        this.activityEndTime = activityEndTime;
     }
 }
 

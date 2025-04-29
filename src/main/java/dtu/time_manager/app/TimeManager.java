@@ -195,7 +195,23 @@ public class TimeManager {
                         Function.identity(),        // key mapping function
                         Activity::getWorkingUsers   // value mapping function
                 ));
-        reportVariables.put("Contributing employees", contributingEmployees);
+        reportVariables.put("Contributing employees", assignedEmployees);
+        Map<Activity, String> activityIntervals = project.getActivities().stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        activity -> {
+                            String start = activity.getActivityStartTime() != null
+                                    ? activity.getActivityStartTime().toString()
+                                    : "";
+                            String end = activity.getActivityEndTime() != null
+                                    ? activity.getActivityEndTime().toString()
+                                    : "";
+                            return start + "-" + end;
+                        }
+                ));
+
+
+        reportVariables.put("Activity intervals", activityIntervals);
 
 
         return reportVariables;
