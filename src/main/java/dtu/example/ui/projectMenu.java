@@ -144,10 +144,10 @@ public class projectMenu {
 
         // Display assigned users
         @SuppressWarnings("unchecked")
-        ArrayList<User> assignedUsers = (ArrayList<User>) activityInfo.get("Assigned Users");
+        ArrayList<User> assignedUsers = (ArrayList<User>) activityInfo.get("Assigned employees");
 
         if (assignedUsers != null && !assignedUsers.isEmpty()) {
-            Label usersHeader = new Label("Assigned users:");
+            Label usersHeader = new Label("Assigned employees:");
             projectInfoStatusContainer.getChildren().add(usersHeader);
 
             // Create a VBox to contain all users
@@ -163,6 +163,27 @@ public class projectMenu {
             projectInfoStatusContainer.getChildren().add(usersContainer);
         } else {
             Label noUsersLabel = new Label("No users assigned to this activity.");
+            projectInfoStatusContainer.getChildren().add(noUsersLabel);
+        }
+        ArrayList<User> contributedUsers = (ArrayList<User>) activityInfo.get("Contributing employees");
+
+        if (contributedUsers != null && !contributedUsers.isEmpty()) {
+            Label usersHeader = new Label("Contributing employees:");
+            projectInfoStatusContainer.getChildren().add(usersHeader);
+
+            // Create a VBox to contain all users
+            VBox usersContainer = new VBox(5);
+            usersContainer.setPadding(new Insets(0, 0, 0, 15)); // Add some indentation
+
+            // Add each user to the container
+            for (User user : contributedUsers) {
+                Label userLabel = new Label("• " + user.getUserInitials());
+                usersContainer.getChildren().add(userLabel);
+            }
+
+            projectInfoStatusContainer.getChildren().add(usersContainer);
+        } else {
+            Label noUsersLabel = new Label("No one have worked on this activity.");
             projectInfoStatusContainer.getChildren().add(noUsersLabel);
         }
     }
@@ -587,13 +608,11 @@ public class projectMenu {
                     for (int i = 0; i < activities.size(); i++) {
                         Activity activity = activities.get(i);
                         reportText.append(i+1).append(". ").append(activity.getActivityName()).append("\n");
-                        reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
-                        reportText.append("   Assigned Work Hours: ").append(activity.getWorkedHours()).append(" hours\n");
 
                         // Get all assigned users
                         ArrayList<User> assignedUsers = activity.getAssignedUsers();
                         if (assignedUsers != null && !assignedUsers.isEmpty()) {
-                            reportText.append("   Assigned Users: ");
+                            reportText.append("   Assigned employees: ");
                             for (int j = 0; j < assignedUsers.size(); j++) {
                                 reportText.append(assignedUsers.get(j));
                                 if (j < assignedUsers.size() - 1) {
@@ -604,6 +623,20 @@ public class projectMenu {
                         } else {
                             reportText.append("   Assigned Users: None\n");
                         }
+                        // Get all contributing users
+                        ArrayList<User> contributedUsers = activity.getWorkingUsers();
+                        if (contributedUsers != null && !contributedUsers.isEmpty()) {
+                            reportText.append("   Contributing Users: ");
+                            for (int j = 0; j < contributedUsers.size(); j++) {
+                                reportText.append(contributedUsers.get(j));
+                                if (j < contributedUsers.size() - 1) {
+                                    reportText.append(", ");
+                                }
+                            }
+                            reportText.append("\n");
+                        } else {
+                            reportText.append("   Contributing employees: None\n");
+                        }
 
                         // Now show work hours after users
                         reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
@@ -613,22 +646,6 @@ public class projectMenu {
                     }
                 } else {
                     reportText.append("No activities defined for this project.\n\n");
-                }
-
-
-                // Additional Project Info
-                reportText.append("ADDITIONAL INFORMATION\n");
-                reportText.append("-----------------------------------\n");
-
-                // Add other relevant information from the project report
-                for (Map.Entry<String, Object> entry : projectReport.entrySet()) {
-                    String key = entry.getKey();
-                    // Skip keys we've already included above
-                    if (!key.equals("Project Name") && !key.equals("Project ID") && !key.equals("Project interval")
-                            && !key.equals("Project Activities")) {
-                        String value = (entry.getValue() != null) ? entry.getValue().toString() : "Not available";
-                        reportText.append(key).append(": ").append(value).append("\n");
-                    }
                 }
 
                 // Save to downloads folder
@@ -1092,4 +1109,9 @@ public class projectMenu {
     }
 
 
+    public void deleteActivity(ActionEvent actionEvent) {
+    }
+
+    public void unassignEmployee(ActionEvent actionEvent) {
+    }
 }

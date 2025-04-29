@@ -32,4 +32,18 @@ public class TimeRegistration {
     public LocalDate getRegisteredDate() {
         return registeredDate;
     }
+
+    public void setRegisteredUser(User registeredUser) {
+        this.registeredUser = registeredUser;
+    }
+    public void setRegisteredActivity(Activity registeredActivity) {
+        this.registeredActivity = registeredActivity;
+    }
+    public void setRegisteredHours(double registeredHours) {
+        this.registeredHours = registeredHours;
+    }
+    public void setRegisteredDate(LocalDate registeredDate) {
+        this.registeredDate = registeredDate;
+    }
+
 }

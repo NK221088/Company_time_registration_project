@@ -6,9 +6,10 @@ import io.cucumber.java.en.When;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class viewActivitySteps {
 
@@ -46,6 +47,16 @@ public class viewActivitySteps {
         Double test_hoursSpent = this.activity.getWorkedHours();
         assertEquals(Double.parseDouble(assignedWorkHours), test_hoursSpent);
     }
+
+//    @Then("the assigned users are shown")
+//    public void theAssignedUsersAreShown() {
+//        assertNotNull(this.projectVariables.get("Assigned employees"));
+//    }
+//
+//    @Then("the users who have worked on the project are shown")
+//    public void theUsersWhoHaveWorkedOnTheProjectAreShown() {
+//        assertNotNull(this.projectVariables.get("Contributing users"));
+//    }
 
     @Then("the initials of the developer or developers {string} working on the {string} is shown")
     public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String user, String activityName) {

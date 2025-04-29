@@ -121,6 +121,7 @@ public class TimeManager {
         User projectLead = project.getProjectLead();
 
 
+
         LocalDate startDate = project.getStartDate();
         LocalDate endDate = project.getEndDate();
         String projectInterval;
@@ -167,13 +168,33 @@ public class TimeManager {
             reportVariables.put("Project Lead", "");
         }
         List<Activity> activities = project.getActivities();
-        Map<Activity, Double> map = project.getActivities().stream()
+        Map<Activity, Double> workedHours = project.getActivities().stream()
         .collect(Collectors.toMap(
                 Function.identity(),        // key mapping function
                 Activity::getWorkedHours   // value mapping function
         ));
+        reportVariables.put("Worked hours", workedHours);
+
+        Map<Activity, Double> expectedHours = project.getActivities().stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),        // key mapping function
+                        Activity::getWorkedHours   // value mapping function
+                ));
+        reportVariables.put("Expected hours", expectedHours);
 
         reportVariables.put("Project Activities", activities); // List all the activities in the project
+        Map<Activity, List> assignedEmployees = project.getActivities().stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),        // key mapping function
+                        Activity::getAssignedUsers   // value mapping function
+                ));
+        reportVariables.put("Assigned employees", assignedEmployees);
+        Map<Activity, List> contributingEmployees = project.getActivities().stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),        // key mapping function
+                        Activity::getWorkingUsers   // value mapping function
+                ));
+        reportVariables.put("Contributing employees", contributingEmployees);
 
 
         return reportVariables;

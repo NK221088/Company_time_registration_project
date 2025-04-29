@@ -31,7 +31,17 @@ public class generateProjectReportSteps {
     }
     @Then("the project report is generated showing both the time spent for each activity in the project with project ID {string} and the total time spent on the project")
     public void theProjectReportIsGeneratedShowingBothTheTimeSpentForEachActivityInTheProjectWithProjectIDAndTheTotalTimeSpentOnTheProject(String projectID) {
-        boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities");
+        boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities") && this.reportVariables.containsKey("Expected hours") && this.reportVariables.containsKey("Worked hours");
+        assertTrue(keysExist);
+    }
+    @Then("the users assigned to activities in the project")
+    public void theUsersAssignedToActivitiesInTheProject() {
+        boolean keysExist = this.reportVariables.containsKey("Assigned employees");
+        assertTrue(keysExist);
+    }
+    @Then("the users who have worked on activities in the project")
+    public void theUsersWhoHaveWorkedOnActivitiesInTheProject() {
+        boolean keysExist = this.reportVariables.containsKey("Contributing employees");
         assertTrue(keysExist);
     }
 }

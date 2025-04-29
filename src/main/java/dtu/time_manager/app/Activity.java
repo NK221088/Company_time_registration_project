@@ -34,7 +34,8 @@ public class Activity {
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
         info.put("Name", getActivityName());
-        info.put("Assigned Users", getAssignedUsers());
+        info.put("Assigned employees", getAssignedUsers());
+        info.put("Contributing employees", getWorkingUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
         info.put("WorkedHours", getWorkedHours());
 
