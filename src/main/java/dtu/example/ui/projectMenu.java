@@ -221,12 +221,16 @@ public class projectMenu {
         // Display project ID (non-editable)
         Label idLabel = new Label("Project ID: " + projectInfo.get("Project ID"));
 
+        // Display project ID (non-editable)
+        Label projectLeadLabel = new Label("Project lead: " + projectInfo.get("Project Lead"));
+        setupEditableProjectLead(projectLeadLabel, selectedProject);
+
         // Display interval (editable)
         Label intervalLabel = new Label("Project interval: " + projectInfo.get("Project interval"));
         setupEditableInterval(intervalLabel, selectedProject);
 
         // Add the basic info to the container
-        projectInfoStatusContainer.getChildren().addAll(nameLabel, idLabel, intervalLabel);
+        projectInfoStatusContainer.getChildren().addAll(nameLabel, idLabel, projectLeadLabel, intervalLabel);
 
         // Display activities (non-editable list)
         @SuppressWarnings("unchecked")
@@ -274,6 +278,83 @@ public class projectMenu {
                 int index = projectInfoStatusContainer.getChildren().indexOf(nameLabel);
                 projectInfoStatusContainer.getChildren().set(index, textField);
                 textField.requestFocus();
+            }
+        });
+    }
+    private void setupEditableProjectLead(Label projectLeadLabel, Project project) {
+        projectLeadLabel.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                // Get all available users
+                List<User> users = TimeManager.getUsers();
+                if (users == null || users.isEmpty()) {
+                    showError("No users available to assign. Please add users to the system first.");
+                    return;
+                }
+
+                // Create a popup dialog with a choice box
+                Dialog<User> dialog = new Dialog<>();
+                dialog.setTitle("Assign Project Lead");
+                dialog.setHeaderText("Select a user to assign as project lead:");
+
+                // Add buttons
+                ButtonType assignButtonType = new ButtonType("Assign", ButtonBar.ButtonData.OK_DONE);
+                ButtonType clearButtonType = new ButtonType("Clear Lead", ButtonBar.ButtonData.LEFT);
+                dialog.getDialogPane().getButtonTypes().addAll(assignButtonType, clearButtonType, ButtonType.CANCEL);
+
+                // Create and configure the choice box
+                ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
+                userChoiceBox.getItems().addAll(users);
+
+                // Set the current project lead as selected if it exists
+                if (project.getProjectLead() != null) {
+                    for (User user : users) {
+                        if (user.getUserInitials().equals(project.getProjectLead().getUserInitials())) {
+                            userChoiceBox.setValue(user);
+                            break;
+                        }
+                    }
+                }
+
+                // Create the dialog content
+                GridPane grid = new GridPane();
+                grid.setHgap(10);
+                grid.setVgap(10);
+                grid.add(new Label("Project Lead:"), 0, 0);
+                grid.add(userChoiceBox, 1, 0);
+                dialog.getDialogPane().setContent(grid);
+
+                // Handle the assign button
+                final Button assignButton = (Button) dialog.getDialogPane().lookupButton(assignButtonType);
+                assignButton.addEventFilter(ActionEvent.ACTION, e -> {
+                    User selectedUser = userChoiceBox.getValue();
+                    if (selectedUser == null) {
+                        showError("Please select a user to assign as project lead.");
+                        e.consume();
+                        return;
+                    }
+
+                    try {
+                        project.assignProjectLead(selectedUser);
+                        showInformation(null); // Refresh view
+                    } catch (Exception ex) {
+                        showError("Error assigning project lead: " + ex.getMessage());
+                        e.consume();
+                    }
+                });
+
+                // Handle the clear button
+                final Button clearButton = (Button) dialog.getDialogPane().lookupButton(clearButtonType);
+                clearButton.addEventFilter(ActionEvent.ACTION, e -> {
+                    project.assignProjectLead(null);
+                    showInformation(null); // Refresh view
+                    dialog.close();
+                });
+
+                // Set result converter (not really using the return value)
+                dialog.setResultConverter(dialogButton -> null);
+
+                // Show the dialog
+                dialog.showAndWait();
             }
         });
     }
@@ -370,6 +451,12 @@ public class projectMenu {
                 reportText.append("-----------------------------------\n");
                 reportText.append("Project Name: ").append(projectReport.get("Project Name")).append("\n");
                 reportText.append("Project ID: ").append(projectReport.get("Project ID")).append("\n");
+                String projectLead = projectReport.get("Project Lead").toString();
+                if (projectLead == ""){
+                    reportText.append("Project Lead: ").append("No one assigned yet").append("\n");
+                } else {
+                    reportText.append("Project Lead: ").append(projectLead).append("\n");
+                }
                 reportText.append("Time Period: ").append(projectReport.get("Project interval")).append("\n\n");
 
                 // Activity Details Section

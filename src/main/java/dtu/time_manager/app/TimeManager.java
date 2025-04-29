@@ -119,7 +119,6 @@ public class TimeManager {
         String projectName = project.getProjectName();
         List<Activity> activities = project.getActivities();
         User projectLead = project.getProjectLead();
-        //String projectLeadInitials = projectLead.getUserInitials();
 
 
         LocalDate startDate = project.getStartDate();
@@ -134,7 +133,11 @@ public class TimeManager {
 
         projectVariables.put("Project name", projectName);
         projectVariables.put("Project ID", projectID);
-        //projectVariables.put("Project Lead", projectLeadInitials);
+        if (projectLead != null) {
+            projectVariables.put("Project Lead", projectLead);
+        } else {
+            projectVariables.put("Project Lead", "");
+        }
         projectVariables.put("Project interval", projectInterval);
         projectVariables.put("Project activities", activities);
 
@@ -149,6 +152,7 @@ public class TimeManager {
         LocalDate startDate = project.getStartDate();
         LocalDate endDate = project.getEndDate();
         String projectInterval;
+        User projectLead = project.getProjectLead();
 
         if (startDate != null) {
             projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
@@ -157,7 +161,11 @@ public class TimeManager {
         }
         reportVariables.put("Project interval", projectInterval);
         reportVariables.put("Project ID", projectID);
-        //reportVariables.put("Project Lead", project.getProjectLead().getUserInitials());// Insert the project ID in the report
+        if (projectLead != null) {
+            reportVariables.put("Project Lead", projectLead);
+        } else {
+            reportVariables.put("Project Lead", "");
+        }
         List<Activity> activities = project.getActivities();
         Map<Activity, Double> map = project.getActivities().stream()
         .collect(Collectors.toMap(
