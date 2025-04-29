@@ -160,8 +160,6 @@ public class TimeOverview implements Initializable {
 
         // Initialize the views
         refreshViews();
-
-        System.out.println("TimeOverview initialized");
     }
 
     /**
@@ -340,7 +338,6 @@ public class TimeOverview implements Initializable {
      * but kept for compatibility in case other code calls it
      */
     public void setTimeManager(TimeManager timeManager) {
-        System.out.println("setTimeManager called (not needed for static TimeManager)");
         // We don't need to store the reference anymore
         // Just refresh the views
         setupUserInfo();
@@ -360,7 +357,6 @@ public class TimeOverview implements Initializable {
         User currentUser = TimeManager.getCurrentUser();
         if (currentUser != null) {
             userLabel.setText("Current User: " + currentUser.getUserInitials());
-            System.out.println("Set user label to: " + userLabel.getText());
         } else {
             System.err.println("Current user is null in TimeManager!");
         }

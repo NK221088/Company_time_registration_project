@@ -35,6 +35,7 @@ public class projectMenu {
 
     private Project selectedProject;
     private Activity selectedActivity;
+    private Boolean hasSelectedIndependent = false;
 
     @FXML
     private void initialize() {
@@ -75,13 +76,13 @@ public class projectMenu {
     }
 
     private Set<String> expandedPaths;
+
     private void loadProjectTree() {
         if (projectTreeView.getTreeItem(0) != null) {
             expandedPaths = getExpandedPaths(projectTreeView.getRoot());
         }
-
-        TreeItem<Object> rootItem = new TreeItem<>("Projects");
-        rootItem.setExpanded(true);
+        TreeItem<Object> projectsItem = new TreeItem<>("Projects");
+        projectsItem.setExpanded(true);
 
         for (Project project : TimeManager.getProjects()) {
             TreeItem<Object> projectItem = new TreeItem<>(project);
@@ -90,9 +91,22 @@ public class projectMenu {
                 TreeItem<Object> activityItem = new TreeItem<>(activity);
                 projectItem.getChildren().add(activityItem);
             }
-            rootItem.getChildren().add(projectItem);
+            projectsItem.getChildren().add(projectItem);
         }
-        projectTreeView.setRoot(rootItem);
+
+        TreeItem<Object> independentActivitiesItem = new TreeItem<>("Independent Activities");
+        independentActivitiesItem.setExpanded(true);
+
+        for (Activity activity : TimeManager.getIndependentActivities()) {
+            TreeItem<Object> activityItem = new TreeItem<>(activity);
+            independentActivitiesItem.getChildren().add(activityItem);
+        }
+
+        TreeItem<Object> invisibleRoot = new TreeItem<>();
+        invisibleRoot.setExpanded(true);
+        invisibleRoot.getChildren().addAll(projectsItem, independentActivitiesItem);
+        projectTreeView.setRoot(invisibleRoot);
+        projectTreeView.setShowRoot(false);
 
         if (expandedPaths != null) {
             restoreExpandedPaths(projectTreeView.getRoot(), expandedPaths);
@@ -106,10 +120,17 @@ public class projectMenu {
                     selectedProject = (Project) newSelection.getValue();
                     showInformation(null);
                 } else if (newSelection.getValue() instanceof Activity) {
-                    selectedProject = (Project) newSelection.getParent().getValue();
-                    selectedActivity = (Activity) newSelection.getValue();
+                    if (newSelection.getParent().getValue() instanceof String) {
+                        selectedProject = null;
+                        selectedActivity = (Activity) newSelection.getValue();
+                    } else {
+                        selectedProject = (Project) newSelection.getParent().getValue();
+                        selectedActivity = (Activity) newSelection.getValue();
+                    }
                     showActivityInformation(selectedActivity);
                 }
+
+                hasSelectedIndependent = newSelection.getValue() == "Independent Activities";
             }
         });
     }
@@ -785,8 +806,8 @@ public class projectMenu {
 
 
     public void addActivity(ActionEvent actionEvent) {
-        if (selectedProject == null) {
-            showError("Please select a project first before adding an activity.");
+        if (selectedProject == null || !hasSelectedIndependent) {
+            showError("Please select a project or the independent activities first before adding an activity.");
             return;
         }
 
@@ -822,7 +843,11 @@ public class projectMenu {
 
             try {
                 Activity activity = new Activity(activityName);
-                selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
+                if (hasSelectedIndependent) {
+                    TimeManager.addIndependentActivity(activity);
+                } else {
+                    selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
+                }
                 showInformation(null); // <- Refresh the project information view
                 loadProjectTree();
             } catch (Exception e) {
@@ -841,9 +866,7 @@ public class projectMenu {
             return;
         }
 
-        List<Activity> activities = selectedProject.getActivities();
-
-        if (activities == null || activities.isEmpty()) {
+        if (selectedActivity == null) {
             showError("The selected project has no activities. Please add an activity first.");
             return;
         }
@@ -884,12 +907,11 @@ public class projectMenu {
             }
 
             try {
-                Activity firstActivity = activities.get(0);
-                firstActivity.assignUser(selectedUser.getUserInitials());
+                selectedActivity.assignUser(selectedUser.getUserInitials());
 
                 // Show confirmation
                 projectInfoStatus.setText("Employee " + selectedUser.getUserInitials() + " assigned to activity " +
-                        firstActivity.getActivityName() + " successfully.");
+                        selectedActivity.getActivityName() + " successfully.");
 
                 // Refresh view
                 showActivityInformation(selectedActivity);

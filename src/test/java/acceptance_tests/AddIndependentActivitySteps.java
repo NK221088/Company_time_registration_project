@@ -21,7 +21,7 @@ public class AddIndependentActivitySteps {
     public void theUserAddsAnIndependentActivityNamed(String activityName) {
         try {
             timeManager.addIndependentActivity(new Activity(activityName));
-        } catch (Exception e) {}
+        } catch (Exception _) {}
     }
     @Then("the independent activity is added to the project")
     public void theIndependentActivityIsAddedToTheProject() {

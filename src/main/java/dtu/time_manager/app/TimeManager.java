@@ -214,7 +214,7 @@ public class TimeManager {
         return time_registrations;
     }
 
-    public void addIndependentActivity(Activity activity) throws Exception {
+    public static void addIndependentActivity(Activity activity) throws Exception {
         if (!independentActivities.stream().anyMatch(a -> a.getActivityName().equals(activity.getActivityName()))) {
             independentActivities.add(activity);
         } else {
@@ -223,5 +223,5 @@ public class TimeManager {
             );
         }
     }
-    public List<Activity> getIndependentActivities() { return independentActivities; }
+    public static List<Activity> getIndependentActivities() { return independentActivities; }
 }
