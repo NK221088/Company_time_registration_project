@@ -15,7 +15,7 @@ public class main {
     }
 
     public void manageTime(ActionEvent actionEvent) throws IOException {
-        App.setRoot("timeMenu");
+        App.setRoot("TimeOverview");
     }
 
     public void logout(ActionEvent actionEvent) throws IOException {

@@ -426,17 +426,71 @@ public class projectMenu {
                 DatePicker startPicker = new DatePicker(project.getStartDate());
                 DatePicker endPicker = new DatePicker(project.getEndDate());
 
+                // Make date pickers not directly editable but clickable
                 startPicker.setEditable(false);
                 endPicker.setEditable(false);
 
+                // But ensure they appear active
+                startPicker.getEditor().setOpacity(1);
+                endPicker.getEditor().setOpacity(1);
+
                 startPicker.setPromptText("Start Date");
                 endPicker.setPromptText("End Date");
+
+                // Set cell factories to prevent invalid date selections
+                startPicker.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        // Disable dates after end date if end date is set
+                        if (endPicker.getValue() != null && date.isAfter(endPicker.getValue())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;");
+                        }
+                    }
+                });
+
+                endPicker.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        // Disable dates before today
+                        if (date.isBefore(LocalDate.now())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;");
+                        }
+                        // Also disable dates before start date if start date is set
+                        if (startPicker.getValue() != null && date.isBefore(startPicker.getValue())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;");
+                        }
+                    }
+                });
 
                 HBox datePickers = new HBox(10, startPicker, endPicker);
 
                 startPicker.setOnAction(e -> {
                     if (startPicker.getValue() != null) {
                         project.setProjectStartDate(startPicker.getValue());
+
+                        // Reset end picker's cell factory to reflect new start date constraint
+                        endPicker.setDayCellFactory(picker -> new DateCell() {
+                            @Override
+                            public void updateItem(LocalDate date, boolean empty) {
+                                super.updateItem(date, empty);
+                                // Disable dates before today
+                                if (date.isBefore(LocalDate.now())) {
+                                    setDisable(true);
+                                    setStyle("-fx-background-color: #ffc0cb;");
+                                }
+                                // Also disable dates before new start date
+                                if (date.isBefore(startPicker.getValue())) {
+                                    setDisable(true);
+                                    setStyle("-fx-background-color: #ffc0cb;");
+                                }
+                            }
+                        });
+
                         showInformation(null);
                     }
                 });
@@ -444,6 +498,20 @@ public class projectMenu {
                 endPicker.setOnAction(e -> {
                     if (endPicker.getValue() != null) {
                         project.setProjectEndDate(endPicker.getValue());
+
+                        // Reset start picker's cell factory to reflect new end date constraint
+                        startPicker.setDayCellFactory(picker -> new DateCell() {
+                            @Override
+                            public void updateItem(LocalDate date, boolean empty) {
+                                super.updateItem(date, empty);
+                                // Disable dates after end date
+                                if (date.isAfter(endPicker.getValue())) {
+                                    setDisable(true);
+                                    setStyle("-fx-background-color: #ffc0cb;");
+                                }
+                            }
+                        });
+
                         showInformation(null);
                     }
                 });
@@ -452,16 +520,6 @@ public class projectMenu {
                 projectInfoStatusContainer.getChildren().set(index, datePickers);
             }
         });
-    }
-
-    // Helper method to check if array contains a string (case-insensitive)
-    private boolean containsIgnoreCase(String[] array, String value) {
-        for (String item : array) {
-            if (item.equalsIgnoreCase(value)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 

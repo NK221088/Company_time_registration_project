@@ -187,4 +187,8 @@ public class TimeManager {
         time_registrations.add(timeRegistration);
 //        this function needs to
     }
+
+    public static List<TimeRegistration> getTimeRegistrations() {
+        return time_registrations;
+    }
 }
