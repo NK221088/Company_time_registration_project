@@ -129,7 +129,6 @@ public class projectMenu {
                     }
                     showActivityInformation(selectedActivity);
                 }
-
                 hasSelectedIndependent = newSelection.getValue() == "Independent Activities";
             }
         });
