@@ -15,13 +15,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class projectMenu {
+//    @FXML
+//    private ChoiceBox<Project> projectContainer;
+
     @FXML
-    private ChoiceBox<Project> projectContainer;
+    private TreeView<Object> projectTreeView;
 
     @FXML
     private ChoiceBox<Activity> activityContainer;
@@ -32,21 +33,83 @@ public class projectMenu {
     @FXML
     private Label projectInfoStatus;
 
+    private Project selectedProject;
+    private Activity selectedActivity;
 
     @FXML
     private void initialize() {
-        projectContainer.getItems().clear();
-        TimeManager.getProjects().forEach(project -> projectContainer.getItems().add(project));
+        loadProjectTree();
+        setSelectionListener();
+    }
 
-        // Add listener for project selection to update activity dropdown
-        projectContainer.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            updateActivityChoices(newVal);
-        });
+    private Set<String> getExpandedPaths(TreeItem<Object> root) {
+        Set<String> expandedPaths = new HashSet<>();
+        collectExpandedPaths(root, "", expandedPaths);
+        return expandedPaths;
+    }
 
-        // Add listener for activity selection to show activity info
-        activityContainer.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                showActivityInformation(newVal);
+    private void collectExpandedPaths(TreeItem<Object> node, String path, Set<String> paths) {
+        if (node.isExpanded()) {
+            paths.add(path);
+        }
+        for (TreeItem<Object> child : node.getChildren()) {
+            Object value = child.getValue();
+            String childName = (value != null) ? value.toString() : "null";
+            collectExpandedPaths(child, path + "/" + childName, paths);
+        }
+    }
+
+    private void restoreExpandedPaths(TreeItem<Object> root, Set<String> expandedPaths) {
+        expandPaths(root, "", expandedPaths);
+    }
+
+    private void expandPaths(TreeItem<Object> node, String path, Set<String> expandedPaths) {
+        if (expandedPaths.contains(path)) {
+            node.setExpanded(true);
+        }
+        for (TreeItem<Object> child : node.getChildren()) {
+            Object value = child.getValue();
+            String childName = (value != null) ? value.toString() : "null";
+            expandPaths(child, path + "/" + childName, expandedPaths);
+        }
+    }
+
+    private Set<String> expandedPaths;
+    private void loadProjectTree() {
+        if (projectTreeView.getTreeItem(0) != null) {
+            expandedPaths = getExpandedPaths(projectTreeView.getRoot());
+        }
+
+        TreeItem<Object> rootItem = new TreeItem<>("Projects");
+        rootItem.setExpanded(true);
+
+        for (Project project : TimeManager.getProjects()) {
+            TreeItem<Object> projectItem = new TreeItem<>(project);
+
+            for (Activity activity : project.getActivities()) {
+                TreeItem<Object> activityItem = new TreeItem<>(activity);
+                projectItem.getChildren().add(activityItem);
+            }
+            rootItem.getChildren().add(projectItem);
+        }
+        projectTreeView.setRoot(rootItem);
+
+        if (expandedPaths != null) {
+            restoreExpandedPaths(projectTreeView.getRoot(), expandedPaths);
+        }
+    }
+
+    private void setSelectionListener() {
+        projectTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                if (newSelection.getValue() instanceof Project)  {
+                    selectedProject = (Project) newSelection.getValue();
+                    showInformation(null);
+                } else if (newSelection.getValue() instanceof Activity) {
+                    selectedProject = (Project) newSelection.getParent().getValue();
+                    selectedActivity = (Activity) newSelection.getValue();
+                    showActivityInformation(selectedActivity);
+                }
             }
         });
     }
@@ -74,11 +137,10 @@ public class projectMenu {
         expectedHoursBox.getChildren().addAll(expectedHoursTitleLabel, expectedHoursValueLabel);
 
         // Display assigned work hours
-        Label assignedHoursLabel = new Label("Assigned work hours: " + activityInfo.get("AssignedWorkHours"));
+        Label assignedHoursLabel = new Label("Registered work hours: " + activityInfo.get("WorkedHours"));
 
         // Add the basic info to the container
         projectInfoStatusContainer.getChildren().addAll(nameBox, expectedHoursBox, assignedHoursLabel);
-
 
         // Display assigned users
         @SuppressWarnings("unchecked")
@@ -176,6 +238,7 @@ public class projectMenu {
             try {
                 activity.assignUser(selectedUser.getUserInitials());
                 showActivityInformation(activity);
+                loadProjectTree();
             } catch (RuntimeException e) {
                 showError(e.getMessage());
                 event.consume();
@@ -205,7 +268,6 @@ public class projectMenu {
     public void showInformation(ActionEvent actionEvent) {
         projectInfoStatusContainer.getChildren().clear();
 
-        Project selectedProject = projectContainer.getValue();
         if (selectedProject == null) {
             projectInfoStatusContainer.getChildren().add(new Label("No project selected."));
             return;
@@ -233,33 +295,33 @@ public class projectMenu {
         projectInfoStatusContainer.getChildren().addAll(nameLabel, idLabel, projectLeadLabel, intervalLabel);
 
         // Display activities (non-editable list)
-        @SuppressWarnings("unchecked")
-        List<Activity> activities = (List<Activity>) projectInfo.get("Project activities");
+//        @SuppressWarnings("unchecked")
+//        List<Activity> activities = (List<Activity>) projectInfo.get("Project activities");
+//
+//        if (activities != null && !activities.isEmpty()) {
+//            Label activitiesHeader = new Label("Project activities:");
+//            projectInfoStatusContainer.getChildren().add(activitiesHeader);
+//
+//            // Create a VBox to contain all activities
+//            VBox activitiesContainer = new VBox(5);
+//            activitiesContainer.setPadding(new Insets(0, 0, 0, 15)); // Add some indentation
+//
+//            // Add each activity to the container
+//            for (Activity activity : activities) {
+//                Label activityLabel = new Label("• " + activity.getActivityName());
+//                activitiesContainer.getChildren().add(activityLabel);
+//            }
 
-        if (activities != null && !activities.isEmpty()) {
-            Label activitiesHeader = new Label("Project activities:");
-            projectInfoStatusContainer.getChildren().add(activitiesHeader);
-
-            // Create a VBox to contain all activities
-            VBox activitiesContainer = new VBox(5);
-            activitiesContainer.setPadding(new Insets(0, 0, 0, 15)); // Add some indentation
-
-            // Add each activity to the container
-            for (Activity activity : activities) {
-                Label activityLabel = new Label("• " + activity.getActivityName());
-                activitiesContainer.getChildren().add(activityLabel);
-            }
-
-            projectInfoStatusContainer.getChildren().add(activitiesContainer);
-        } else {
-            Label noActivitiesLabel = new Label("No activities for this project.");
-            projectInfoStatusContainer.getChildren().add(noActivitiesLabel);
-        }
+//            projectInfoStatusContainer.getChildren().add(activitiesContainer);
+//        } else {
+//            Label noActivitiesLabel = new Label("No activities for this project.");
+//            projectInfoStatusContainer.getChildren().add(noActivitiesLabel);
         // Clear activity selection when showing project info
-        activityContainer.getSelectionModel().clearSelection();
+//        activityContainer.getSelectionModel().clearSelection();
 
-
+//        loadProjectTree();
     }
+
     private void setupEditableName(Label nameLabel, Project project) {
         nameLabel.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -429,7 +491,7 @@ public class projectMenu {
 
 
     public void projectReport(ActionEvent actionEvent) {
-        Project selectedProject = projectContainer.getValue();
+        Project selectedProject = TimeManager.getProjects().get(0);
         if (selectedProject != null) {
             String projectName = selectedProject.toString();
             try {
@@ -468,7 +530,7 @@ public class projectMenu {
                         Activity activity = activities.get(i);
                         reportText.append(i+1).append(". ").append(activity.getActivityName()).append("\n");
                         reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
-                        reportText.append("   Assigned Work Hours: ").append(activity.getAssignedWorkHours()).append(" hours\n");
+                        reportText.append("   Assigned Work Hours: ").append(activity.getWorkedHours()).append(" hours\n");
 
                         // Get all assigned users
                         ArrayList<User> assignedUsers = activity.getAssignedUsers();
@@ -487,7 +549,7 @@ public class projectMenu {
 
                         // Now show work hours after users
                         reportText.append("   Expected Work Hours: ").append(activity.getExpectedWorkHours()).append(" hours\n");
-                        reportText.append("   Assigned Work Hours: ").append(activity.getAssignedWorkHours()).append(" hours\n");
+                        reportText.append("   Assigned Work Hours: ").append(activity.getWorkedHours()).append(" hours\n");
 
                         reportText.append("\n");
                     }
@@ -625,7 +687,7 @@ public class projectMenu {
                 }
 
                 TimeManager.addProject(project);
-                projectContainer.getItems().add(project);
+                loadProjectTree();
             } catch (Exception e) {
                 showError("Error adding project: " + e.getMessage());
                 event.consume();
@@ -648,8 +710,6 @@ public class projectMenu {
 
 
     public void addActivity(ActionEvent actionEvent) {
-        Project selectedProject = projectContainer.getValue();
-
         if (selectedProject == null) {
             showError("Please select a project first before adding an activity.");
             return;
@@ -689,6 +749,7 @@ public class projectMenu {
                 Activity activity = new Activity(activityName);
                 selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
                 showInformation(null); // <- Refresh the project information view
+                loadProjectTree();
             } catch (Exception e) {
                 showError("Error adding activity: " + e.getMessage());
                 event.consume();
@@ -700,8 +761,6 @@ public class projectMenu {
     }
 
     public void assignEmployee(ActionEvent actionEvent) {
-        Project selectedProject = projectContainer.getValue();
-
         if (selectedProject == null) {
             showError("Please select a project first before assigning an employee.");
             return;
@@ -758,7 +817,7 @@ public class projectMenu {
                         firstActivity.getActivityName() + " successfully.");
 
                 // Refresh view
-                showInformation(null);
+                showActivityInformation(selectedActivity);
             } catch (Exception e) {
                 showError("Error assigning employee: " + e.getMessage());
                 event.consume();
@@ -776,11 +835,13 @@ public class projectMenu {
                 textField.setOnAction(e -> {
                     activity.setActivityName(textField.getText());
                     showActivityInformation(activity); // Refresh view
+                    loadProjectTree();
                 });
                 textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
                     if (!isNowFocused) {
                         activity.setActivityName(textField.getText());
                         showActivityInformation(activity); // Refresh view
+                        loadProjectTree();
                     }
                 });
 
@@ -802,6 +863,7 @@ public class projectMenu {
                         double newHours = Double.parseDouble(textField.getText());
                         activity.setExpectedWorkHours(newHours);
                         showActivityInformation(activity); // Refresh view
+                        loadProjectTree();
                     } catch (NumberFormatException ex) {
                         showError("Please enter a valid number for expected hours.");
                     }
@@ -812,6 +874,7 @@ public class projectMenu {
                             double newHours = Double.parseDouble(textField.getText());
                             activity.setExpectedWorkHours(newHours);
                             showActivityInformation(activity); // Refresh view
+                            loadProjectTree();
                         } catch (NumberFormatException ex) {
                             showError("Please enter a valid number for expected hours.");
                         }
@@ -849,7 +912,6 @@ public class projectMenu {
     }
 
     public void addTimeRegistration(ActionEvent actionEvent) {
-        Activity selectedActivity = activityContainer.getValue();
         if (selectedActivity == null) {
             showError("Please select an activity first before registering time.");
             return;
@@ -943,6 +1005,7 @@ public class projectMenu {
                 successAlert.showAndWait();
 
                 showActivityInformation(selectedActivity);
+                loadProjectTree();
 
             } catch (IllegalArgumentException e) {
                 showError(e.getMessage());

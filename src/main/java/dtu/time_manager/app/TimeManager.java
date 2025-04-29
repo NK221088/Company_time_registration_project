@@ -170,7 +170,7 @@ public class TimeManager {
         Map<Activity, Double> map = project.getActivities().stream()
         .collect(Collectors.toMap(
                 Function.identity(),        // key mapping function
-                Activity::getAssignedWorkHours   // value mapping function
+                Activity::getWorkedHours   // value mapping function
         ));
 
         reportVariables.put("Project Activities", activities); // List all the activities in the project

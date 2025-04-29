@@ -43,7 +43,7 @@ public class viewActivitySteps {
     @Then("the number of work hours of {string} hours is spent on {string} is shown")
     public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) {
         this.test_time_registration = new TimeRegistration(this.test_user, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
-        Double test_hoursSpent = this.activity.getAssignedWorkHours();
+        Double test_hoursSpent = this.activity.getWorkedHours();
         assertEquals(Double.parseDouble(assignedWorkHours), test_hoursSpent);
     }
 
