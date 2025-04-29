@@ -8,6 +8,7 @@ public class Activity {
 
     private String ActivityName;
     private ArrayList<User> assignedUsers = new ArrayList<>();
+    private ArrayList<User> workingUsers = new ArrayList<>();
     private double expectedWorkHours;
 
     public Activity(String ActivityName) {
@@ -17,15 +18,14 @@ public class Activity {
     public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }
     public double getExpectedWorkHours() { return this.expectedWorkHours;}
 
-    public double getAssignedWorkHours() {
-        double assignedWorkHours = 0.0;
-        for (User user : getAssignedUsers()) {
+    public double getWorkedHours() {
+        double workedHours = 0.0;
+        for (User user : getWorkingUsers()) {
             for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {
-                assignedWorkHours += timeReg.getRegisteredHours();
+                workedHours += timeReg.getRegisteredHours();
             }
-            System.out.println(user);
         }
-        return assignedWorkHours;
+        return workedHours;
     }
 
     public ArrayList<User> getAssignedUsers() { return this.assignedUsers;}
@@ -36,7 +36,7 @@ public class Activity {
         info.put("Name", getActivityName());
         info.put("Assigned Users", getAssignedUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
-        info.put("AssignedWorkHours", getAssignedWorkHours());
+        info.put("WorkedHours", getWorkedHours());
 
         return info;
     }
@@ -54,6 +54,14 @@ public class Activity {
             throw new RuntimeException(userInitials + " is already assigned to the maximum number of 20 activities");
         }
     }
+
+    public void addWorkingUser(User user) {
+        if (!workingUsers.contains(user)) {
+            workingUsers.add(user);
+        }
+    }
+
+    public ArrayList<User> getWorkingUsers() { return this.workingUsers; }
 
     public String toString() {
         return ActivityName;

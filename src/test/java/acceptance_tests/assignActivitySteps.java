@@ -48,7 +48,6 @@ public class assignActivitySteps {
         try {
             activity.assignUser(userInitials2); // If no exception is thrown, the option is available
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             errorMessage.setErrorMessage(e.getMessage());
         }
     }

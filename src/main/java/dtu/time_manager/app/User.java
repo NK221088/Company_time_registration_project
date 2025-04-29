@@ -25,14 +25,16 @@ public class User {
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
-        List<TimeRegistration> activity_value = activity_registrations.get(timeRegistration.getRegisteredActivity());
+        Activity a = timeRegistration.getRegisteredActivity();
+        List<TimeRegistration> activity_value = activity_registrations.get(a);
         if (activity_value != null) {
             activity_value.add(timeRegistration);
         } else {
             ArrayList<TimeRegistration> timeReg = new ArrayList<>();
             timeReg.add(timeRegistration);
-            activity_registrations.put(timeRegistration.getRegisteredActivity(), timeReg);
+            activity_registrations.put(a, timeReg);
         }
+        a.addWorkingUser(timeRegistration.getRegisteredUser());
     }
 
     public Map<Activity, List<TimeRegistration>> getActivityRegistrations() {
