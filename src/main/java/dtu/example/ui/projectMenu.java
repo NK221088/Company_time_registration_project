@@ -989,12 +989,19 @@ public class projectMenu {
         userChoiceBox.getItems().addAll(TimeManager.getUsers());
         userChoiceBox.setValue(TimeManager.getCurrentUser()); // Default to current user
 
-        // 2. Hours choice box
+        // 2. Hours and minutes dropdowns
         ChoiceBox<Integer> hoursChoiceBox = new ChoiceBox<>();
-        for (int i = 1; i <= 24; i++) {  // or you can allow more if needed
+        for (int i = 0; i <= 23; i++) {
             hoursChoiceBox.getItems().add(i);
         }
-        hoursChoiceBox.setValue(1);
+        hoursChoiceBox.setValue(0); // default to 0
+
+        ChoiceBox<Integer> minutesChoiceBox = new ChoiceBox<>();
+        for (int i = 0; i < 60; i += 5) {
+            minutesChoiceBox.getItems().add(i);  // increments of 5 minutes
+        }
+        minutesChoiceBox.setValue(0); // default to 0
+
 
         // 3. Date picker (non-editable)
         DatePicker datePicker = new DatePicker();
@@ -1019,19 +1026,32 @@ public class projectMenu {
         grid.setVgap(10);
         grid.add(new Label("User:"), 0, 0);
         grid.add(userChoiceBox, 1, 0);
-        grid.add(new Label("Hours:"), 0, 1);
-        grid.add(hoursChoiceBox, 1, 1);
+        grid.add(new Label("Time:"), 0, 1);
+        HBox timeBox = new HBox(5, hoursChoiceBox, new Label("h"), minutesChoiceBox, new Label("m"));
+        grid.add(timeBox, 1, 1);
+
+
         grid.add(new Label("Date:"), 0, 2);
         grid.add(datePicker, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
 
         Platform.runLater(userChoiceBox::requestFocus);
-
         final Button registerButton = (Button) dialog.getDialogPane().lookupButton(registerButtonType);
         registerButton.addEventFilter(ActionEvent.ACTION, event -> {
             User selectedUser = userChoiceBox.getValue();
-            Integer hours = hoursChoiceBox.getValue();
+            int hours = hoursChoiceBox.getValue();
+            int minutes = minutesChoiceBox.getValue();
+            double totalHours;
+
+            if (15 <= minutes && minutes <= 44) {
+                totalHours = hours + 0.5;
+            } else if (minutes >= 45) {
+                totalHours = hours + 1;
+            } else {
+                totalHours = hours; // add this case if you want 0–14 minutes to round down
+            }
+
             LocalDate date = datePicker.getValue();
 
             if (selectedUser == null) {
@@ -1040,11 +1060,7 @@ public class projectMenu {
                 return;
             }
 
-            if (hours == null || hours <= 0) {
-                showError("Please select valid hours.");
-                event.consume();
-                return;
-            }
+
 
             if (date == null) {
                 showError("Please select a date.");
@@ -1053,7 +1069,7 @@ public class projectMenu {
             }
 
             try {
-                TimeRegistration timeRegistration = new TimeRegistration(selectedUser, selectedActivity, hours, date);
+                TimeRegistration timeRegistration = new TimeRegistration(selectedUser, selectedActivity, totalHours, date);
                 TimeManager.addTimeRegistration(timeRegistration);
 
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);

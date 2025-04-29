@@ -5,10 +5,10 @@ import java.time.LocalDate;
 public class TimeRegistration {
     private User registeredUser;
     private Activity registeredActivity;
-    private int registeredHours;
+    private double registeredHours;
     private LocalDate registeredDate;
 
-    public TimeRegistration(User registeredUser, Activity registeredActivity, int registeredHours, LocalDate registeredDate) {
+    public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) {
         this.registeredUser = registeredUser;
         this.registeredActivity = registeredActivity;
         this.registeredHours = registeredHours;
@@ -26,7 +26,7 @@ public class TimeRegistration {
     public Activity getRegisteredActivity() {
         return registeredActivity;
     }
-    public int getRegisteredHours() {
+    public double getRegisteredHours() {
         return registeredHours;
     }
     public LocalDate getRegisteredDate() {

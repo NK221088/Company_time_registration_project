@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.DatePicker?>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.example.ui.TimeOverview">
+    <children>
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+
+            <!-- Control Panel at the top -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10" />
+                </padding>
+                <Label fx:id="userLabel" text="Current User: " />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="Days to show:" />
+                <Spinner fx:id="daysSpinner" editable="true" prefWidth="80" />
+                <DatePicker fx:id="datePicker" />
+            <Button fx:id="updateButton" text="Update View" />
+            </HBox>
+
+            <!-- TabPane for different views -->
+            <TabPane fx:id="tabPane" VBox.vgrow="ALWAYS">
+                <tabs>
+                    <Tab fx:id="personalTab" closable="false" text="Personal Overview">
+                        <!-- Content will be added programmatically -->
+                    </Tab>
+                    <Tab fx:id="teamTab" closable="false" text="Team Overview">
+                        <!-- Content will be added programmatically -->
+                    </Tab>
+                </tabs>
+            </TabPane>
+
+            <!-- Status bar at the bottom -->
+            <HBox spacing="10" style="-fx-background-color: #f0f0f0;">
+                <padding>
+                    <Insets bottom="5" left="5" right="5" top="5" />
+                </padding>
+            <Button fx:id="returnToMainMenuButton" onAction="#backToProjectMenu" prefHeight="25.0" prefWidth="145.0" text="Return to main menu" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="© 2025 DTU" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
