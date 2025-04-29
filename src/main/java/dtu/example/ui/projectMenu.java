@@ -116,8 +116,11 @@ public class projectMenu {
     private void setSelectionListener() {
         projectTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                if (newSelection.getValue() instanceof Project)  {
+                if (newSelection.getValue() instanceof Project) {
                     selectedProject = (Project) newSelection.getValue();
+                    showInformation(null);
+                } else if (newSelection.getValue() instanceof String) {
+                    selectedProject = null;
                     showInformation(null);
                 } else if (newSelection.getValue() instanceof Activity) {
                     if (newSelection.getParent().getValue() instanceof String) {
@@ -805,8 +808,8 @@ public class projectMenu {
 
 
     public void addActivity(ActionEvent actionEvent) {
-        if (selectedProject == null || !hasSelectedIndependent) {
-            showError("Please select a project or the independent activities first before adding an activity.");
+        if (!(selectedProject != null || hasSelectedIndependent)) {
+            showError("Please select a project or independent activities first before adding an activity.");
             return;
         }
 
@@ -860,13 +863,13 @@ public class projectMenu {
     }
 
     public void assignEmployee(ActionEvent actionEvent) {
-        if (selectedProject == null) {
-            showError("Please select a project first before assigning an employee.");
-            return;
-        }
+//        if (!(selectedProject != null || hasSelectedIndependent)) {
+//            showError("Please select a project first before assigning an employee.");
+//            return;
+//        }
 
         if (selectedActivity == null) {
-            showError("The selected project has no activities. Please add an activity first.");
+            showError("Please select an activity first before assigning an employee.");
             return;
         }
 
