@@ -17,8 +17,6 @@ public class viewActivitySteps {
     private Project test_project;
     private Activity activity;
     private User workingUser;
-    private String workingUserInitials = "isak";
-    private String assignedUserInitials = "huba";
     private User assignedUser;
     private TimeRegistration test_time_registration;
     private double workedHours;
@@ -26,11 +24,8 @@ public class viewActivitySteps {
 
     @When("select an activity with name {string} from project ID {string}")
     public void selectAnActivityWithNameFromProjectID(String activityName, String projectID) {
-        this.workingUser = TimeManager.getUser(this.workingUserInitials);
-        this.assignedUser = TimeManager.getUser(this.assignedUserInitials);
         this.test_project = TimeManager.getProjectFromID(projectID);
         this.activity = new Activity(activityName);
-        this.activity.assignUser(this.assignedUserInitials);
         this.activity.addWorkingUser(this.workingUser);
 
 
