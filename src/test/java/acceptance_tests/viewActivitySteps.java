@@ -7,6 +7,7 @@ import io.cucumber.java.en.When;
 import java.util.ArrayList;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,37 +16,47 @@ public class viewActivitySteps {
 
     private Project test_project;
     private Activity activity;
-    private User test_user;
+    private User workingUser;
+    private String workingUserInitials = "isak";
+    private String assignedUserInitials = "huba";
+    private User assignedUser;
     private TimeRegistration test_time_registration;
+    private double workedHours;
 
 
     @When("select an activity with name {string} from project ID {string}")
     public void selectAnActivityWithNameFromProjectID(String activityName, String projectID) {
-        this.test_user = TimeManager.getUser("huba");
+        this.workingUser = TimeManager.getUser(this.workingUserInitials);
+        this.assignedUser = TimeManager.getUser(this.assignedUserInitials);
         this.test_project = TimeManager.getProjectFromID(projectID);
         this.activity = new Activity(activityName);
-        this.activity.assignUser("huba");
+        this.activity.assignUser(this.assignedUserInitials);
+        this.activity.addWorkingUser(this.workingUser);
+
+
+
     }
 
 
     @Then("the activity name of {string} is shown")
     public void theActivityNameOfIsShown(String activityName) {
-        String test_activityName = this.activity.getActivityName();
-        assertEquals(test_activityName, this.activity.getActivityName());
+        this.activity.setActivityName(activityName);
+        Map<String, Object> info = this.activity.viewActivity();
+        assertEquals(info.get("Name"), activityName);
     }
 
     @Then("the expected hours of {string} hours in {string} is shown")
     public void theExpectedHoursOfHoursInIsShown(String expectedHours, String activityName) {
         this.activity.setExpectedWorkHours(Double.parseDouble(expectedHours));
-        Double test_ExpectedHours = this.activity.getExpectedWorkHours();
-        assertEquals(Double.parseDouble(expectedHours), test_ExpectedHours);
+        Map<String, Object> info = this.activity.viewActivity();
+        assertEquals(Double.parseDouble(expectedHours), info.get("ExpectedWorkHours"));
     }
 
     @Then("the number of work hours of {string} hours is spent on {string} is shown")
     public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) {
-        this.test_time_registration = new TimeRegistration(this.test_user, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
-        Double test_hoursSpent = this.activity.getWorkedHours();
-        assertEquals(Double.parseDouble(assignedWorkHours), test_hoursSpent);
+        this.test_time_registration = new TimeRegistration(this.workingUser, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
+        Map <String, Object> info = this.activity.viewActivity();
+        assertEquals(Double.parseDouble(assignedWorkHours), info.get("WorkedHours"));
     }
 //    @Then("the start date is shown")
 //    public void theStartDateIsShown() {
@@ -68,8 +79,10 @@ public class viewActivitySteps {
 
     @Then("the initials of the developer or developers {string} working on the {string} is shown")
     public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String user, String activityName) {
-        ArrayList<User> test_users = this.activity.getAssignedUsers();
-        assertTrue(test_users.contains(TimeManager.getUser(user)));
+        this.activity.assignUser(user);
+        Map <String, Object> info = this.activity.viewActivity();
+        ArrayList<User> userList = (ArrayList<User>) info.get("Assigned employees");
+        assertTrue(userList.contains(TimeManager.getUser(user)));
     }
 
 }

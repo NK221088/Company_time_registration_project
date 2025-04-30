@@ -13,7 +13,6 @@ public class Project {
     private LocalDate endDate;
     private List<Activity> activities = new ArrayList<>();
     private User projectLead;
-
     public Project(String projectName) {
         this.projectName = projectName;
         projectID = formatID(TimeManager.incProjectCount());
