@@ -29,7 +29,12 @@
                 <Label text="Days to show:" />
                 <Spinner fx:id="daysSpinner" editable="true" prefWidth="80" />
                 <DatePicker fx:id="datePicker" />
-            <Button fx:id="updateButton" text="Update View" />
+                <Button fx:id="updateButton" text="Update View" />
+            </HBox>
+
+            <!-- New Button -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Button fx:id="addTimeRegistrationButton" text="Add Time Registration" onAction="#showAddTimeRegistrationDialog" />
             </HBox>
 
             <!-- TabPane for different views -->
