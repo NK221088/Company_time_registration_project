@@ -61,6 +61,16 @@ public class Activity {
         }
     }
 
+    public void unassignUser(String userInitials) {
+        User user = TimeManager.getUser(userInitials);
+
+        if (this.assignedUsers.contains(user)) {
+            this.assignedUsers.remove(user);
+        } else {
+            throw new RuntimeException("The user can not be unassigned from an activity they are not assigned to");
+        }
+    }
+
     public void addWorkingUser(User user) {
         if (!workingUsers.contains(user)) {
             workingUsers.add(user);
