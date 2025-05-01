@@ -36,7 +36,7 @@
          <Button fx:id="assignEmployeeButton" onAction="#assignEmployee" prefHeight="25.0" prefWidth="143.0" text="Assign employee" />
          <Button fx:id="unassignEmployeeButton" onAction="#unassignEmployee" prefHeight="25.0" prefWidth="143.0" text="Unassign employee" />
          <Button fx:id="addTimeRegistrationButton" onAction="#addTimeRegistration" prefHeight="25.0" prefWidth="143.0" text="Add time registration" />
-         <Button fx:id="deleteActivityButton" onAction="#deleteActivity" prefHeight="25.0" prefWidth="143.0" text="Delete activity" />
+         <Button fx:id="finalizeActivityButton" onAction="#finalizeActivity" prefHeight="25.0" prefWidth="143.0" text="Finalize activity" />
          <Button fx:id="generateProjectReportButton" onAction="#projectReport" text="Generate project Report" />
       </children>
    </VBox>

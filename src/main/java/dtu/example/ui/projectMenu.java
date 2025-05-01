@@ -33,6 +33,19 @@ public class projectMenu {
     @FXML
     private Label projectInfoStatus;
 
+    @FXML
+    private Button assignEmployeeButton;
+
+    @FXML
+    private Button unassignEmployeeButton;
+
+    @FXML
+    private Button addTimeRegistrationButton;
+
+    @FXML
+    private Button addActivityButton;
+
+
     private Project selectedProject;
     private Activity selectedActivity;
     private Boolean hasSelectedIndependent = false;
@@ -41,7 +54,36 @@ public class projectMenu {
     private void initialize() {
         loadProjectTree();
         setSelectionListener();
+
+        // Initial state of the finalize button
+        if (finalizeActivityButton != null) {
+            finalizeActivityButton.setDisable(true);
+        }
+
+        // Initial state of assign/unassign/time registration/add activity buttons
+        updateButtonStates();
+
+        // Set up custom cell factory for displaying finalized/completed status visually
+        projectTreeView.setCellFactory(tv -> new TreeCell<Object>() {
+            @Override
+            protected void updateItem(Object item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else if (item instanceof Activity) {
+                    Activity activity = (Activity) item;
+                    setText(activity.getActivityName() + (activity.getFinalized() ? " ✓" : ""));
+                } else if (item instanceof Project) {
+                    Project project = (Project) item;
+                    boolean allFinalized = project.getActivities().stream().allMatch(Activity::getFinalized);
+                    setText(project.getProjectName() + (allFinalized && !project.getActivities().isEmpty() ? " (Completed)" : ""));
+                } else {
+                    setText(item.toString());
+                }
+            }
+        });
     }
+
 
     private Set<String> getExpandedPaths(TreeItem<Object> root) {
         Set<String> expandedPaths = new HashSet<>();
@@ -78,19 +120,28 @@ public class projectMenu {
     private Set<String> expandedPaths;
 
     private void loadProjectTree() {
-        if (projectTreeView.getTreeItem(0) != null) {
+        if (projectTreeView.getRoot() != null) {
             expandedPaths = getExpandedPaths(projectTreeView.getRoot());
         }
+
         TreeItem<Object> projectsItem = new TreeItem<>("Projects");
         projectsItem.setExpanded(true);
 
         for (Project project : TimeManager.getProjects()) {
             TreeItem<Object> projectItem = new TreeItem<>(project);
 
+            boolean allActivitiesFinalized = true;
+
             for (Activity activity : project.getActivities()) {
                 TreeItem<Object> activityItem = new TreeItem<>(activity);
+
+                if (!activity.getFinalized()) {
+                    allActivitiesFinalized = false;
+                }
+
                 projectItem.getChildren().add(activityItem);
             }
+
             projectsItem.getChildren().add(projectItem);
         }
 
@@ -111,30 +162,63 @@ public class projectMenu {
         if (expandedPaths != null) {
             restoreExpandedPaths(projectTreeView.getRoot(), expandedPaths);
         }
+
+        // Update the finalize button if an activity is selected
+        updateFinalizeButtonText();
     }
+
 
     private void setSelectionListener() {
         projectTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                if (newSelection.getValue() instanceof Project) {
-                    selectedProject = (Project) newSelection.getValue();
+                Object selectedItem = newSelection.getValue();
+
+                if (selectedItem instanceof Project) {
+                    selectedProject = (Project) selectedItem;
+                    selectedActivity = null;
                     showInformation(null);
-                } else if (newSelection.getValue() instanceof String) {
-                    selectedProject = null;
-                    showInformation(null);
-                } else if (newSelection.getValue() instanceof Activity) {
-                    if (newSelection.getParent().getValue() instanceof String) {
-                        selectedProject = null;
-                        selectedActivity = (Activity) newSelection.getValue();
+                } else if (selectedItem instanceof Activity) {
+                    selectedActivity = (Activity) selectedItem;
+
+                    // Try to get the parent project if possible
+                    Object parentItem = newSelection.getParent().getValue();
+                    if (parentItem instanceof Project) {
+                        selectedProject = (Project) parentItem;
                     } else {
-                        selectedProject = (Project) newSelection.getParent().getValue();
-                        selectedActivity = (Activity) newSelection.getValue();
+                        selectedProject = null; // Independent activity
                     }
+
                     showActivityInformation(selectedActivity);
+                } else {
+                    // This covers nodes like "Projects", "Independent Activities"
+                    selectedProject = null;
+                    selectedActivity = null;
+                    showInformation(null);
                 }
-                hasSelectedIndependent = newSelection.getValue() == "Independent Activities";
+
+                hasSelectedIndependent = "Independent Activities".equals(selectedItem);
+
+                updateFinalizeButtonText();
+                updateButtonStates();  // ✅ Update button states based on selection
             }
         });
+    }
+
+    @FXML
+    private Button finalizeActivityButton;
+
+    private void updateFinalizeButtonText() {
+        if (selectedActivity != null && selectedProject != null) {
+            if (selectedActivity.getFinalized()) {
+                finalizeActivityButton.setText("Unfinalize activity");
+            } else {
+                finalizeActivityButton.setText("Finalize activity");
+            }
+            finalizeActivityButton.setDisable(false);
+        } else {
+            finalizeActivityButton.setText("Finalize activity");
+            finalizeActivityButton.setDisable(true);
+        }
     }
 
     private void showActivityInformation(Activity activity) {
@@ -144,14 +228,26 @@ public class projectMenu {
 
         Map<String, Object> activityInfo = activity.viewActivity();
 
-        // Display activity name (no change)
+        // Display activity name
         HBox nameBox = new HBox(5);
         Label nameTitleLabel = new Label("Activity name:");
         Label nameValueLabel = new Label((String) activityInfo.get("Name"));
         setupEditableActivityName(nameValueLabel, activity);
         nameBox.getChildren().addAll(nameTitleLabel, nameValueLabel);
 
-        // Display time interval - UPDATED
+        // Display finalization status - NEW
+        HBox finalizedBox = new HBox(5);
+        Label finalizedTitleLabel = new Label("Status:");
+        Label finalizedValueLabel = new Label(activity.getFinalized() ? "Finalized" : "Not Finalized");
+        // Set style based on status
+        if (activity.getFinalized()) {
+            finalizedValueLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+        } else {
+            finalizedValueLabel.setStyle("-fx-text-fill: #888888;");
+        }
+        finalizedBox.getChildren().addAll(finalizedTitleLabel, finalizedValueLabel);
+
+        // Display time interval
         HBox timeIntervalBox = new HBox(5);
         Label timeIntervalTitleLabel = new Label("Time interval:");
 
@@ -192,7 +288,8 @@ public class projectMenu {
         Label assignedHoursLabel = new Label("Registered work hours: " + activityInfo.get("WorkedHours"));
 
         // Add the basic info to the container
-        projectInfoStatusContainer.getChildren().addAll(nameBox, timeIntervalBox, expectedHoursBox, assignedHoursLabel);
+        projectInfoStatusContainer.getChildren().addAll(nameBox, finalizedBox, timeIntervalBox, expectedHoursBox, assignedHoursLabel);
+
         // Display assigned users
         @SuppressWarnings("unchecked")
         ArrayList<User> assignedUsers = (ArrayList<User>) activityInfo.get("Assigned employees");
@@ -216,6 +313,7 @@ public class projectMenu {
             Label noUsersLabel = new Label("No users assigned to this activity.");
             projectInfoStatusContainer.getChildren().add(noUsersLabel);
         }
+
         ArrayList<User> contributedUsers = (ArrayList<User>) activityInfo.get("Contributing employees");
 
         if (contributedUsers != null && !contributedUsers.isEmpty()) {
@@ -1169,9 +1267,7 @@ public class projectMenu {
     }
 
 
-    public void deleteActivity(ActionEvent actionEvent) {
-    }
-
+   
     public void unassignEmployee(ActionEvent actionEvent) {
         if (selectedActivity == null) {
             showError("Please select an activity first before assigning an employee.");
@@ -1349,5 +1445,122 @@ public class projectMenu {
                 .with(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear(), week)
                 .with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
     }
+
+    public void finalizeActivity(ActionEvent actionEvent) {
+        if (selectedActivity == null) {
+            showError("Please select an activity first before finalizing.");
+            return;
+        }
+
+        // Check if we have a selected project (independent activities cannot be finalized)
+        if (selectedProject == null) {
+            showError("Only activities that belong to a project can be finalized.");
+            return;
+        }
+
+        // Get current finalization status from the activity
+        boolean isCurrentlyFinalized = selectedActivity.getFinalized();
+
+        // Create a confirmation dialog with proper wording based on current status
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle(isCurrentlyFinalized ? "Unfinalize Activity" : "Finalize Activity");
+        confirmDialog.setHeaderText(null);
+
+        if (isCurrentlyFinalized) {
+            confirmDialog.setContentText("Are you sure you want to mark activity \"" +
+                    selectedActivity.getActivityName() + "\" as NOT finalized?");
+        } else {
+            confirmDialog.setContentText("Are you sure you want to finalize activity \"" +
+                    selectedActivity.getActivityName() + "\"?\n\nThis will mark the activity as complete.");
+        }
+
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                if (isCurrentlyFinalized) {
+                    // Unfinalize the activity
+                    selectedProject.setActivityAsUnFinalized(selectedActivity);
+                    projectInfoStatus.setText("Activity \"" + selectedActivity.getActivityName() +
+                            "\" has been marked as not finalized.");
+                } else {
+                    // Finalize the activity
+                    selectedProject.setActivityAsFinalized(selectedActivity);
+                    projectInfoStatus.setText("Activity \"" + selectedActivity.getActivityName() +
+                            "\" has been finalized successfully.");
+
+                    // Check if all activities are now finalized, which means the project is finalized
+                    boolean allActivitiesFinalized = true;
+                    for (Activity activity : selectedProject.getActivities()) {
+                        if (!activity.getFinalized()) {
+                            allActivitiesFinalized = false;
+                            break;
+                        }
+                    }
+
+                    if (allActivitiesFinalized) {
+                        Alert projectFinalizedAlert = new Alert(Alert.AlertType.INFORMATION);
+                        projectFinalizedAlert.setTitle("Project Finalized");
+                        projectFinalizedAlert.setHeaderText(null);
+                        projectFinalizedAlert.setContentText("All activities in project \"" +
+                                selectedProject.getProjectName() + "\" are now finalized.\n\n" +
+                                "The project has been automatically marked as finalized.");
+                        projectFinalizedAlert.showAndWait();
+                    }
+                }
+
+                // Refresh the activity information display
+                showActivityInformation(selectedActivity);
+                updateButtonStates();
+
+                // Update the project tree to reflect changes
+                loadProjectTree();
+
+                // Clear the status message after 3 seconds
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(3000);
+                        Platform.runLater(() -> {
+                            String text = projectInfoStatus.getText();
+                            if (text.contains("finalized")) {
+                                projectInfoStatus.setText("");
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).start();
+
+            } catch (Exception e) {
+                showError("Error " + (isCurrentlyFinalized ? "unfinalizing" : "finalizing") +
+                        " activity: " + e.getMessage());
+            }
+        }
+    }
+
+    private void updateButtonStates() {
+        // Disable assign, unassign, and add time registration if the selected activity is finalized
+        boolean activityFinalized = selectedActivity != null && selectedActivity.getFinalized();
+
+        if (assignEmployeeButton != null) {
+            assignEmployeeButton.setDisable(selectedActivity == null || activityFinalized);
+        }
+        if (unassignEmployeeButton != null) {
+            unassignEmployeeButton.setDisable(selectedActivity == null || activityFinalized);
+        }
+        if (addTimeRegistrationButton != null) {
+            addTimeRegistrationButton.setDisable(selectedActivity == null || activityFinalized);
+        }
+
+        // Disable add activity if the selected project is fully finalized (all activities finalized)
+        boolean projectFinalized = false;
+        if (selectedProject != null && !selectedProject.getActivities().isEmpty()) {
+            projectFinalized = selectedProject.getActivities().stream().allMatch(Activity::getFinalized);
+        }
+
+        if (addActivityButton != null) {
+            addActivityButton.setDisable(selectedProject == null || projectFinalized);
+        }
+    }
+
 
 }

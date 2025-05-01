@@ -118,7 +118,7 @@ public class Project {
     }
 
     public void setActivityAsUnFinalized(Activity activity) {
-        activity.setActivityAsUnFinalized(); // Correct: unfinalize the activity
+        activity.setActivityAsUnFinalized();
         setUnFinalized(); // If any activity is unfinalized, we mark the whole as unfinalized
     }
 
