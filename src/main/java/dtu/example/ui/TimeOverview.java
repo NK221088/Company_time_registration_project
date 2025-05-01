@@ -24,6 +24,8 @@
     import java.time.LocalDate;
     import java.time.format.DateTimeFormatter;
     import java.util.*;
+    import java.util.regex.Matcher;
+    import java.util.regex.Pattern;
     import java.util.stream.Collectors;
 
     public class TimeOverview implements Initializable {
@@ -516,8 +518,16 @@
                     projectTotals.put(dateStr, 0);
                 }
 
+                List<Map.Entry<Activity, List<TimeRegistration>>> sortedActivities =
+                        activities.entrySet()                    // Set …
+                                .stream()                      //  ⇢ Stream
+                                // If Activity exposes a number: .sorted(Comparator.comparingInt(e -> e.getKey().getActivityNumber()))
+                                .sorted(Comparator.comparingInt(
+                                        e -> extractLeadingNumber(e.getKey().getActivityName())))
+                                .collect(Collectors.toList());
+
                 // Add activities for this project
-                for (Map.Entry<Activity, List<TimeRegistration>> activityEntry : activities.entrySet()) {
+                for (Map.Entry<Activity, List<TimeRegistration>> activityEntry : sortedActivities) {
                     Activity activity = activityEntry.getKey();
                     List<TimeRegistration> timeRegs = activityEntry.getValue();
 
@@ -848,6 +858,11 @@
 
             dialog.setResultConverter(dialogButton -> null);
             dialog.showAndWait();
+        }
+
+        private int extractLeadingNumber(String text) {
+            Matcher m = Pattern.compile("(\\d+)").matcher(text);
+            return m.find() ? Integer.parseInt(m.group(1)) : Integer.MAX_VALUE; // non-numbered go last
         }
 
     }

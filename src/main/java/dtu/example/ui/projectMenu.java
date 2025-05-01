@@ -903,6 +903,12 @@ public class projectMenu {
 
         List<User> users = TimeManager.getUsers();
 
+        for (User user : users) {
+            if (selectedActivity.getAssignedUsers().contains(user)) {
+                users.remove(user);
+            }
+        }
+
         if (users == null || users.isEmpty()) {
             showError("No users available to assign. Please add users to the system first.");
             return;
@@ -1165,6 +1171,64 @@ public class projectMenu {
     }
 
     public void unassignEmployee(ActionEvent actionEvent) {
+        if (selectedActivity == null) {
+            showError("Please select an activity first before assigning an employee.");
+            return;
+        }
+
+        List<User> users = selectedActivity.getAssignedUsers();
+
+        if (users == null || users.isEmpty()) {
+            showError("No users available to assign. Please add users to the system first.");
+            return;
+        }
+
+        Dialog<User> dialog = new Dialog<>();
+        dialog.setTitle("Unassign Employee");
+        dialog.setHeaderText("Select an employee to unassign to the first activity:");
+
+        ButtonType assignButtonType = new ButtonType("Unassign", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(assignButtonType, ButtonType.CANCEL);
+
+        ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
+        userChoiceBox.getItems().addAll(users);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("Employee:"), 0, 0);
+        grid.add(userChoiceBox, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        final Button assignButton = (Button) dialog.getDialogPane().lookupButton(assignButtonType);
+        assignButton.addEventFilter(ActionEvent.ACTION, event -> {
+            User selectedUser = userChoiceBox.getValue();
+
+            if (selectedUser == null) {
+                showError("Please select an employee to unassign.");
+                event.consume();
+                return;
+            }
+
+            try {
+                selectedActivity.unassignUser(selectedUser.getUserInitials());
+
+                // Show confirmation
+                projectInfoStatus.setText("Employee " + selectedUser.getUserInitials() + " unassigned to activity " +
+                        selectedActivity.getActivityName() + " successfully.");
+
+                // Refresh view
+                showActivityInformation(selectedActivity);
+            } catch (Exception e) {
+                showError("Error assigning employee: " + e.getMessage());
+                event.consume();
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> null); // Handle assignment manually
+        dialog.showAndWait();
+
     }
 
     private void setupEditableTimeInterval(Label timeIntervalLabel, Activity activity) {
