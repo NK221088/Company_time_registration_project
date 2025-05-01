@@ -13,6 +13,8 @@ public class Project {
     private LocalDate endDate;
     private List<Activity> activities = new ArrayList<>();
     private User projectLead;
+    private boolean isFinalized;
+
     public Project(String projectName) {
         this.projectName = projectName;
         projectID = formatID(TimeManager.incProjectCount());
@@ -97,4 +99,31 @@ public class Project {
             return projectName;
         }
     }
+
+    public boolean getFinalized() {
+        return this.isFinalized;
+    }
+
+    public void setFinalized() {
+        this.isFinalized = true;
+    }
+
+    public void setActivityAsFinalized(Activity activity) {
+        activity.setActivityAsFinalized();
+        boolean allFinalized = activities.stream()
+                .allMatch(a -> a.getFinalized());
+        if (allFinalized) {
+            setFinalized();
+        }
+    }
+
+    public void setActivityAsUnFinalized(Activity activity) {
+        activity.setActivityAsUnFinalized(); // Correct: unfinalize the activity
+        setUnFinalized(); // If any activity is unfinalized, we mark the whole as unfinalized
+    }
+
+    private void setUnFinalized() {
+        this.isFinalized = false;
+    }
+
 }

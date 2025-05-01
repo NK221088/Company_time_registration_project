@@ -106,13 +106,14 @@ public class Activity {
 
     public void setActivityAsFinalized() {
         this.isFinalized = true;
+
     }
 
     public boolean getFinalized() {
         return isFinalized;
     }
 
-    public void setActivityAsNotFinalized() {
+    public void setActivityAsUnFinalized() {
         this.isFinalized = false;
     }
 }

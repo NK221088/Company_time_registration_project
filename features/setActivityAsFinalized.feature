@@ -4,15 +4,23 @@ Feature: Mark activity as finalized
 
   Scenario: Setting activity as finalized
     Given a user is logged in
-    And an activity exists in a project
-    When the user sets the activity as finalized
-    Then the activity is marked as finalized
+    And two unfinalized activities exists in a project
+    When the user sets the first activity as finalized
+    Then the activity is set as finalized
     And it's no longer possible to add time registrations to the activity
 
   Scenario: Setting an activity as not finalized progress
     Given a user is logged in
-    And an activity exists in a project
-    And the activity is set as finalized
-    When the user sets the activity as not finalized
-    Then the activity is not set as finalized
-    And it's possible to add time registrations to the activity again
+    And a finalized activity exists in a project
+    And an unfinalized activity exists in the project
+    When the user sets the finalized activity as unfinalized
+    Then the activity is set as unfinalized
+    And it's possible to add time registrations to the activity
+
+  Scenario: Setting the last activity in a project as finalized progress
+    Given a user is logged in
+    And a finalized activity exists in a project
+    And an unfinalized activity exists in the project
+    When the user sets the unfinalized activity as finalized
+    Then the activity is set as finalized
+    And the project is set as finalized

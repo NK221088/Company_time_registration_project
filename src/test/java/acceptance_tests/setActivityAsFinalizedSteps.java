@@ -11,35 +11,47 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class setActivityAsFinalizedSteps {
     private ErrorMessageHolder errorMessage;
-    TimeManager timeManager = new TimeManager();
-    Project project;
-    Activity activity;
-    User user;
-    double hours;
-    LocalDate date;
-    double registeredHours;
+    private Project project;
+    private Activity firstActivity;
+    private Activity secondActivity;
+    private User user;
+    private double hours;
+    private LocalDate date;
+    private double registeredHours;
+    private TimeManager timeManager;
 
     public setActivityAsFinalizedSteps() {
-        errorMessage = new ErrorMessageHolder();
+        this.errorMessage = new ErrorMessageHolder();
+        this.timeManager = timeManager;
     }
 
-    @Given("an activity exists in a project")
-    public void anActivityExistsInAProject() throws Exception {
+    @Given("two unfinalized activities exists in a project")
+    public void twoUnfinalizedActivitiesExistsInAProject() throws Exception {
+        this.timeManager = new TimeManager();
         Project project = new Project("Project with finalized activity");
         timeManager.addProject(project);
         this.project = project;
-        Activity activity = new Activity("Activity to be finalized");
-        this.activity = activity;
-        this.project.addActivity(activity);
-        registeredHours = this.activity.getWorkedHours();
+        this.firstActivity = new Activity("Activity to be finalized");
+        this.secondActivity = new Activity("Unfinalized activity");
+        this.project.addActivity(firstActivity);
+        this.project.addActivity(secondActivity);
+        registeredHours = this.firstActivity.getWorkedHours();
+        assertFalse(this.firstActivity.getFinalized() || this.secondActivity.getFinalized());
+
+
     }
-    @When("the user sets the activity as finalized")
-    public void theUserSetsTheActivityAsFinalized() {
-        this.activity.setActivityAsFinalized();
+    @When("the user sets the first activity as finalized")
+    public void theUserSetsTheFirstActivityAsFinalized() {
+        try {
+            this.project.setActivityAsFinalized(this.firstActivity); // If no exception is thrown, the option is available
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
-    @Then("the activity is marked as finalized")
+
+    @Then("the activity is set as finalized")
     public void theActivityIsMarkedAsFinalized() {
-        assertTrue(this.activity.getFinalized());
+        assertTrue(this.firstActivity.getFinalized());
     }
     @Then("it's no longer possible to add time registrations to the activity")
     public void itSNoLongerPossibleToAddTimeRegistrationsToTheActivity() throws Exception {
@@ -51,39 +63,62 @@ public class setActivityAsFinalizedSteps {
         LocalDate date = LocalDate.now();
         this.date = date;
         try {
-            TimeRegistration timeRegistration = new TimeRegistration(this.user, activity, hours, date);
+            TimeRegistration timeRegistration = new TimeRegistration(this.user, this.firstActivity, hours, date);
             timeManager.addTimeRegistration(timeRegistration);
-            assertEquals(registeredHours, this.activity.getWorkedHours());
+            assertEquals(registeredHours, this.firstActivity.getWorkedHours());
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
 
     }
-
-    @Given("the activity is set as finalized")
-    public void theActivityIsSetAsFinalized() {
-        this.activity.getFinalized();
+    @Given("a finalized activity exists in a project")
+    public void aFinalizedActivityExistsInAProject() {
+        this.project = timeManager.getProjectFromName("Project with finalized activity");
+        this.firstActivity = this.project.getActivityFromName("Activity to be finalized");
+        this.secondActivity = this.project.getActivityFromName("Unfinalized activity");
+        this.firstActivity.setActivityAsFinalized();
+        assertTrue(this.firstActivity.getFinalized());
     }
-
-    @When("the user sets the activity as not finalized")
-    public void theUserSetsTheActivityAsNotFinalized() {
-        this.activity.setActivityAsNotFinalized();
+    @Given("an unfinalized activity exists in the project")
+    public void anUnfinalizedActivityExistsInTheProject() {
+        assertFalse(this.secondActivity.getFinalized());
     }
-
-    @Then("the activity is not set as finalized")
-    public void theActivityIsNotSetAsFinalized() {
-        assertFalse(this.activity.getFinalized());
-    }
-
-    @Then("it's possible to add time registrations to the activity again")
-    public void itSPossibleToAddTimeRegistrationsToTheActivityAgain() {
+    @When("the user sets the finalized activity as unfinalized")
+    public void theUserSetsTheFinalizedActivityAsUnfinalized() {
         try {
-            TimeRegistration timeRegistration = new TimeRegistration(this.user, activity, hours, date);
-            timeManager.addTimeRegistration(timeRegistration);
-            assertNotEquals(registeredHours, this.activity.getWorkedHours());
+            this.project.setActivityAsUnFinalized(this.firstActivity); // If no exception is thrown, the option is available
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
+
+    }
+    @Then("the activity is set as unfinalized")
+    public void theActivityIsSetAsUnfinalized() {
+        assertFalse(this.firstActivity.getFinalized());
+    }
+    @Then("it's possible to add time registrations to the activity")
+    public void itSPossibleToAddTimeRegistrationsToTheActivity() {
+        this.hours = this.firstActivity.getWorkedHours();
+        try {
+            TimeRegistration timeRegistration = new TimeRegistration(this.user, this.firstActivity, hours, date);
+            timeManager.addTimeRegistration(timeRegistration);
+            assertNotEquals(registeredHours, this.firstActivity.getWorkedHours());
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+    @When("the user sets the unfinalized activity as finalized")
+    public void theUserSetsTheUnfinalizedActivityAsFinalized() {
+        try {
+            this.project.setActivityAsFinalized(this.secondActivity); // If no exception is thrown, the option is available
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+
+    @Then("the project is set as finalized")
+    public void theProjectIsSetAsFinalized() {
+        assertTrue(this.project.getFinalized());
     }
 
 }
