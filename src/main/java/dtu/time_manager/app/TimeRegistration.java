@@ -1,6 +1,8 @@
 package dtu.time_manager.app;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public class TimeRegistration {
     private User registeredUser;
@@ -37,8 +39,17 @@ public class TimeRegistration {
     }
 
     public void setRegisteredUser(User registeredUser) {
-        this.registeredUser = registeredUser;
+        Map<Activity, List<TimeRegistration>> registrationList = this.registeredUser.getActivityRegistrations();
+        List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
+
+        if (this.registeredUser != null && this.registeredUser != registeredUser && actRegList.size() <= 1) {
+            this.registeredActivity.getWorkingUsers().remove(this.registeredUser);
+            this.registeredUser = registeredUser;
+
+        } else { this.registeredUser = registeredUser;}
+
     }
+
     public void setRegisteredActivity(Activity registeredActivity) {
         this.registeredActivity = registeredActivity;
     }
