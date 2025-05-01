@@ -19,7 +19,19 @@ public class AddTimeRegistrationSteps {
     private Activity registeredActivity;
     private int registeredHours;
     private LocalDate registeredDate;
+    private ErrorMessageHolder errorMessage;
+    private double workedHours = 0;
 
+    public AddTimeRegistrationSteps() {
+        this.errorMessage = new ErrorMessageHolder();
+    }
+
+    @Given("that the project with project ID {string} has an activity named {string} which is set as in progress")
+    public void thatTheProjectWithProjectIDHasAnActivityNamedWhichIsSetAsInProgress(String projectId, String activityName) {
+        Project project = TimeManager.getProjectFromID(projectId);
+        Activity activity = project.getActivityFromName(activityName);
+        assertFalse(activity.getFinalized());
+    }
     @When("the user selects the activity {string} in project {string}")
     public void theUserSelectsTheActivityInProject(String activityName, String projectName) {
         registeredActivity = TimeManager.getProjectFromName(projectName).getActivityFromName(activityName);
@@ -33,7 +45,7 @@ public class AddTimeRegistrationSteps {
         registeredDate = LocalDate.parse(activityDate);
     }
     @Then("a new Time Registration is added with:")
-    public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) {
+    public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) throws Exception {
         TimeRegistration time_registration = new TimeRegistration(
             TimeManager.getCurrentUser(),
             registeredActivity,
@@ -46,5 +58,33 @@ public class AddTimeRegistrationSteps {
         assertEquals(registeredDate.toString(), dataTable.cell(1, 2));
 
         TimeManager.addTimeRegistration(time_registration);
+    }
+
+    @Given("that the project with project ID {string} has an activity named {string} which is set as finalized")
+    public void thatTheProjectWithProjectIDHasAnActivityNamedWhichIsSetAsFinalized(String projectId, String activityName) {
+        Project project = TimeManager.getProjectFromID(projectId);
+        Activity activity = project.getActivityFromName(activityName);
+        activity.setActivityAsFinalized();
+        assertTrue(activity.getFinalized());
+    }
+    @When("the user tries to add a time registration")
+    public void theUserTriesToAddATimeRegistration() throws Exception {
+        User user = TimeManager.getCurrentUser();
+        Activity activity = TimeManager.getProjects().getFirst().getActivities().getFirst();
+        workedHours = activity.getWorkedHours();
+        double hours = 8;
+        LocalDate date = LocalDate.now();
+        try {
+            TimeRegistration timeRegistration = new TimeRegistration(user, activity, hours, date);
+            TimeManager.addTimeRegistration(timeRegistration);
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+    @Then("the time registration is not created")
+    public void theTimeRegistrationIsNotCreated() {
+        Activity activity = TimeManager.getProjects().getFirst().getActivities().getFirst();
+        assertEquals(workedHours, activity.getWorkedHours());
+
     }
 }

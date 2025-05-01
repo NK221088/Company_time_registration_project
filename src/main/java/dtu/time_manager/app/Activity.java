@@ -13,6 +13,7 @@ public class Activity {
     private double expectedWorkHours;
     private LocalDate activityStartTime;
     private LocalDate activityEndTime;
+    private Boolean isFinalized = false;
 
     public Activity(String ActivityName) {
         this.ActivityName = ActivityName;
@@ -101,6 +102,18 @@ public class Activity {
 
     public void setActivityEndTime(LocalDate activityEndTime) {
         this.activityEndTime = activityEndTime;
+    }
+
+    public void setActivityAsFinalized() {
+        this.isFinalized = true;
+    }
+
+    public boolean getFinalized() {
+        return isFinalized;
+    }
+
+    public void setActivityAsNotFinalized() {
+        this.isFinalized = false;
     }
 }
 

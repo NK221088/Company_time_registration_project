@@ -8,7 +8,7 @@ public class TimeRegistration {
     private double registeredHours;
     private LocalDate registeredDate;
 
-    public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) {
+    public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) throws Exception {
         this.registeredUser = registeredUser;
         this.registeredActivity = registeredActivity;
         this.registeredHours = registeredHours;
@@ -16,6 +16,9 @@ public class TimeRegistration {
 
         if (registeredDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Date is after now");
+        }
+        if (this.registeredActivity.getFinalized()){
+            throw new Exception("The activity is set as finalized: Time registrations can't be added.");
         }
 
         registeredUser.addTimeRegistration(this);

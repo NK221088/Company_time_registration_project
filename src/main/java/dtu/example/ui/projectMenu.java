@@ -1159,6 +1159,8 @@ public class projectMenu {
             } catch (IllegalArgumentException e) {
                 showError(e.getMessage());
                 event.consume();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         });
 

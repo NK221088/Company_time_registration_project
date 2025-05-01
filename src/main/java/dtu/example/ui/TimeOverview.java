@@ -438,7 +438,7 @@
                             setStyle(null);
                         } else {
                             setText(item);
-                            setStyle("-fx-alignment: CENTER; -fx-border-color: lightgrey; -fx-border-width: 0 1 0 0;");
+                            setStyle("-fx-alignment: CENTER;");
 
                             // Get the row data to determine if it's a project, activity, or time registration
                             TimeEntryRow rowData = getTreeTableRow().getItem();
@@ -678,7 +678,8 @@
                                     setStyle(null);
                                 } else {
                                     setText(item);
-                                    setStyle("-fx-alignment: CENTER; -fx-border-color: lightgrey; -fx-border-width: 0 1 0 0;");
+                                    setStyle("-fx-alignment: CENTER;");
+
 
                                     try {
                                         double hours = Double.parseDouble(item);

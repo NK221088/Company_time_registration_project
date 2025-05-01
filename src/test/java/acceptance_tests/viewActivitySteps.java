@@ -53,7 +53,7 @@ public class viewActivitySteps {
     }
 
     @Then("the number of work hours of {string} hours is spent on {string} is shown")
-    public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) {
+    public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) throws Exception {
         this.workingUser = new User("huba");
         this.test_time_registration = new TimeRegistration(this.workingUser, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
         Map <String, Object> info = this.activity.viewActivity();
