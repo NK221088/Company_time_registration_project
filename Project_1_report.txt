@@ -1,3 +1,0 @@
-Project Name: Project 1
-Project ID: 25001
-Project Activities: [dtu.time_manager.app.Activity@477d35f8]
