@@ -34,6 +34,10 @@ public class TimeManagerService {
         return userService.getCurrentUser();
     }
 
+    public void addUser(User user) {
+        userService.addUser(user);
+    }
+
     // Project Management
     public void createProject(String projectName) {
         Project project = new Project(projectName);
