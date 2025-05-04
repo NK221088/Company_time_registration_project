@@ -1,46 +1,49 @@
 package acceptance_tests;
 
+import dtu.time_manager.domain.*;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import dtu.time_manager.app.TimeManager;
-import dtu.time_manager.app.Activity;
+import io.cucumber.java.en.Then;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddIndependentActivitySteps {
-    private TimeManager timeManager;
+public class AddIndependentActivitySteps extends TestBase {
     private ErrorMessageHolder errorMessage;
+    private Activity activity;
 
-    public AddIndependentActivitySteps() {
-        this.timeManager = new TimeManager();
-        this.errorMessage = new ErrorMessageHolder();
+    public AddIndependentActivitySteps(ErrorMessageHolder errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
-    @When("the user adds an independent activity named {string}")
-    public void theUserAddsAnIndependentActivityNamed(String activityName) {
+    @Given("a user with initials {string} is logged in")
+    public void aUserWithInitialsIsLoggedIn(String userInitials) {
         try {
-            timeManager.addIndependentActivity(new Activity(activityName));
-        } catch (Exception _) {}
-    }
-    @Then("the independent activity is added to the project")
-    public void theIndependentActivityIsAddedToTheProject() {
-        assertFalse(timeManager.getIndependentActivities().isEmpty());
-    }
-    @Given("an independent activity named {string} exists")
-    public void anIndependentActivityNamedExists(String activityName) {
-        try {
-            timeManager.addIndependentActivity(new Activity(activityName));
+            timeManager.login(userInitials);
         } catch (Exception e) {
-            errorMessage.setErrorMessage(e.getMessage());
+            this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
-    @Then("the independent activity isn't added to the project")
-    public void theIndependentActivityIsnTAddedToTheProject() {
-        assertTrue(timeManager.getIndependentActivities().size() == 1);
+
+    @When("the user creates an independent activity with name {string}")
+    public void theUserCreatesAnIndependentActivityWithName(String activityName) {
+        try {
+            timeManager.createActivity(activityName);
+            this.activity = timeManager.getActivities().stream()
+                    .filter(a -> a.getName().equals(activityName))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Activity not found"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
-    @Then("the independent activity error message {string} is given")
-    public void theIndependentActivityErrorMessageIsGiven(String errorMessage) {
-        assertEquals(this.errorMessage.getErrorMessage(), errorMessage);
+
+    @Then("the independent activity is created")
+    public void theIndependentActivityIsCreated() {
+        assertNotNull(this.activity, "Activity should be created");
+        assertTrue(this.activity.isIndependent(), "Activity should be independent");
+    }
+
+    @Then("the error message {string} is given")
+    public void theErrorMessageIsGiven(String errorMessage) {
+        assertEquals(errorMessage, this.errorMessage.getErrorMessage());
     }
 }

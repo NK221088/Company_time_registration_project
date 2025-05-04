@@ -1,41 +1,41 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.Activity;
-import dtu.time_manager.app.Project;
-import dtu.time_manager.app.TimeManager;
+import dtu.time_manager.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class viewProjectSteps {
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+
+public class viewProjectSteps extends TestBase {
     private ErrorMessageHolder errorMessage;
     private Project project;
-
-    Map<String, Object> projectVariables = new HashMap<>();
-
+    private Map<String, Object> projectVariables = new HashMap<>();
 
     public viewProjectSteps(ErrorMessageHolder errorMessage) {
         this.errorMessage = errorMessage;
-        this.projectVariables = new HashMap<>(); // Initializes the map to be empty
     }
 
     @Given("a project with project ID {string} and project name {string} and time interval {string} exists in the system")
-    public void aProjectWithProjectIDAndProjectNameAndTimeIntervalExistsInTheSystem(String projectID, String projectName, String timeInterval) {
+    public void aProjectWithProjectIDAndProjectNameAndTimeIntervalExistsInTheSystem(String projectId, String projectName, String timeInterval) {
         try {
-            TimeManager.addProject(Project.exampleProject(projectName, 1));
-        } catch (Exception e) {}
+            timeManager.createProject(projectName);
+            this.project = timeManager.getProjects().stream()
+                    .filter(p -> p.getName().equals(projectName))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
 
     @When("the user views the project with project ID {string}")
-    public void theUserViewsTheProjectWithProjectID(String projectID) {
+    public void theUserViewsTheProjectWithProjectID(String projectId) {
         try {
-            this.projectVariables = TimeManager.viewProject(projectID); // If no exception is thrown, the option is available
+            this.projectVariables = timeManager.getProjectInfo(projectId);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -47,28 +47,36 @@ public class viewProjectSteps {
     }
 
     @Then("the project ID {string} is shown")
-    public void theProjectIDIsShown(String projectID) {
-        assertEquals(projectID, this.projectVariables.get("Project ID"));
+    public void theProjectIDIsShown(String projectId) {
+        assertEquals(projectId, this.projectVariables.get("Project ID"));
     }
+
     @Then("time interval {string} is shown")
     public void timeIntervalIsShown(String projectInterval) {
         assertEquals(projectInterval, this.projectVariables.get("Project interval"));
     }
-    @Then("the activities in the project with project ID {string} is shown")
-    public void theActivitiesInTheProjectWithProjectIDIsShown(String string) {
-        Object activities = this.projectVariables.get("Project activities");
-        assert activities instanceof List; // Check that it's a list that is returned
-        List<?> activityList = (List<?>) activities; // Check that each element in the list is of type Activity
-        for (Object activity : activityList) {
-            assert activity instanceof Activity;}
 
+    @Then("the activities in the project with project ID {string} is shown")
+    public void theActivitiesInTheProjectWithProjectIDIsShown(String projectId) {
+        Object activities = this.projectVariables.get("Project activities");
+        assertTrue(activities instanceof List, "Project activities should be a list");
+        List<?> activityList = (List<?>) activities;
+        for (Object activity : activityList) {
+            assertTrue(activity instanceof Activity, "Each item in activities list should be an Activity");
+        }
     }
+
     @Then("the option for generating a project report for the project with project ID {string} is shown")
-    public void theOptionForGeneratingAProjectReportForTheProjectWithProjectIDIsShown(String projectID) {
+    public void theOptionForGeneratingAProjectReportForTheProjectWithProjectIDIsShown(String projectId) {
         try {
-            TimeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
+            timeManager.generateProjectReport(projectId);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
+    }
+
+    @Then("the error message {string} is given")
+    public void theErrorMessageIsGiven(String errorMessage) {
+        assertEquals(errorMessage, this.errorMessage.getErrorMessage());
     }
 }

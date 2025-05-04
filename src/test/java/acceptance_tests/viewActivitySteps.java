@@ -1,27 +1,29 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.*;
+import dtu.time_manager.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class viewActivitySteps {
-
-    private Project test_project;
+public class viewActivitySteps extends TestBase {
+    private ErrorMessageHolder errorMessage;
+    private Project testProject;
     private Activity activity;
     private User workingUser;
     private User assignedUser;
-    private TimeRegistration test_time_registration;
+    private TimeRegistration testTimeRegistration;
     private double workedHours;
     private LocalDate startDate;
     private LocalDate endDate;
+
+    public viewActivitySteps(ErrorMessageHolder errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     @Given("the activity has the start date {string} and end date {string}")
     public void theActivityHasTheStartDateAndEndDate(String startDate, String endDate) {
@@ -30,71 +32,110 @@ public class viewActivitySteps {
     }
 
     @When("select an activity with name {string} from project ID {string}")
-    public void selectAnActivityWithNameFromProjectID(String activityName, String projectID) {
-        this.test_project = TimeManager.getProjectFromID(projectID);
-        this.activity = new Activity(activityName);
+    public void selectAnActivityWithNameFromProjectID(String activityName, String projectId) {
+        try {
+            this.testProject = timeManager.getProjects().stream()
+                    .filter(p -> p.getProjectId().equals(projectId))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
 
-
+            this.activity = testProject.getActivities().stream()
+                    .filter(a -> a.getName().equals(activityName))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Activity not found"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
-
 
     @Then("the activity name of {string} is shown")
     public void theActivityNameOfIsShown(String activityName) {
-        this.activity.setActivityName(activityName);
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(info.get("Name"), activityName);
+        Map<String, Object> info = timeManager.getActivityInfo(this.activity);
+        assertEquals(activityName, info.get("Name"));
     }
 
     @Then("the expected hours of {string} hours in {string} is shown")
     public void theExpectedHoursOfHoursInIsShown(String expectedHours, String activityName) {
-        this.activity.setExpectedWorkHours(Double.parseDouble(expectedHours));
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(Double.parseDouble(expectedHours), info.get("ExpectedWorkHours"));
+        try {
+            timeManager.setActivityExpectedHours(this.activity, Double.parseDouble(expectedHours));
+            Map<String, Object> info = timeManager.getActivityInfo(this.activity);
+            assertEquals(Double.parseDouble(expectedHours), info.get("ExpectedWorkHours"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
 
     @Then("the number of work hours of {string} hours is spent on {string} is shown")
-    public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) throws Exception {
-        this.workingUser = new User("huba");
-        this.test_time_registration = new TimeRegistration(this.workingUser, this.activity, Integer.parseInt(assignedWorkHours), LocalDate.now());
-        Map <String, Object> info = this.activity.viewActivity();
-        assertEquals(Double.parseDouble(assignedWorkHours), info.get("WorkedHours"));
+    public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) {
+        try {
+            timeManager.addUser(new User("huba"));
+            this.workingUser = timeManager.getUsers().stream()
+                    .filter(u -> u.getUserInitials().equals("huba"))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            timeManager.registerTime(this.activity, Double.parseDouble(assignedWorkHours), LocalDate.now());
+            Map<String, Object> info = timeManager.getActivityInfo(this.activity);
+            assertEquals(Double.parseDouble(assignedWorkHours), info.get("WorkedHours"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
-   @Then("the start date is shown")
+
+    @Then("the start date is shown")
     public void theStartDateIsShown() {
-        this.activity.setActivityStartTime(this.startDate);
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(this.activity.getActivityStartTime(), info.get("StartTime"));
-
-
+        try {
+            timeManager.setActivityStartDate(this.activity, this.startDate);
+            Map<String, Object> info = timeManager.getActivityInfo(this.activity);
+            assertEquals(this.startDate, info.get("StartTime"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
+
     @Then("the end date is shown")
     public void theEndDateIsShown() {
-        this.activity.setActivityEndTime(this.endDate);
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(this.activity.getActivityEndTime(), info.get("EndTime"));
+        try {
+            timeManager.setActivityEndDate(this.activity, this.endDate);
+            Map<String, Object> info = timeManager.getActivityInfo(this.activity);
+            assertEquals(this.endDate, info.get("EndTime"));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
 
     @Then("the initials of the developer or developers {string} working on the {string} is shown")
-    public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String user, String activityName) {
-        this.activity.assignUser(user);
-        this.activity.addWorkingUser(TimeManager.getUser(user));
-        Map <String, Object> info = this.activity.viewActivity();
-        ArrayList<User> userList = (ArrayList<User>) info.get("Assigned employees");
-        assertTrue(userList.contains(TimeManager.getUser(user)));
+    public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String userInitials, String activityName) {
+        try {
+            timeManager.addUser(new User(userInitials));
+            this.assignedUser = timeManager.getUsers().stream()
+                    .filter(u -> u.getUserInitials().equals(userInitials))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            timeManager.assignUserToActivity(this.activity, this.assignedUser);
+            Map<String, Object> info = timeManager.getActivityInfo(this.activity);
+            List<User> userList = (List<User>) info.get("Assigned employees");
+            assertTrue(userList.contains(this.assignedUser));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
 
     @Then("the assigned users are shown")
     public void theAssignedUsersAreShown() {
-        Map<String, Object> info = this.activity.viewActivity();
+        Map<String, Object> info = timeManager.getActivityInfo(this.activity);
         assertNotNull(info.get("Assigned employees"));
     }
 
     @Then("the users who have worked on the project are shown")
     public void theUsersWhoHaveWorkedOnTheProjectAreShown() {
-        Map<String, Object> info = this.activity.viewActivity();
+        Map<String, Object> info = timeManager.getActivityInfo(this.activity);
         assertNotNull(info.get("Contributing employees"));
     }
 
-
-
+    @Then("the error message {string} is given")
+    public void theErrorMessageIsGiven(String errorMessage) {
+        assertEquals(errorMessage, this.errorMessage.getErrorMessage());
+    }
 }
