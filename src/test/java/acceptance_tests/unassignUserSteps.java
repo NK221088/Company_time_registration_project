@@ -1,7 +1,6 @@
 package acceptance_tests;
 
-import dtu.time_manager.domain.Activity;
-import dtu.time_manager.domain.User;
+import dtu.time_manager.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -13,9 +12,21 @@ public class unassignUserSteps extends TestBase {
     private User testUser;
     private Activity testActivity1;
     private Activity testActivity2;
+    private Project project;
 
     public unassignUserSteps(ErrorMessageHolder errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    @Given("a user with initials {string} is logged in")
+    public void aUserWithInitialsIsLoggedIn(String userInitials) {
+        try {
+            timeManager.addUser(new User(userInitials));
+            timeManager.login(userInitials);
+            assertNotNull(timeManager.getCurrentUser(), "User should be logged in");
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
 
     @Given("that the user with initials: {string} is assigned the activity: {string}")
@@ -29,19 +40,13 @@ public class unassignUserSteps extends TestBase {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             // Create a project and activity
-            timeManager.createProject("Test Project");
-            Project project = timeManager.getProjects().stream()
-                    .filter(p -> p.getName().equals("Test Project"))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
-
-            timeManager.createActivity(project, activityName);
-            this.testActivity1 = project.getActivities().stream()
-                    .filter(a -> a.getName().equals(activityName))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Activity not found"));
-
+            this.project = timeManager.createProject("Test Project");
+            this.testActivity1 = timeManager.createActivity(activityName);
+            timeManager.assignActivityToProject(this.testActivity1, this.project);
             timeManager.assignUserToActivity(this.testActivity1, this.testUser);
+
+            assertTrue(this.testActivity1.getAssignedUsers().contains(this.testUser), 
+                "User should be assigned to activity");
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -58,7 +63,8 @@ public class unassignUserSteps extends TestBase {
 
     @Then("the user is no longer assigned to the activity")
     public void theUserIsNoLongerAssignedToTheActivity() {
-        assertFalse(this.testActivity1.getAssignedUsers().contains(this.testUser));
+        assertFalse(this.testActivity1.getAssignedUsers().contains(this.testUser), 
+            "User should not be assigned to activity");
     }
 
     @Given("that the user with initials: {string} is not assigned the activity: {string}")
@@ -72,17 +78,12 @@ public class unassignUserSteps extends TestBase {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             // Create a project and activity
-            timeManager.createProject("Test Project 2");
-            Project project = timeManager.getProjects().stream()
-                    .filter(p -> p.getName().equals("Test Project 2"))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            this.project = timeManager.createProject("Test Project 2");
+            this.testActivity2 = timeManager.createActivity(activityName);
+            timeManager.assignActivityToProject(this.testActivity2, this.project);
 
-            timeManager.createActivity(project, activityName);
-            this.testActivity2 = project.getActivities().stream()
-                    .filter(a -> a.getName().equals(activityName))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Activity not found"));
+            assertFalse(this.testActivity2.getAssignedUsers().contains(this.testUser), 
+                "User should not be assigned to activity");
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -99,6 +100,7 @@ public class unassignUserSteps extends TestBase {
 
     @Then("the error message {string} is displayed")
     public void theErrorMessageIsDisplayed(String errorMessage) {
-        assertEquals(errorMessage, this.errorMessage.getErrorMessage());
+        assertEquals(errorMessage, this.errorMessage.getErrorMessage(), 
+            "Error message should match expected message");
     }
 }
