@@ -1,19 +1,14 @@
 package acceptance_tests;
 
-import dtu.example.ui.*;
-import dtu.time_manager.app.TimeManager;
-import dtu.time_manager.app.User;
+import dtu.time_manager.domain.User;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
-
-public class LoginSteps {
+public class LoginSteps extends TestBase {
     private User user;
-    private String user_initials;
+    private String userInitials;
     private ErrorMessageHolder errorMessage;
 
     public LoginSteps(ErrorMessageHolder errorMessage) {
@@ -21,15 +16,15 @@ public class LoginSteps {
     }
 
     @Given("a user's initials {string} is registered in the system")
-    public void aUsersInitialsIsRegisteredInTheSystem(String user_initials) {
-        this.user_initials = user_initials;
-        user = new User(user_initials);
+    public void aUsersInitialsIsRegisteredInTheSystem(String userInitials) {
+        this.userInitials = userInitials;
+        user = new User(userInitials);
     }
 
     @When("the user types in their initials {string}")
-    public void theUserTypesInTheirInitials(String user_initials) {
+    public void theUserTypesInTheirInitials(String userInitials) {
         try {
-            TimeManager.login(user_initials);
+            timeManager.login(userInitials);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -37,19 +32,21 @@ public class LoginSteps {
 
     @Then("they are logged into the system")
     public void theyAreLoggedIntoTheSystem() {
-        assertEquals(TimeManager.getCurrentUser().getUserInitials(), user_initials);
+        assertEquals(timeManager.getCurrentUser().getUserInitials(), userInitials);
     }
 
     @Given("a user's initials {string} is not registered in the system")
-    public void aUsersInitialsIsNotRegisteredInTheSystem(String string) {
+    public void aUsersInitialsIsNotRegisteredInTheSystem(String userInitials) {
+        this.userInitials = userInitials;
     }
+
     @Then("they are not logged into the system")
     public void theyAreNotLoggedIntoTheSystem() {
-        assertNotEquals(TimeManager.getCurrentUser(), user_initials);
+        assertNotEquals(timeManager.getCurrentUser().getUserInitials(), userInitials);
     }
+
     @Then("the error message {string} is given")
     public void theErrorMessageIsGiven(String errorMessage) {
-        this.errorMessage.setErrorMessage(errorMessage);
         assertEquals(errorMessage, this.errorMessage.getErrorMessage());
     }
 }
