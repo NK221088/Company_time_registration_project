@@ -22,16 +22,19 @@ public class AddTimeRegistrationSteps {
     private double workedHours = 0;
 
     private TimeManager timeManager;
+    private ProjectHolder projectHolder;
+    private Project project;
     private ErrorMessageHolder errorMessage;
 
-    public AddTimeRegistrationSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public AddTimeRegistrationSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
     }
 
-    @Given("that the project with project ID {string} has an activity named {string} which is set as in progress")
-    public void thatTheProjectWithProjectIDHasAnActivityNamedWhichIsSetAsInProgress(String projectId, String activityName) {
-        Project project = timeManager.getProjectFromID(projectId);
+    @Given("that the project has an activity named {string} which is set as in progress")
+    public void thatTheProjectHasAnActivityNamedWhichIsSetAsInProgress(String activityName) {
+        this.project = projectHolder.getProject();
         Activity activity = project.getActivityFromName(activityName);
         assertFalse(activity.getFinalized());
     }
@@ -65,7 +68,11 @@ public class AddTimeRegistrationSteps {
 
     @Given("that the project with project ID {string} has an activity named {string} which is set as finalized")
     public void thatTheProjectWithProjectIDHasAnActivityNamedWhichIsSetAsFinalized(String projectId, String activityName) {
-        Project project = timeManager.getProjectFromID(projectId);
+
+    }
+    @Given("that the project has an activity named {string} which is set as finalized")
+    public void thatTheProjectHasAnActivityNamedWhichIsSetAsFinalized(String activityName) {
+        this.project = projectHolder.getProject();
         Activity activity = project.getActivityFromName(activityName);
         activity.setActivityAsFinalized();
         assertTrue(activity.getFinalized());

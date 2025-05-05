@@ -86,8 +86,8 @@
 				<version>3.13.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<source>21</source>
-					<target>21</target>
+					<source>22</source>
+					<target>22</target>
                     <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
 			</plugin>

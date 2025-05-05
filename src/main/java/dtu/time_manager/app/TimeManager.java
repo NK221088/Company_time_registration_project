@@ -120,10 +120,10 @@ public class TimeManager {
         return counted > 1;
     }
 
-    public Map viewProject(String projectID) {
+    public Map viewProject(Project project) {
         Map<String, Object> projectVariables = new HashMap<>();
 
-        Project project = projectMap.get(projectID);
+        String projectID = project.getProjectID();
         String projectName = project.getProjectName();
         List<Activity> activities = project.getActivities();
         User projectLead = project.getProjectLead();

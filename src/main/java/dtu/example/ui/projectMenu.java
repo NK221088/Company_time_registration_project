@@ -443,7 +443,7 @@ public class projectMenu {
         }
 
         // Get all project information using the TimeManager.viewProject method
-        Map<String, Object> projectInfo = timeManager.viewProject(selectedProject.getProjectID());
+        Map<String, Object> projectInfo = timeManager.viewProject(selectedProject);
 
         // Display project name (editable)
         Label nameLabel = new Label("Project name: " + projectInfo.get("Project name"));

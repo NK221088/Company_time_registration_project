@@ -19,38 +19,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AddActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
+    private ProjectHolder projectHolder;
+    private Project project;
 
-    public AddActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public AddActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
     }
 
-    @When("adds an activity named {string} to the project named {string}")
-    public void addsAnActivityNamedToTheProjectNamed(String activityName, String projectName) {
-        Project project = timeManager.getProjectFromName(projectName);
-        String projectID = project.getProjectID();
-        Project project_ = timeManager.getProjectFromID(projectID);
+    @When("adds an activity named {string} to the project")
+    public void addsAnActivityNamedToTheProject(String activityName) {
+        this.project = projectHolder.getProject();
         Activity activity = new Activity(activityName);
         try {
-            project_.addActivity(activity);
+            project.addActivity(activity);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
-    @Then("the activity named {string} should be added to the project named {string}")
-    public void theActivityNamedShouldBeAddedToTheProjectNamed(String activityName, String projectName) {
-        Project project = timeManager.getProjectFromName(projectName);
-        String projectID = project.getProjectID();
-        Project project_ = timeManager.getProjectFromID(projectID);
-        List<Activity> activities = project_.getActivities();
+    @Then("the activity named {string} should be added to the project")
+    public void theActivityNamedShouldBeAddedToTheProject(String activityName) {
+        List<Activity> activities = project.getActivities();
         assertTrue(activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName)));
-
     }
     @Then("the activity named {string} should be shown when the project named {string} is viewed")
     public void theActivityNamedShouldBeShownWhenTheProjectNamedIsViewed(String activityName, String projectName) {
         Project project = timeManager.getProjectFromName(projectName);
         String projectID = project.getProjectID();
-        Map<String, Object> projectVariables = timeManager.viewProject(projectID);
+        Map<String, Object> projectVariables = timeManager.viewProject(project);
         List<Activity> activities = (List<Activity>) projectVariables.get("Project activities");
         assertTrue(activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName)));
 

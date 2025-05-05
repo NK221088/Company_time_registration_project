@@ -4,8 +4,8 @@ Feature: Add Time Registration
 
   Scenario: Register a new Time Registration
     Given the user "huba" is logged in
-    And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
-    And that the project with project ID "25001" has an activity named "Activity 1" which is set as in progress
+    And a project, "Project 1", exists in the system
+    And that the project has an activity named "Activity 1" which is set as in progress
     When the user selects the activity "Activity 1" in project "Project 1"
     And the user enters "4" hours
     And the user selects the date "2025-04-20"
@@ -15,8 +15,8 @@ Feature: Add Time Registration
 
   Scenario: Try register a new Time Registration for an activity set as finalized
     Given the user "huba" is logged in
-    And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
-    And that the project with project ID "25001" has an activity named "Activity 1" which is set as finalized
+    And a project, "Project 1", exists in the system
+    And that the project has an activity named "Activity 1" which is set as finalized
     When the user selects the activity "Activity 1" in project "Project 1"
     And the user tries to add a time registration
     Then the time registration is not created

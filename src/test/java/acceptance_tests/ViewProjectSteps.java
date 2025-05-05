@@ -16,22 +16,27 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ViewProjectSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
+    private ProjectHolder projectHolder;
+    private Project project;
     private Map<String, Object> projectVariables = new HashMap<>();
 
-    public ViewProjectSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public ViewProjectSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
     }
 
-    @Given("a project with project ID {string} and project name {string} and time interval {string} exists in the system")
-    public void aProjectWithProjectIDAndProjectNameAndTimeIntervalExistsInTheSystem(String projectID, String projectName, String timeInterval) {
-        timeManager.addProject(timeManager.createExampleProject(projectName, 1));
+    @Given("a project, {string}, exists in the system")
+    public void aProjectExistsInTheSystem(String projectName) {
+        this.project = timeManager.createExampleProject(projectName, 1);
+        this.projectHolder.setProject(project);
+        timeManager.addProject(this.project);
     }
 
-    @When("the user views the project with project ID {string}")
-    public void theUserViewsTheProjectWithProjectID(String projectID) {
+    @When("the user views the project")
+    public void theUserViewsTheProject() {
         try {
-            this.projectVariables = timeManager.viewProject(projectID); // If no exception is thrown, the option is available
+            this.projectVariables = timeManager.viewProject(project); // If no exception is thrown, the option is available
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
