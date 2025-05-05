@@ -12,10 +12,6 @@ import javafx.scene.control.TextField;
 public class createProject {
     private TimeManager timeManager;
 
-    public createProject(TimeManager timeManager) {
-        this.timeManager = timeManager;
-    }
-
     @FXML
     private TextField projectName;
 
@@ -24,6 +20,7 @@ public class createProject {
 
     @FXML
     private void initialize() {
+        timeManager = TimeManagerProvider.getInstance();
         errorMessage.setVisible(false);
     }
 

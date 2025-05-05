@@ -2,7 +2,6 @@ Feature: Assign activity
   Description: A user assigns someone (including themselves) to an activity
   Actors: User
 
-  @happy-path
   Scenario Outline: Successful assignment increases count by 1
     Given the user "<actor>" is logged in
     And the user "<target>" has <start_count> assigned activities
@@ -16,7 +15,6 @@ Feature: Assign activity
       | huba  | alex   | 0           | 1         |
       | huba  | huba   | 0           | 1         |
 
-  @maxed-out
   Scenario: Cannot assign someone past their max activities
     Given the user "huba" is logged in
     And the user "isak" has 20 assigned activities
@@ -25,7 +23,6 @@ Feature: Assign activity
     Then the user "isak" isn't assigned to "Activity 1" in "Project 1"
     And the error message "'isak' is already assigned to the maximum number of 20 activities" is given
 
-  @duplicate
   Scenario: Cannot assign someone to the same activity twice
     Given the user "huba" is logged in
     And the user "bria" has 1 assigned activities

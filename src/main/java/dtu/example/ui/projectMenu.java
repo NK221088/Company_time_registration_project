@@ -20,10 +20,6 @@ import java.util.*;
 public class projectMenu {
     private TimeManager timeManager;
 
-    public projectMenu(TimeManager timeManager) {
-        this.timeManager = timeManager;
-    }
-
     @FXML
     private TreeView<Object> projectTreeView;
 
@@ -48,13 +44,13 @@ public class projectMenu {
     @FXML
     private Button addActivityButton;
 
-
     private Project selectedProject;
     private Activity selectedActivity;
     private Boolean hasSelectedIndependent = false;
 
     @FXML
     private void initialize() {
+        timeManager = TimeManagerProvider.getInstance();
         loadProjectTree();
         setSelectionListener();
 

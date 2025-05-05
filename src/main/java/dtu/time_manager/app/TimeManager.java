@@ -18,20 +18,7 @@ public class TimeManager {
     private List<TimeRegistration> time_registrations = new ArrayList<>();
     private int projectCount = 0;
 
-    public TimeManager() {
-//        User isak = new User("isak");
-//        User bria = new User("bria");
-//        User huba = new User("huba");
-//
-//        addUser(isak); addUser(bria); addUser(huba);
-
-//        Project project1 = createExampleProject("Project 1", 1);
-//        Project project2 = createExampleProject("Project 2", 2);
-//        addProject(project1); addProject(project2);
-
-//        for (Activity activity : project1.getActivities()) { assignUser(activity, bria); }
-//        for (Activity activity : project2.getActivities()) { assignUser(activity, isak); }
-    }
+    public TimeManager() {}
 
     public void assignUser(Activity activity, User user) {
         activity.assignUser(user);
@@ -261,4 +248,19 @@ public class TimeManager {
     }
 
     public List<Activity> getIndependentActivities() { return independentActivities; }
+
+    public void appInitialize() {
+        User isak = new User("isak");
+        User bria = new User("bria");
+        User huba = new User("huba");
+
+        addUser(isak); addUser(bria); addUser(huba);
+
+        Project project1 = createExampleProject("Project 1", 1);
+        Project project2 = createExampleProject("Project 2", 2);
+        addProject(project1); addProject(project2);
+
+        for (Activity activity : project1.getActivities()) { assignUser(activity, bria); }
+        for (Activity activity : project2.getActivities()) { assignUser(activity, isak); }
+    }
 }

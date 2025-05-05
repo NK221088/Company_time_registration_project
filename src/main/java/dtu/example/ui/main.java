@@ -11,11 +11,11 @@ import java.io.IOException;
 public class main {
     private TimeManager timeManager;
 
-    public main(TimeManager timeManager) {
-        this.timeManager = timeManager;
+    private void initialize() {
+        timeManager = TimeManagerProvider.getInstance();
     }
 
-    public void projectMenu(ActionEvent actionEvent) throws IOException {
+        public void projectMenu(ActionEvent actionEvent) throws IOException {
         App.setRoot("projectMenu");
     }
 

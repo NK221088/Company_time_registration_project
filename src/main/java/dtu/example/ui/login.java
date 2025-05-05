@@ -11,10 +11,6 @@ import java.io.IOException;
 public class login {
     private TimeManager timeManager;
 
-    public login(TimeManager timeManager) {
-        this.timeManager = timeManager;
-    }
-
     @FXML
     private TextField userInitials;
 
@@ -23,7 +19,18 @@ public class login {
 
     @FXML
     private void initialize() {
+        timeManager = TimeManagerProvider.getInstance();
         errorMessage.setVisible(false);
+
+        userInitials.setOnKeyPressed(event -> {
+            if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
+                try {
+                    attemptLogin();
+                } catch (IOException e) {
+                    e.printStackTrace(); // or handle it more gracefully
+                }
+            }
+        });
     }
 
     @FXML

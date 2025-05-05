@@ -8,9 +8,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/**
- * JavaFX App
- */
+import dtu.time_manager.app.TimeManager;
+import dtu.example.ui.TimeManagerProvider;
+
 public class App extends Application {
 
     private static Scene scene;
