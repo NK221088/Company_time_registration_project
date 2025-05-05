@@ -3,7 +3,7 @@ Feature: Add project
   Actors: User
 
   Scenario: Add a new project
-    Given a user is logged in
+    Given the user "huba" is logged in
     And the current year is 2025
     And the current project count is 2
     When a new project with name "Project Add" is added
@@ -11,7 +11,7 @@ Feature: Add project
     And the project is assigned a project id "25003"
 
   Scenario: Add a new project with an already existing name
-    Given a user is logged in
+    Given the user "huba" is logged in
     And a project with name "Project 1" exists in the system
     When a new project with name "Project 1" is added
     Then the project with name "Project 1" is not created

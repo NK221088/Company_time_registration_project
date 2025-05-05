@@ -10,60 +10,81 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TimeManager {
-    public static User current_user;
-    private static List<User> users = new ArrayList<>();
-    private static List<Project> projects = new ArrayList<>();
-    private static List<Activity> independentActivities = new ArrayList<>();
-    private static Map<String, Project> projectMap = new HashMap<>();
-    private static List<TimeRegistration> time_registrations = new ArrayList<>();
-    private static int projectCount = 0;
+    private User current_user;
+    private List<User> users = new ArrayList<>();
+    private List<Project> projects = new ArrayList<>();
+    private List<Activity> independentActivities = new ArrayList<>();
+    private Map<String, Project> projectMap = new HashMap<>();
+    private List<TimeRegistration> time_registrations = new ArrayList<>();
+    private int projectCount = 0;
 
-    static {
-        addUser(new User("huba"));
-        addUser(new User("isak"));
-        addUser(new User("bria"));
-        addProject(Project.exampleProject("Project 1", 1));
-        addProject(Project.exampleProject("Project 2", 20));
-        Project project = getProjectFromName("Project 2");
-        List<Activity> activities = project.getActivities();
-        for (Activity activity : activities) {
-            activity.assignUser("isak");
-        }
-        Project project1 = getProjectFromName("Project 1");
-        List<Activity> activities1 = project1.getActivities();
-        for (Activity activity : activities1) {
-            activity.assignUser("bria");
-        }
-        }
+    public TimeManager() {
+//        User isak = new User("isak");
+//        User bria = new User("bria");
+//        User huba = new User("huba");
+//
+//        addUser(isak); addUser(bria); addUser(huba);
 
-    public static void login(String userInitials) {
-        try {
-            current_user = getUser(userInitials);
-        } catch (Exception e) {
-            throw e;
-        }
+//        Project project1 = createExampleProject("Project 1", 1);
+//        Project project2 = createExampleProject("Project 2", 2);
+//        addProject(project1); addProject(project2);
+
+//        for (Activity activity : project1.getActivities()) { assignUser(activity, bria); }
+//        for (Activity activity : project2.getActivities()) { assignUser(activity, isak); }
     }
 
-    public static void addUser(User user) {
+    public void assignUser(Activity activity, User user) {
+        activity.assignUser(user);
+    }
+
+    public void unassignUser(Activity activity, User user) {
+        activity.unassignUser(user);
+    }
+
+    public void setCurrentUser(String userInitials) {
+        current_user = getUserFromInitials(userInitials);
+    }
+
+    public void addUser(User user) {
         if (!users.contains(user)) {
             users.add(user);
         }
     }
-    public static User getUser(String user_initials) {
+
+    public User getUserFromInitials(String user_initials) {
         try {
             return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
         } catch (Exception _) {
             throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
         }
     }
-    public static List<User> getUsers() {
-        return users;
-    }
-    public static User getCurrentUser() {
-        return current_user;
+
+    public List<User> getUsers() { return users; }
+
+    public User getCurrentUser() { return current_user; }
+
+    private String formatID(int count) { return "25" + String.format("%03d", count); }
+
+    public Project createProject(String projectName) {
+        String id = formatID(++this.projectCount);
+        return new Project(projectName, id);
     }
 
-    public static void addProject(Project project) {
+    public Project createExampleProject(String projectName, Integer numberOfActivities) {
+        Project project = createProject(projectName);
+        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
+        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
+        try {
+            for (int i = 1; i <= numberOfActivities; i++) {
+                project.addActivity(new Activity("Activity "+String.valueOf(i)));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return project;
+    }
+
+    public void addProject(Project project) {
         if (!projectExists(project.getProjectName())) {
             projectMap.put(project.getProjectID(), project);
             projects.add(project);
@@ -73,39 +94,38 @@ public class TimeManager {
         }
     }
 
-    private static void decProjectCount() {
+    private void decProjectCount() {
         projectCount--;
-//        perhaps project count should only be incremented IF the project is valid to begin with, which would make this function superfluous
     }
 
-    public static List<Project> getProjects() {
+    public List<Project> getProjects() {
         return projects;
     }
 
-    public static Project getProjectFromID(String projectID) {
+    public Project getProjectFromID(String projectID) {
         return projectMap.get(projectID);
     }
 
-    public static Project getProjectFromName(String projectName) {
+    public Project getProjectFromName(String projectName) {
         return projects.stream()
                 .filter(project -> project.getProjectName().equals(projectName))
                 .findFirst() // Returns an Optional<Project>
                 .orElse(null); // If no project is found, return null
     }
 
-    public static int incProjectCount() {
+    public int incProjectCount() {
         return ++projectCount;
     }
 
-    public static int getProjectCount() {
+    public int getProjectCount() {
         return projectCount;
     }
 
-    public static boolean projectExists(String projectName) {
+    public boolean projectExists(String projectName) {
         return projects.stream().map(Project::getProjectName).anyMatch(name -> name.equals(projectName));
     }
 
-    public static boolean projectDuplicateExists(String projectName) {
+    public boolean projectDuplicateExists(String projectName) {
         long counted = projects.stream()
                 .map(Project::getProjectName)
                 .filter(name -> name.equals(projectName))
@@ -113,7 +133,7 @@ public class TimeManager {
         return counted > 1;
     }
 
-    public static Map viewProject(String projectID) {
+    public Map viewProject(String projectID) {
         Map<String, Object> projectVariables = new HashMap<>();
 
         Project project = projectMap.get(projectID);
@@ -146,7 +166,7 @@ public class TimeManager {
         return projectVariables;
     }
 
-    public static Map getProjectReport(String projectID) {
+    public Map getProjectReport(String projectID) {
         Project project = getProjectFromID(projectID); // Retrieve the project for which to generate the project report
         Map<String, Object> reportVariables = new HashMap<>();
         reportVariables.put("Project Name", project.getProjectName()); // Insert the name in the report
@@ -217,20 +237,20 @@ public class TimeManager {
         return reportVariables;
     }
 
-    public static void logout() {
+    public void logout() {
         current_user = null;
     }
 
-    public static void addTimeRegistration(TimeRegistration timeRegistration) {
+    public void addTimeRegistration(TimeRegistration timeRegistration) {
         time_registrations.add(timeRegistration);
 //        this function needs to
     }
 
-    public static List<TimeRegistration> getTimeRegistrations() {
+    public List<TimeRegistration> getTimeRegistrations() {
         return time_registrations;
     }
 
-    public static void addIndependentActivity(Activity activity) throws Exception {
+    public void addIndependentActivity(Activity activity) throws Exception {
         if (!independentActivities.stream().anyMatch(a -> a.getActivityName().equals(activity.getActivityName()))) {
             independentActivities.add(activity);
         } else {
@@ -239,5 +259,6 @@ public class TimeManager {
             );
         }
     }
-    public static List<Activity> getIndependentActivities() { return independentActivities; }
+
+    public List<Activity> getIndependentActivities() { return independentActivities; }
 }

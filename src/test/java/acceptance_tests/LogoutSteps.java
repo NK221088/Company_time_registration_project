@@ -2,25 +2,28 @@ package acceptance_tests;
 
 import dtu.time_manager.app.TimeManager;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LogoutSteps {
+    private TimeManager timeManager;
+    private ErrorMessageHolder errorMessage;
 
-    @Given("the user with the initials {string} is logged in")
-    public void theUserWithTheInitialsIsLoggedIn(String userInitials) {
-        TimeManager.login(userInitials);
-        assertEquals(TimeManager.getCurrentUser(), TimeManager.getUser(userInitials));
-
+    public LogoutSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+        this.timeManager = timeManager;
+        this.errorMessage = errorMessage;
     }
 
-    @When("the user with the initials {string} logs out")
-    public void theUserWithTheInitialsLogsOut(String string) {
-        TimeManager.logout();
-        assertNull(TimeManager.getCurrentUser());
-
-
+    @When("the user {string} logs out")
+    public void theUserLogsOut(String string) {
+        timeManager.logout();
+        assertNull(timeManager.getCurrentUser());
+    }
+    @Then("they are logged out")
+    public void theyAreLoggedOut() {
+        assertNull(timeManager.getCurrentUser());
     }
 }

@@ -9,6 +9,11 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 
 public class main {
+    private TimeManager timeManager;
+
+    public main(TimeManager timeManager) {
+        this.timeManager = timeManager;
+    }
 
     public void projectMenu(ActionEvent actionEvent) throws IOException {
         App.setRoot("projectMenu");
@@ -21,6 +26,6 @@ public class main {
     public void logout(ActionEvent actionEvent) throws IOException {
         App.setRoot("login");
         // MAKE TIME MANAGER A GLOBALLY ACCESSED THINGAMAJIG
-        TimeManager.logout();
+        timeManager.logout();
     }
 }

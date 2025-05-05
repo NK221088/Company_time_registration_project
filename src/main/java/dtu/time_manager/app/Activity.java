@@ -48,23 +48,20 @@ public class Activity {
         return info;
     }
 
-    public void assignUser(String userInitials) {
-        User user = TimeManager.getUser(userInitials);
+    public void assignUser(User user) {
         Integer activityCount = user.getActivityCount();
         if (activityCount < 20){
             if(assignedUsers.contains(user)){
-                throw new RuntimeException(userInitials + " is already assigned to the activity " + getActivityName());
+                throw new RuntimeException(user.getUserInitials() + " is already assigned to the activity " + getActivityName());
             }
             assignedUsers.add(user);
             user.incrementActivityCount();
         } else {
-            throw new RuntimeException(userInitials + " is already assigned to the maximum number of 20 activities");
+            throw new RuntimeException(user.getUserInitials() + " is already assigned to the maximum number of 20 activities");
         }
     }
 
-    public void unassignUser(String userInitials) {
-        User user = TimeManager.getUser(userInitials);
-
+    public void unassignUser(User user) {
         if (this.assignedUsers.contains(user)) {
             this.assignedUsers.remove(user);
         } else {
@@ -106,7 +103,6 @@ public class Activity {
 
     public void setActivityAsFinalized() {
         this.isFinalized = true;
-
     }
 
     public boolean getFinalized() {

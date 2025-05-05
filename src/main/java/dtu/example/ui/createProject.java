@@ -10,7 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class createProject {
-    private TimeManager timeManager = new TimeManager();
+    private TimeManager timeManager;
+
+    public createProject(TimeManager timeManager) {
+        this.timeManager = timeManager;
+    }
 
     @FXML
     private TextField projectName;
@@ -26,7 +30,8 @@ public class createProject {
     @FXML
     private void createProject() throws IOException {
         try {
-            TimeManager.addProject(new Project(projectName.getText()));
+            Project project = timeManager.createProject(projectName.getText());
+            timeManager.addProject(project);
             errorMessage.setVisible(false);
         } catch (Exception e) {
             errorMessage.setText(e.getMessage());

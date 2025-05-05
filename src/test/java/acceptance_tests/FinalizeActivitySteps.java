@@ -9,8 +9,10 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class setActivityAsFinalizedSteps {
+public class FinalizeActivitySteps {
+    private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
+
     private Project project;
     private Activity firstActivity;
     private Activity secondActivity;
@@ -18,18 +20,18 @@ public class setActivityAsFinalizedSteps {
     private double hours;
     private LocalDate date;
     private double registeredHours;
-    private TimeManager timeManager;
 
-    public setActivityAsFinalizedSteps() {
-        this.errorMessage = new ErrorMessageHolder();
+    public FinalizeActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
         this.timeManager = timeManager;
+        this.errorMessage = errorMessage;
     }
 
     @Given("two unfinalized activities exists in a project")
     public void twoUnfinalizedActivitiesExistsInAProject() throws Exception {
         this.timeManager = new TimeManager();
-        Project project = new Project("Project with finalized activity");
+        Project project = timeManager.createProject("Project with finalized activity");
         timeManager.addProject(project);
+
         this.project = project;
         this.firstActivity = new Activity("Activity to be finalized");
         this.secondActivity = new Activity("Unfinalized activity");
@@ -72,11 +74,15 @@ public class setActivityAsFinalizedSteps {
 
     }
     @Given("a finalized activity exists in a project")
-    public void aFinalizedActivityExistsInAProject() {
-        this.project = timeManager.getProjectFromName("Project with finalized activity");
-        this.firstActivity = this.project.getActivityFromName("Activity to be finalized");
-        this.secondActivity = this.project.getActivityFromName("Unfinalized activity");
+    public void aFinalizedActivityExistsInAProject() throws Exception {
+        this.project = timeManager.createProject("Project with finalized activity");
+        this.firstActivity = new Activity("Activity to be finalized");
         this.firstActivity.setActivityAsFinalized();
+        this.secondActivity = new Activity("Unfinalized activity");
+
+        this.project.addActivity(firstActivity);
+        this.project.addActivity(secondActivity);
+
         assertTrue(this.firstActivity.getFinalized());
     }
     @Given("an unfinalized activity exists in the project")

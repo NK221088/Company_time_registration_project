@@ -1,7 +1,7 @@
 package dtu.example.ui;
 
-import dtu.time_manager.app.TimeManager;
-import javafx.event.ActionEvent;
+import dtu.time_manager.app.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,6 +9,12 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 
 public class login {
+    private TimeManager timeManager;
+
+    public login(TimeManager timeManager) {
+        this.timeManager = timeManager;
+    }
+
     @FXML
     private TextField userInitials;
 
@@ -23,7 +29,7 @@ public class login {
     @FXML
     private void attemptLogin() throws IOException {
         try {
-            TimeManager.login(userInitials.getText());
+            timeManager.setCurrentUser(userInitials.getText());
             App.setRoot("main");
             errorMessage.setVisible(false);
         } catch (Exception e) {

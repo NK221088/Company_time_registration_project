@@ -29,6 +29,11 @@
     import java.util.stream.Collectors;
 
     public class TimeOverview implements Initializable {
+        private TimeManager timeManager;
+
+        public TimeOverview(TimeManager timeManager) {
+            this.timeManager = timeManager;
+        }
 
         @FXML
         private AnchorPane rootPane;
@@ -196,13 +201,13 @@
 
             // 1. User choice box
             ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
-            userChoiceBox.getItems().addAll(TimeManager.getUsers());
+            userChoiceBox.getItems().addAll(timeManager.getUsers());
             userChoiceBox.setValue(tr.getRegisteredUser()); // Current user
 
             // 2. Activity choice box (optional - only if you want to allow changing activity)
             // Get the project of the current activity
             Project currentProject = null;
-            for (Project p : TimeManager.getProjects()) {
+            for (Project p : timeManager.getProjects()) {
                 if (p.getActivities().contains(tr.getRegisteredActivity())) {
                     currentProject = p;
                     break;
@@ -356,7 +361,7 @@
             }
 
             // Access static TimeManager methods directly
-            User currentUser = TimeManager.getCurrentUser();
+            User currentUser = timeManager.getCurrentUser();
             if (currentUser != null) {
                 userLabel.setText("Current User: " + currentUser.getUserInitials());
             } else {
@@ -396,7 +401,7 @@
                 personalTableView.getRoot().getChildren().clear();
             }
 
-            User currentUser = TimeManager.getCurrentUser();
+            User currentUser = timeManager.getCurrentUser();
             if (currentUser == null) {
                 // No user logged in, show message
                 return;
@@ -468,7 +473,7 @@
             Map<Project, Map<Activity, List<TimeRegistration>>> userTimeRegByProject = new HashMap<>();
 
             // Get all time registrations for the current user and organize them by project and activity
-            for (Project project : TimeManager.getProjects()) {
+            for (Project project : timeManager.getProjects()) {
                 Map<Activity, List<TimeRegistration>> activitiesMap = new HashMap<>();
 
                 for (Activity activity : project.getActivities()) {
@@ -479,7 +484,7 @@
                     List<TimeRegistration> activityRegistrations = new ArrayList<>();
 
                     // Get time registrations for this activity
-                    for (TimeRegistration tr : TimeManager.getTimeRegistrations()) {
+                    for (TimeRegistration tr : timeManager.getTimeRegistrations()) {
                         if (tr.getRegisteredUser().equals(currentUser) &&
                                 tr.getRegisteredActivity().equals(activity)) {
                             activityRegistrations.add(tr);
@@ -600,7 +605,7 @@
                 String dateStr = dateFormatter.format(date);
                 int totalHours = 0;
 
-                for (TimeRegistration tr : TimeManager.getTimeRegistrations()) {
+                for (TimeRegistration tr : timeManager.getTimeRegistrations()) {
                     if (tr.getRegisteredUser().equals(currentUser) &&
                             tr.getRegisteredDate().equals(date)) {
                         totalHours += tr.getRegisteredHours();
@@ -707,7 +712,7 @@
             ObservableList<Map<String, String>> items = FXCollections.observableArrayList();
 
             // Add data for each user
-            for (User user : TimeManager.getUsers()) {
+            for (User user : timeManager.getUsers()) {
                 Map<String, String> rowData = new HashMap<>();
                 rowData.put("user", user.getUserInitials());
 
@@ -716,7 +721,7 @@
                     String dateStr = dateFormatter.format(date);
                     int registeredHours = 0;
 
-                    for (TimeRegistration tr : TimeManager.getTimeRegistrations()) {
+                    for (TimeRegistration tr : timeManager.getTimeRegistrations()) {
                         if (tr.getRegisteredUser().equals(user) && tr.getRegisteredDate().equals(date)) {
                             registeredHours += tr.getRegisteredHours();
                         }
@@ -767,9 +772,9 @@
 
             // Activity choices: only assigned activities
             ChoiceBox<Activity> activityChoiceBox = new ChoiceBox<>();
-            User currentUser = TimeManager.getCurrentUser();
+            User currentUser = timeManager.getCurrentUser();
 
-            List<Activity> assignedActivities = TimeManager.getProjects().stream()
+            List<Activity> assignedActivities = timeManager.getProjects().stream()
                     .flatMap(p -> p.getActivities().stream())
                     .filter(a -> a.getAssignedUsers().contains(currentUser) || a.getWorkingUsers().contains(currentUser))
                     .distinct()
@@ -842,7 +847,7 @@
 
                 try {
                     TimeRegistration tr = new TimeRegistration(currentUser, selectedActivity, totalHours, date);
-                    TimeManager.addTimeRegistration(tr);
+                    timeManager.addTimeRegistration(tr);
 
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                     successAlert.setTitle("Success");

@@ -18,8 +18,11 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class projectMenu {
-//    @FXML
-//    private ChoiceBox<Project> projectContainer;
+    private TimeManager timeManager;
+
+    public projectMenu(TimeManager timeManager) {
+        this.timeManager = timeManager;
+    }
 
     @FXML
     private TreeView<Object> projectTreeView;
@@ -127,7 +130,7 @@ public class projectMenu {
         TreeItem<Object> projectsItem = new TreeItem<>("Projects");
         projectsItem.setExpanded(true);
 
-        for (Project project : TimeManager.getProjects()) {
+        for (Project project : timeManager.getProjects()) {
             TreeItem<Object> projectItem = new TreeItem<>(project);
 
             boolean allActivitiesFinalized = true;
@@ -148,7 +151,7 @@ public class projectMenu {
         TreeItem<Object> independentActivitiesItem = new TreeItem<>("Independent Activities");
         independentActivitiesItem.setExpanded(true);
 
-        for (Activity activity : TimeManager.getIndependentActivities()) {
+        for (Activity activity : timeManager.getIndependentActivities()) {
             TreeItem<Object> activityItem = new TreeItem<>(activity);
             independentActivitiesItem.getChildren().add(activityItem);
         }
@@ -385,7 +388,7 @@ public class projectMenu {
         dialog.getDialogPane().getButtonTypes().addAll(assignButtonType, ButtonType.CANCEL);
 
         ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
-        userChoiceBox.getItems().addAll(TimeManager.getUsers());
+        userChoiceBox.getItems().addAll(timeManager.getUsers());
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -406,7 +409,7 @@ public class projectMenu {
             }
 
             try {
-                activity.assignUser(selectedUser.getUserInitials());
+                timeManager.assignUser(activity, selectedUser);
                 showActivityInformation(activity);
                 loadProjectTree();
             } catch (RuntimeException e) {
@@ -444,7 +447,7 @@ public class projectMenu {
         }
 
         // Get all project information using the TimeManager.viewProject method
-        Map<String, Object> projectInfo = TimeManager.viewProject(selectedProject.getProjectID());
+        Map<String, Object> projectInfo = timeManager.viewProject(selectedProject.getProjectID());
 
         // Display project name (editable)
         Label nameLabel = new Label("Project name: " + projectInfo.get("Project name"));
@@ -517,7 +520,7 @@ public class projectMenu {
         projectLeadLabel.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 // Get all available users
-                List<User> users = TimeManager.getUsers();
+                List<User> users = timeManager.getUsers();
                 if (users == null || users.isEmpty()) {
                     showError("No users available to assign. Please add users to the system first.");
                     return;
@@ -719,11 +722,11 @@ public class projectMenu {
 
 
     public void projectReport(ActionEvent actionEvent) {
-        Project selectedProject = TimeManager.getProjects().get(0);
+        Project selectedProject = timeManager.getProjects().get(0);
         if (selectedProject != null) {
             String projectName = selectedProject.toString();
             try {
-                Map<String, Object> projectReport = TimeManager.getProjectReport(selectedProject.getProjectID());
+                Map<String, Object> projectReport = timeManager.getProjectReport(selectedProject.getProjectID());
                 List<Activity> activities = selectedProject.getActivities();
 
                 // Build the report text with better formatting
@@ -893,14 +896,14 @@ public class projectMenu {
                 return;
             }
 
-            if (TimeManager.projectDuplicateExists(name)) {
+            if (timeManager.projectDuplicateExists(name)) {
                 showError("A project with name '" + name + "' already exists in the system.\nPlease choose a different name.");
                 event.consume();
                 return;
             }
 
             try {
-                Project project = new Project(name);
+                Project project = timeManager.createProject(name);
 
                 // Only set dates if they are chosen
                 if (startDate != null) {
@@ -910,7 +913,7 @@ public class projectMenu {
                     project.setProjectEndDate(endDate);
                 }
 
-                TimeManager.addProject(project);
+                timeManager.addProject(project);
                 loadProjectTree();
             } catch (Exception e) {
                 showError("Error adding project: " + e.getMessage());
@@ -972,7 +975,7 @@ public class projectMenu {
             try {
                 Activity activity = new Activity(activityName);
                 if (hasSelectedIndependent) {
-                    TimeManager.addIndependentActivity(activity);
+                    timeManager.addIndependentActivity(activity);
                 } else {
                     selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
                 }
@@ -999,7 +1002,7 @@ public class projectMenu {
             return;
         }
 
-        List<User> users = TimeManager.getUsers();
+        List<User> users = timeManager.getUsers();
 
         for (User user : users) {
             if (selectedActivity.getAssignedUsers().contains(user)) {
@@ -1041,11 +1044,10 @@ public class projectMenu {
             }
 
             try {
-                selectedActivity.assignUser(selectedUser.getUserInitials());
+                timeManager.assignUser(selectedActivity, selectedUser);
 
                 // Show confirmation
-                projectInfoStatus.setText("Employee " + selectedUser.getUserInitials() + " assigned to activity " +
-                        selectedActivity.getActivityName() + " successfully.");
+                projectInfoStatus.setText("Employee " + selectedUser.getUserInitials() + " assigned to activity " + selectedActivity.getActivityName() + " successfully.");
 
                 // Refresh view
                 showActivityInformation(selectedActivity);
@@ -1159,8 +1161,8 @@ public class projectMenu {
 
         // 1. User choice box
         ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
-        userChoiceBox.getItems().addAll(TimeManager.getUsers());
-        userChoiceBox.setValue(TimeManager.getCurrentUser()); // Default to current user
+        userChoiceBox.getItems().addAll(timeManager.getUsers());
+        userChoiceBox.setValue(timeManager.getCurrentUser()); // Default to current user
 
         // 2. Hours and minutes dropdowns
         ChoiceBox<Integer> hoursChoiceBox = new ChoiceBox<>();
@@ -1243,7 +1245,7 @@ public class projectMenu {
 
             try {
                 TimeRegistration timeRegistration = new TimeRegistration(selectedUser, selectedActivity, totalHours, date);
-                TimeManager.addTimeRegistration(timeRegistration);
+                timeManager.addTimeRegistration(timeRegistration);
 
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                 successAlert.setTitle("Success");
@@ -1310,7 +1312,7 @@ public class projectMenu {
             }
 
             try {
-                selectedActivity.unassignUser(selectedUser.getUserInitials());
+                timeManager.unassignUser(selectedActivity, selectedUser);
 
                 // Show confirmation
                 projectInfoStatus.setText("Employee " + selectedUser.getUserInitials() + " unassigned to activity " +

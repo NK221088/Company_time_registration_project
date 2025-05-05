@@ -3,7 +3,7 @@ Feature: View Activity
   Actors: User
 
   Scenario: A user views an activity
-    Given a user is logged in
+    Given the user "huba" is logged in
     And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
     And that the project with project ID "25001" have a registered activity with name "Activity 1"
     And the activity has the start date "2025-01-11" and end date "2025-01-25"

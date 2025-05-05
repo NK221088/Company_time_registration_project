@@ -1,48 +1,35 @@
 Feature: Assign activity
-  Description: A user assigns someone else to an activity
+  Description: A user assigns someone (including themselves) to an activity
   Actors: User
 
-Scenario: A user assigns another user to an activity
-  Given a user with initials "huba" and a user with initials "alex" is registered in the system
-  And the user with initials "huba" is logged in
-  And the user with initials "alex"'s count of currently assigned activities is 0
-  And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
-  And that the project with project ID "25001" has an activity named "Activity 1"
-  When the user with initials "huba" assigns the user with initials "alex" to an activity named "Activity 1" in the project named "Project 1"
-  Then the user with initials "alex" is assigned to the activity named "Activity 1" in the project named "Project 1"
-  And the user with initials "alex"'s count of currently assigned activities is 1
+  @happy-path
+  Scenario Outline: Successful assignment increases count by 1
+    Given the user "<actor>" is logged in
+    And the user "<target>" has <start_count> assigned activities
+    And a project named "Project 1" with an activity named "Activity 1" exists in the system
+    When the user "<actor>" assigns the user "<target>" to "Activity 1" in "Project 1"
+    Then the user "<target>" is assigned to "Activity 1" in "Project 1"
+    And the user "<target>"'s count of currently assigned activities is <end_count>
 
+    Examples:
+      | actor | target | start_count | end_count |
+      | huba  | alex   | 0           | 1         |
+      | huba  | huba   | 0           | 1         |
 
-Scenario: A user assigns themselves user to an activity
-  Given a user with initials "huba" is registered in the system
-  And the user with initials "huba" is logged in
-  And the user with initials "huba"'s count of currently assigned activities is 0
-  And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
-  And that the project with project ID "25001" has an activity named "Activity 1"
-  When the user with initials "huba" assigns the user with initials "huba" to an activity named "Activity 1" in the project named "Project 1"
-  Then the user with initials "huba" is assigned to the activity named "Activity 1" in the project named "Project 1"
-  And the user with initials "huba"'s count of currently assigned activities is 1
+  @maxed-out
+  Scenario: Cannot assign someone past their max activities
+    Given the user "huba" is logged in
+    And the user "isak" has 20 assigned activities
+    And a project named "Project 1" with an activity named "Activity 1" exists in the system
+    When the user "huba" assigns the user "isak" to "Activity 1" in "Project 1"
+    Then the user "isak" isn't assigned to "Activity 1" in "Project 1"
+    And the error message "'isak' is already assigned to the maximum number of 20 activities" is given
 
-
-Scenario: A user assigns another user, currently assigned to the maximum number of activities, to an activity
-  Given a user with initials "huba" and a user with initials "isak" is registered in the system
-  And the user with initials "huba" is logged in
-  And the user with initials "isak"'s count of currently assigned activities is 20
-  And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
-  And that the project with project ID "25001" has an activity named "Activity 1"
-  When the user with initials "huba" assigns the user with initials "isak" to an activity named "Activity 1" in the project named "Project 1"
-  Then the user with initials "isak" is not assigned to the activity named "Activity 1" in the project named "Project 1"
-  And the user with initials "isak"'s count of currently assigned activities is 20
-  And the error message "'isak' is already assigned to the maximum number of 20 activities" is given
-
-Scenario: A user assigns another user, to an activity which they are already assigned to
-  Given a user with initials "huba" and a user with initials "bria" is registered in the system
-  And the user with initials "huba" is logged in
-  And the user with initials "bria"'s count of currently assigned activities is 1
-  And a project with project ID "25001" and project name "Project 1" and time interval "2025-01-01 - 2025-01-08" exists in the system
-  And that the project with project ID "25001" has an activity named "Activity 1"
-  And that the user with initials "bria" is assigned to an activity named "Activity 1" in the project named "Project 1"
-  When the user with initials "huba" assigns the user with initials "bria" to an activity named "Activity 1" in the project named "Project 1"
-  Then the user with initials "bria" is only assigned to the activity named "Activity 1" in the project named "Project 1" once
-  And the user with initials "bria"'s count of currently assigned activities is 1
-  And the error message "'bria' is already assigned to the activity 'Activity 1'" is given
+  @duplicate
+  Scenario: Cannot assign someone to the same activity twice
+    Given the user "huba" is logged in
+    And the user "bria" has 1 assigned activities
+    And a project named "Project 1" with an activity named "Activity 1" exists in the system
+    And the user "bria" is already assigned to "Activity 1" in "Project 1"
+    When the user "huba" assigns the user "bria" to "Activity 1" in "Project 1"
+    Then the error message "'bria' is already assigned to the activity 'Activity 1'" is given

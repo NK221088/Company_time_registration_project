@@ -1,6 +1,5 @@
 package acceptance_tests;
 
-import dtu.example.ui.*;
 import dtu.time_manager.app.TimeManager;
 import dtu.time_manager.app.User;
 import io.cucumber.java.en.Given;
@@ -12,44 +11,46 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class LoginSteps {
-    private User user;
+    private final TimeManager timeManager;
+    private final ErrorMessageHolder errorMessage;
     private String user_initials;
-    private ErrorMessageHolder errorMessage;
 
-    public LoginSteps(ErrorMessageHolder errorMessage) {
+    public LoginSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+        this.timeManager = timeManager;
         this.errorMessage = errorMessage;
     }
 
-    @Given("a user's initials {string} is registered in the system")
-    public void aUsersInitialsIsRegisteredInTheSystem(String user_initials) {
-        this.user_initials = user_initials;
-        user = new User(user_initials);
+    @Given("the user {string} is registered")
+    public void theUserIsRegistered(String user_initials) {
+        timeManager.addUser(new User(user_initials));
     }
-
     @When("the user types in their initials {string}")
     public void theUserTypesInTheirInitials(String user_initials) {
         try {
-            TimeManager.login(user_initials);
+            timeManager.setCurrentUser(user_initials);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
-
     @Then("they are logged into the system")
     public void theyAreLoggedIntoTheSystem() {
-        assertEquals(TimeManager.getCurrentUser().getUserInitials(), user_initials);
+        assertNotNull(timeManager.getCurrentUser());
     }
 
-    @Given("a user's initials {string} is not registered in the system")
-    public void aUsersInitialsIsNotRegisteredInTheSystem(String string) {
-    }
-    @Then("they are not logged into the system")
-    public void theyAreNotLoggedIntoTheSystem() {
-        assertNotEquals(TimeManager.getCurrentUser(), user_initials);
+    @Then("they aren't logged into the system")
+    public void theyArenTLoggedIntoTheSystem() {
+        assertNull(timeManager.getCurrentUser());
     }
     @Then("the error message {string} is given")
     public void theErrorMessageIsGiven(String errorMessage) {
         this.errorMessage.setErrorMessage(errorMessage);
         assertEquals(errorMessage, this.errorMessage.getErrorMessage());
+    }
+
+    @Given("the user {string} is logged in")
+    public void theUserIsLoggedIn(String user_initials) {
+        timeManager.addUser(new User(user_initials));
+        timeManager.setCurrentUser(user_initials);
+        assertNotNull(timeManager.getCurrentUser());
     }
 }

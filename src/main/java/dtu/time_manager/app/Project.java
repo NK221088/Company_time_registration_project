@@ -15,9 +15,9 @@ public class Project {
     private User projectLead;
     private boolean isFinalized;
 
-    public Project(String projectName) {
+    public Project(String projectName, String projectID) {
         this.projectName = projectName;
-        projectID = formatID(TimeManager.incProjectCount());
+        this.projectID = projectID;
     }
 
     public void assignProjectLead(User projectLead) {
@@ -28,25 +28,10 @@ public class Project {
         return this.projectLead;
     }
 
-
-
-    public static Project exampleProject(String projectName, Integer numberOfActivities) {
-        Project project = new Project(projectName);
-        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
-        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
-        try {
-            for (int i = 1; i <= numberOfActivities; i++) {
-                project.addActivity(new Activity("Activity "+String.valueOf(i)));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return project;
-    }
-
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+
     public String getProjectName() {
         return projectName;
     }
@@ -56,21 +41,24 @@ public class Project {
     public void setProjectStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
+
     public void setProjectEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
     public LocalDate getStartDate() {
         return startDate;
     }
+
     public LocalDate getEndDate() {
         return endDate;
     }
-
 
     public boolean activityDuplicateExists(String activityName) {
         return activities.stream().anyMatch(existingActivity ->
                 existingActivity.getActivityName().equals(activityName));
     }
+
     public void addActivity(Activity activity) throws Exception {
         if (!activityDuplicateExists(activity.getActivityName())) {
             activities.add(activity);
@@ -81,15 +69,13 @@ public class Project {
                     "' two activities cannot exist with the same name within the same project.");
         }
     }
+
     public List<Activity> getActivities() {
         return activities;
     }
+
     public Activity getActivityFromName(String activityName) {
         return getActivities().stream().filter(activity -> activity.getActivityName().equals(activityName)).findFirst().orElse(null);
-    }
-
-    private String formatID(int count) {
-        return "25" + String.format("%03d", count);
     }
 
     public String toString() {
@@ -125,5 +111,4 @@ public class Project {
     private void setUnFinalized() {
         this.isFinalized = false;
     }
-
 }

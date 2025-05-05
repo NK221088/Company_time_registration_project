@@ -9,25 +9,28 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class generateProjectReportSteps {
+public class GenerateProjectReportSteps {
+    private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
-    Map<String, Object> reportVariables = new HashMap<>();
+    private Map<String, Object> reportVariables = new HashMap<>();
 
-    @Given("that the project with project ID {string} has an activity named {string}")
-    public void thatTheProjectWithProjectIDHasAnActivityNamed(String projectID, String activityName) {
-        Project project = TimeManager.getProjectFromID(projectID);
-        // Returns null if activity doesn't exist in project
-        assertNotNull(project.getActivityFromName(activityName));
+    public GenerateProjectReportSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+        this.timeManager = timeManager;
+        this.errorMessage = errorMessage;
     }
 
+    @Given("the project {string} has an activity named {string}")
+    public void theProjectHasAnActivityNamed(String projectName, String activityName) throws Exception {
+        Project project = timeManager.createProject(projectName);
+        project.addActivity(new Activity(activityName));
+    }
     @When("the user generates the project report for the project with project ID {string}")
     public void theUserGeneratesTheProjectReportForTheProjectWithProjectID(String projectID) {
-        this.reportVariables = TimeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
+        this.reportVariables = timeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
     }
     @Then("the project report is generated showing both the time spent for each activity in the project with project ID {string} and the total time spent on the project")
     public void theProjectReportIsGeneratedShowingBothTheTimeSpentForEachActivityInTheProjectWithProjectIDAndTheTotalTimeSpentOnTheProject(String projectID) {

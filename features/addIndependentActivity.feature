@@ -3,12 +3,12 @@ Feature: Add independent activity
   Actors: User
 
   Scenario: Successful addition of independent activity
-    Given a user is logged in
+    Given the user "huba" is logged in
     When the user adds an independent activity named "Vacation"
     Then the independent activity is added to the project
 
   Scenario: Unsuccessful addition of independent activity because name isn't unique
-    Given a user is logged in
+    Given the user "huba" is logged in
     And an independent activity named "Vacation" exists
     When the user adds an independent activity named "Vacation"
     Then the independent activity isn't added to the project

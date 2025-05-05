@@ -1,21 +1,27 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.Project;
-import dtu.time_manager.app.User;
+import dtu.time_manager.app.*;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class assignProjectLeadSteps {
-
+public class AssignProjectLeadSteps {
+    private TimeManager timeManager;
+    private ErrorMessageHolder errorMessage;
     private Project projectLeadProject;
     private User projectLead;
 
+    public AssignProjectLeadSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+        this.timeManager = timeManager;
+        this.errorMessage = errorMessage;
+    }
+
     @Given("a User named {string} and a project named {string}")
     public void aUserNamedAndAProjectNamed(String username, String projectName) {
-        this.projectLeadProject = new Project(projectName);
+        this.projectLeadProject = timeManager.createProject(projectName);
         this.projectLead = new User(username);
     }
 

@@ -12,16 +12,18 @@ public class AddIndependentActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
 
-    public AddIndependentActivitySteps() {
-        this.timeManager = new TimeManager();
-        this.errorMessage = new ErrorMessageHolder();
+    public AddIndependentActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+        this.timeManager = timeManager;
+        this.errorMessage = errorMessage;
     }
 
     @When("the user adds an independent activity named {string}")
-    public void theUserAddsAnIndependentActivityNamed(String activityName) {
+    public void theUserAddsAnIndependentActivityNamed(String activityName) throws Exception {
         try {
             timeManager.addIndependentActivity(new Activity(activityName));
-        } catch (Exception _) {}
+        } catch (Exception e) {
+            errorMessage.setErrorMessage(e.getMessage());
+        }
     }
     @Then("the independent activity is added to the project")
     public void theIndependentActivityIsAddedToTheProject() {
@@ -37,7 +39,7 @@ public class AddIndependentActivitySteps {
     }
     @Then("the independent activity isn't added to the project")
     public void theIndependentActivityIsnTAddedToTheProject() {
-        assertTrue(timeManager.getIndependentActivities().size() == 1);
+        assertEquals(1, timeManager.getIndependentActivities().size());
     }
     @Then("the independent activity error message {string} is given")
     public void theIndependentActivityErrorMessageIsGiven(String errorMessage) {
