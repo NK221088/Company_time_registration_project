@@ -153,8 +153,8 @@ public class TimeManager {
         return projectVariables;
     }
 
-    public Map getProjectReport(String projectID) {
-        Project project = getProjectFromID(projectID); // Retrieve the project for which to generate the project report
+    public Map getProjectReport(Project project) {
+        String projectID = project.getProjectID(); // Retrieve the project for which to generate the project report
         Map<String, Object> reportVariables = new HashMap<>();
         reportVariables.put("Project Name", project.getProjectName()); // Insert the name in the report
         reportVariables.put("Project ID", projectID); // Insert the project ID in the report

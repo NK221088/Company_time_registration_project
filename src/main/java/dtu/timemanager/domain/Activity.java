@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Activity {
 
-    private String ActivityName;
+    private String activityName;
     private ArrayList<User> assignedUsers = new ArrayList<>();
     private ArrayList<User> workingUsers = new ArrayList<>();
     private double expectedWorkHours;
@@ -15,8 +15,8 @@ public class Activity {
     private LocalDate activityEndTime;
     private Boolean isFinalized = false;
 
-    public Activity(String ActivityName) {
-        this.ActivityName = ActivityName;
+    public Activity(String activityName) {
+        this.activityName = activityName;
     }
 
     public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }
@@ -33,7 +33,7 @@ public class Activity {
     }
 
     public ArrayList<User> getAssignedUsers() { return this.assignedUsers;}
-    public String getActivityName() { return this.ActivityName;}
+    public String getActivityName() { return this.activityName;}
 
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
@@ -74,15 +74,21 @@ public class Activity {
             workingUsers.add(user);
         }
     }
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Activity activity = (Activity) obj;
+        return activityName.equals(activity.getActivityName());
+    }
 
     public ArrayList<User> getWorkingUsers() { return this.workingUsers; }
 
     public String toString() {
-        return ActivityName;
+        return activityName;
     }
 
     public void setActivityName(String activityName) {
-        this.ActivityName = activityName;
+        this.activityName = activityName;
     }
 
     public LocalDate getActivityStartTime() {

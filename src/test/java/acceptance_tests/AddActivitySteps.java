@@ -24,11 +24,11 @@ public class AddActivitySteps {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
         this.projectHolder = projectHolder;
+        this.project = projectHolder.getProject();
     }
 
     @When("adds an activity named {string} to the project")
     public void addsAnActivityNamedToTheProject(String activityName) {
-        this.project = projectHolder.getProject();
         Activity activity = new Activity(activityName);
         try {
             project.addActivity(activity);
@@ -41,26 +41,10 @@ public class AddActivitySteps {
         List<Activity> activities = project.getActivities();
         assertTrue(activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName)));
     }
-    @Then("the activity named {string} should be shown when the project named {string} is viewed")
-    public void theActivityNamedShouldBeShownWhenTheProjectNamedIsViewed(String activityName, String projectName) {
-        Project project = timeManager.getProjectFromName(projectName);
-        String projectID = project.getProjectID();
-        Map<String, Object> projectVariables = timeManager.viewProject(project);
-        List<Activity> activities = (List<Activity>) projectVariables.get("Project activities");
-        assertTrue(activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName)));
-
-    }
 
     @Then("the activity should not be added to the project")
     public void theActivityShouldNotBeAddedToTheProject() {
         assertFalse(errorMessage.getErrorMessage().isEmpty());
     }
-
-    @Then("the activity error message {string} is given")
-    public void theActivityErrorMessageIsGiven(String expectedErrorMessage) {
-        assertEquals(expectedErrorMessage, errorMessage.getErrorMessage());
-    }
-
-
 
 }

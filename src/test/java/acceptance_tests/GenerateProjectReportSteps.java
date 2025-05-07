@@ -17,23 +17,26 @@ public class GenerateProjectReportSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
     private Map<String, Object> reportVariables = new HashMap<>();
+    private ProjectHolder projectHolder;
+    private Project project;
 
-    public GenerateProjectReportSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public GenerateProjectReportSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
+        this.project = projectHolder.getProject();
     }
 
-    @Given("the project {string} has an activity named {string}")
-    public void theProjectHasAnActivityNamed(String projectName, String activityName) throws Exception {
-        Project project = timeManager.createProject(projectName);
+    @Given("the project has an activity named {string}")
+    public void theProjectHasAnActivityNamed(String activityName) throws Exception {
         project.addActivity(new Activity(activityName));
     }
-    @When("the user generates the project report for the project with project ID {string}")
-    public void theUserGeneratesTheProjectReportForTheProjectWithProjectID(String projectID) {
-        this.reportVariables = timeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
+    @When("the user generates the project report for the project")
+    public void theUserGeneratesTheProjectReportForTheProject() {
+        this.reportVariables = timeManager.getProjectReport(project); // If no exception is thrown, the option is available
     }
-    @Then("the project report is generated showing both the time spent for each activity in the project with project ID {string} and the total time spent on the project")
-    public void theProjectReportIsGeneratedShowingBothTheTimeSpentForEachActivityInTheProjectWithProjectIDAndTheTotalTimeSpentOnTheProject(String projectID) {
+    @Then("the project report is generated showing both the time spent for each activity in the project and the total time spent on the project")
+    public void theProjectReportIsGeneratedShowingBothTheTimeSpentForEachActivityInTheProjectAndTheTotalTimeSpentOnTheProject() {
         boolean keysExist = this.reportVariables.containsKey("Project ID") && this.reportVariables.containsKey("Project Name") && this.reportVariables.containsKey("Project Activities") && this.reportVariables.containsKey("Expected hours") && this.reportVariables.containsKey("Worked hours");
         assertTrue(keysExist);
     }

@@ -61,9 +61,11 @@ public class Project {
     public ArrayList<Activity> getActivities() {return activities;}
 
 
-    public void addActivity(Activity activity) {
+    public void addActivity(Activity activity) throws Exception {
         if (!activities.contains(activity)) {
             activities.add(activity);
+        } else {
+            throw new Exception("An activity with name '" + activity.getActivityName() + "' already exists within '" + this.getProjectName() + "' two activities cannot exist with the same name within the same project.");
         }
     }
 

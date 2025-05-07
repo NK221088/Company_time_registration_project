@@ -21,17 +21,20 @@ public class AddTimeRegistrationSteps {
     private ProjectHolder projectHolder;
     private Project project;
     private ErrorMessageHolder errorMessage;
+    private Activity activity;
 
     public AddTimeRegistrationSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
         this.projectHolder = projectHolder;
+        this.project = projectHolder.getProject();
     }
 
     @Given("that the project has an activity named {string} which is set as in progress")
-    public void thatTheProjectHasAnActivityNamedWhichIsSetAsInProgress(String activityName) {
-        this.project = projectHolder.getProject();
-        Activity activity = project.getActivityFromName(activityName);
+    public void thatTheProjectHasAnActivityNamedWhichIsSetAsInProgress(String activityName) throws Exception {
+        this.activity = new Activity(activityName);
+        project.addActivity(activity);
+
         assertFalse(activity.getFinalized());
     }
     @When("the user selects the activity {string} in project {string}")
@@ -61,15 +64,10 @@ public class AddTimeRegistrationSteps {
 
         timeManager.addTimeRegistration(time_registration);
     }
-
-    @Given("that the project with project ID {string} has an activity named {string} which is set as finalized")
-    public void thatTheProjectWithProjectIDHasAnActivityNamedWhichIsSetAsFinalized(String projectId, String activityName) {
-
-    }
     @Given("that the project has an activity named {string} which is set as finalized")
-    public void thatTheProjectHasAnActivityNamedWhichIsSetAsFinalized(String activityName) {
-        this.project = projectHolder.getProject();
-        Activity activity = project.getActivityFromName(activityName);
+    public void thatTheProjectHasAnActivityNamedWhichIsSetAsFinalized(String activityName) throws Exception {
+        this.activity = new Activity(activityName);
+        project.addActivity(activity);
         activity.setActivityAsFinalized();
         assertTrue(activity.getFinalized());
     }

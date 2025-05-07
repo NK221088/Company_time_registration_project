@@ -722,7 +722,7 @@ public class projectMenu {
         if (selectedProject != null) {
             String projectName = selectedProject.toString();
             try {
-                Map<String, Object> projectReport = timeManager.getProjectReport(selectedProject.getProjectID());
+                Map<String, Object> projectReport = timeManager.getProjectReport(selectedProject);
                 List<Activity> activities = selectedProject.getActivities();
 
                 // Build the report text with better formatting

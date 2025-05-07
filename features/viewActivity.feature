@@ -4,7 +4,8 @@ Feature: View Activity
 
   Scenario: A user views an activity
     Given the user "huba" is logged in
-    And a project named "Project 1" with an activity named "Activity 1" exists in the system
+    And a project, "Project 1", exists in the system
+    And the project has an activity named "Activity 1"
     And the activity has the start date "2025-01-11" and end date "2025-01-25"
     When the user views the project
     And select an activity with name "Activity 1" from project ID "25001"

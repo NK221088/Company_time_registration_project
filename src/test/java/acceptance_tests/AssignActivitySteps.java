@@ -44,6 +44,7 @@ public class AssignActivitySteps {
             errorMessage.setErrorMessage(e.getMessage());
         }
     }
+
     @Then("the user {string} is assigned to {string} in {string}")
     public void theUserIsAssignedToIn(String userInitials, String activityName, String projectName) {
         Activity activity = project.getActivityFromName(activityName);
@@ -63,13 +64,6 @@ public class AssignActivitySteps {
         } catch (Exception e) {
             errorMessage.setErrorMessage(e.getMessage());
         }
-    }
-
-    @Given("a project named {string} with an activity named {string} exists in the system")
-    public void aProjectNamedWithAnActivityNamedExistsInTheSystem(String projectName, String activityName) throws Exception {
-        Project project = timeManager.createProject(projectName);
-        project.addActivity(new Activity(activityName));
-        timeManager.addProject(project);
     }
 
     @Then("the user {string} isn't assigned to {string} in {string}")

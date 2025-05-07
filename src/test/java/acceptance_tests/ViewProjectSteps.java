@@ -1,6 +1,7 @@
 package acceptance_tests;
 
 import dtu.timemanager.domain.Activity;
+import dtu.timemanager.domain.Project;
 import dtu.timemanager.domain.TimeManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -27,7 +28,7 @@ public class ViewProjectSteps {
 
     @Given("a project, {string}, exists in the system")
     public void aProjectExistsInTheSystem(String projectName) {
-        this.project = timeManager.createExampleProject(projectName, 1);
+        this.project = timeManager.createExampleProject(projectName, 0);
         this.projectHolder.setProject(project);
         timeManager.addProject(this.project);
     }
@@ -66,7 +67,7 @@ public class ViewProjectSteps {
     @Then("the option for generating a project report for the project with project ID {string} is shown")
     public void theOptionForGeneratingAProjectReportForTheProjectWithProjectIDIsShown(String projectID) {
         try {
-            timeManager.getProjectReport(projectID); // If no exception is thrown, the option is available
+            timeManager.getProjectReport(project); // If no exception is thrown, the option is available
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
