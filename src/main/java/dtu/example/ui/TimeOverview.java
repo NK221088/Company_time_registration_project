@@ -1,17 +1,14 @@
     package dtu.example.ui;
 
-    import dtu.time_manager.app.*;
+    import dtu.time_manager.app.domain.*;
     import javafx.beans.property.SimpleStringProperty;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
-    import javafx.application.Platform;
     import javafx.event.ActionEvent;
     import javafx.fxml.FXML;
     import javafx.fxml.Initializable;
     import javafx.scene.control.*;
-    import javafx.scene.control.cell.PropertyValueFactory;
     import javafx.scene.input.MouseButton;
-    import javafx.scene.input.MouseEvent;
     import javafx.scene.layout.AnchorPane;
     import javafx.scene.layout.GridPane;
     import javafx.scene.layout.HBox;

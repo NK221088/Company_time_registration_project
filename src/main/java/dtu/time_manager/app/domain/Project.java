@@ -1,9 +1,10 @@
-package dtu.time_manager.app;
+package dtu.time_manager.app.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import dtu.time_manager.app.domain.Activity;
 
 
 public class Project {
@@ -11,12 +12,16 @@ public class Project {
     private String projectID;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<Activity> activities = new ArrayList<>();
     private User projectLead;
+    private ArrayList<Activity> activities;
     private boolean isFinalized;
 
     public Project(String projectName, String projectID) {
         this.projectName = projectName;
+        this.projectID = projectID;
+        this.activities = new ArrayList<>();
+    }
+    public void setProjectID(String projectID) {
         this.projectID = projectID;
     }
 
@@ -27,6 +32,7 @@ public class Project {
     public User getProjectLead() {
         return this.projectLead;
     }
+    public void setProjectLead(User projectLead) {}
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
@@ -54,24 +60,21 @@ public class Project {
         return endDate;
     }
 
-    public boolean activityDuplicateExists(String activityName) {
-        return activities.stream().anyMatch(existingActivity ->
-                existingActivity.getActivityName().equals(activityName));
-    }
+    public ArrayList<Activity> getActivities() {return activities;}
 
-    public void addActivity(Activity activity) throws Exception {
-        if (!activityDuplicateExists(activity.getActivityName())) {
+
+    public void addActivity(Activity activity) {
+        if (!activities.contains(activity)) {
             activities.add(activity);
-        } else {
-            throw new Exception(
-                    "An activity with name '" + activity.getActivityName() +
-                    "' already exists within '" + this.projectName +
-                    "' two activities cannot exist with the same name within the same project.");
         }
     }
 
-    public List<Activity> getActivities() {
-        return activities;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Project project = (Project) obj;
+        return projectName.equals(project.projectName);
     }
 
     public Activity getActivityFromName(String activityName) {
@@ -111,4 +114,6 @@ public class Project {
     private void setUnFinalized() {
         this.isFinalized = false;
     }
+
+
 }

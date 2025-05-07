@@ -1,8 +1,7 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.Activity;
-import dtu.time_manager.app.Project;
-import dtu.time_manager.app.TimeManager;
+import dtu.time_manager.app.domain.Activity;
+import dtu.time_manager.app.domain.TimeManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;

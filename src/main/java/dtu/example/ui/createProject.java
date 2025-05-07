@@ -2,8 +2,8 @@ package dtu.example.ui;
 
 import java.io.IOException;
 
-import dtu.time_manager.app.TimeManager;
-import dtu.time_manager.app.Project;
+import dtu.time_manager.app.domain.TimeManager;
+import dtu.time_manager.app.domain.Project;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

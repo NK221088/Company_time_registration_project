@@ -1,4 +1,4 @@
-package dtu.time_manager.app;
+package dtu.time_manager.app.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;

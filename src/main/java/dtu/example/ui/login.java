@@ -1,7 +1,6 @@
 package dtu.example.ui;
 
-import dtu.time_manager.app.*;
-
+import dtu.time_manager.app.domain.TimeManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;

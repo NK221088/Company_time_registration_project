@@ -5,5 +5,6 @@ module hellofx {
     exports dtu.time_manager.app;
 
     opens dtu.example.ui to javafx.fxml; // Gives access to fxml files
-    exports dtu.example.ui; // Exports the class inheriting from javafx.application.Application
+    exports dtu.example.ui;
+    exports dtu.time_manager.app.domain; // Exports the class inheriting from javafx.application.Application
 }
