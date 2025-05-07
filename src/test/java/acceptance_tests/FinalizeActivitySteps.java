@@ -1,6 +1,6 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.*;
+import dtu.time_manager.app.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;

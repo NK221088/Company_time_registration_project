@@ -1,6 +1,6 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.*;
+import dtu.time_manager.app.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,10 +8,6 @@ import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

@@ -1,4 +1,4 @@
-package dtu.time_manager.app;
+package dtu.time_manager.app.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -113,4 +113,3 @@ public class Activity {
         this.isFinalized = false;
     }
 }
-

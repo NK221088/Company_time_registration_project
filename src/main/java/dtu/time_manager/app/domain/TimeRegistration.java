@@ -1,4 +1,4 @@
-package dtu.time_manager.app;
+package dtu.time_manager.app.domain;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,5 +59,4 @@ public class TimeRegistration {
     public void setRegisteredDate(LocalDate registeredDate) {
         this.registeredDate = registeredDate;
     }
-
 }
