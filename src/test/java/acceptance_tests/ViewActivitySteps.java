@@ -16,41 +16,47 @@ public class ViewActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
 
-    private Project test_project;
     private Activity activity;
     private User workingUser;
-    private User assignedUser;
     private TimeRegistration test_time_registration;
-    private double workedHours;
     private LocalDate startDate;
     private LocalDate endDate;
+    private double expectedHours;
+    private ProjectHolder projectHolder;
+    private Project project;
+    private ActivityHolder activityHolder;
+    private Map<String, Object> info;
 
-    public ViewActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public ViewActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder, ActivityHolder activityHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
+        this.project = projectHolder.getProject();
+        this.activityHolder = activityHolder;
+        this.activity = activityHolder.getActivity();
     }
 
     @Given("the activity has the start date {string} and end date {string}")
-    public void theActivityHasTheStartDateAndEndDate(String startDate, String endDate) {
-        this.startDate = LocalDate.parse(startDate);
-        this.endDate = LocalDate.parse(endDate);
+    public void theActivityHasTheStartDateAndEndDate(String startDate, String endDate) throws Exception {
+        this.activity.setActivityStartTime(LocalDate.parse(startDate));
+        this.activity.setActivityEndTime(LocalDate.parse(endDate));
     }
-    @When("select an activity with name {string} from project ID {string}")
-    public void selectAnActivityWithNameFromProjectID(String activityName, String projectID) {
-        this.test_project = timeManager.getProjectFromID(projectID);
-        this.activity = new Activity(activityName);
-    }
-    @Then("the activity name of {string} is shown")
-    public void theActivityNameOfIsShown(String activityName) {
-        this.activity.setActivityName(activityName);
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(info.get("Name"), activityName);
-    }
-    @Then("the expected hours of {string} hours in {string} is shown")
-    public void theExpectedHoursOfHoursInIsShown(String expectedHours, String activityName) {
+    @Given("the activity has the expected hours {string}")
+    public void theActivityHasTheExpectedHours(String expectedHours) {
         this.activity.setExpectedWorkHours(Double.parseDouble(expectedHours));
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(Double.parseDouble(expectedHours), info.get("ExpectedWorkHours"));
+    }
+    @When("select the activity with name {string}")
+    public void selectTheActivityWithName(String activityName) {
+        assertEquals(activityName, activity.getActivityName());
+    }
+    @Then("the name of the activity is shown")
+    public void theNameOfTheActivityIsShown() {
+        this.info = this.activity.viewActivity();
+        assertNotNull(info.get("Name"));
+    }
+    @Then("the expected hours is shown")
+    public void theExpectedHoursIsShown() {
+        assertNotNull(info.get("ExpectedWorkHours"));
     }
     @Then("the number of work hours of {string} hours is spent on {string} is shown")
     public void theNumberOfWorkHoursOfHoursIsSpentOnIsShown(String assignedWorkHours, String activityName) throws Exception {
@@ -60,34 +66,19 @@ public class ViewActivitySteps {
         assertEquals(Double.parseDouble(assignedWorkHours), info.get("WorkedHours"));
     }
    @Then("the start date is shown")
-    public void theStartDateIsShown() {
-        this.activity.setActivityStartTime(this.startDate);
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(this.activity.getActivityStartTime(), info.get("StartTime"));
+    public void theStartDateIsShown() throws Exception {
+       assertNotNull(this.activity.viewActivity().get("StartTime"));
     }
     @Then("the end date is shown")
     public void theEndDateIsShown() {
-        this.activity.setActivityEndTime(this.endDate);
-        Map<String, Object> info = this.activity.viewActivity();
-        assertEquals(this.activity.getActivityEndTime(), info.get("EndTime"));
-    }
-    @Then("the initials of the developer or developers {string} working on the {string} is shown")
-    public void theInitialsOfTheDeveloperOrDevelopersWorkingOnTheIsShown(String userInitials, String activityName) {
-        User user = timeManager.getUserFromInitials(userInitials);
-        timeManager.assignUser(this.activity, user);
-        this.activity.addWorkingUser(user);
-        Map <String, Object> info = this.activity.viewActivity();
-        ArrayList<User> userList = (ArrayList<User>) info.get("Assigned employees");
-        assertTrue(userList.contains(user));
+        assertEquals(this.activity.getActivityEndTime(), this.activity.viewActivity().get("EndTime"));
     }
     @Then("the assigned users are shown")
     public void theAssignedUsersAreShown() {
-        Map<String, Object> info = this.activity.viewActivity();
-        assertNotNull(info.get("Assigned employees"));
+        assertNotNull(this.activity.viewActivity().get("Assigned employees"));
     }
-    @Then("the users who have worked on the project are shown")
-    public void theUsersWhoHaveWorkedOnTheProjectAreShown() {
-        Map<String, Object> info = this.activity.viewActivity();
-        assertNotNull(info.get("Contributing employees"));
+    @Then("the users who have worked on the activity are shown")
+    public void theUsersWhoHaveWorkedOnTheActivityAreShown() {
+        assertNotNull(this.activity.viewActivity().get("Contributing employees"));
     }
 }

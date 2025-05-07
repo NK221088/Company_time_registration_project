@@ -17,7 +17,7 @@ public class login {
     private Label errorMessage;
 
     @FXML
-    private void initialize() {
+    private void initialize() throws Exception {
         timeManager = TimeManagerProvider.getInstance();
         errorMessage.setVisible(false);
 
@@ -35,7 +35,7 @@ public class login {
     @FXML
     private void attemptLogin() throws IOException {
         try {
-            timeManager.setCurrentUser(userInitials.getText());
+            timeManager.setCurrentUser(timeManager.getUserFromInitials(userInitials.getText()));
             App.setRoot("main");
             errorMessage.setVisible(false);
         } catch (Exception e) {

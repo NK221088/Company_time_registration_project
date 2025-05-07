@@ -7,6 +7,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,32 @@ public class ViewProjectSteps {
     }
 
     @Given("a project, {string}, exists in the system")
-    public void aProjectExistsInTheSystem(String projectName) {
+    public void aProjectExistsInTheSystem(String projectName) throws Exception {
         this.project = timeManager.createExampleProject(projectName, 0);
         this.projectHolder.setProject(project);
         timeManager.addProject(this.project);
+    }
+    @Given("the project has the start date {string} and end date {string}")
+    public void theProjectHasTheStartDateAndEndDate(String startDate, String endDate) throws Exception {
+        try {
+            this.project.setProjectStartDate(LocalDate.parse(startDate));
+            this.project.setProjectEndDate(LocalDate.parse(endDate));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+
+    }
+    @Given("project ID {string}")
+    public void projectID(String projectID) {
+        assertEquals(this.project.getProjectID(), projectID);
+    }
+    @Then("the activities in the project are shown")
+    public void theActivitiesInTheProjectAreShown() {
+        Object activities = this.projectVariables.get("Project activities");
+        assert activities instanceof List; // Check that it's a list that is returned
+        List<?> activityList = (List<?>) activities; // Check that each element in the list is of type Activity
+        for (Object activity : activityList) {
+            assert activity instanceof Activity;}
     }
 
     @When("the user views the project")
@@ -55,17 +78,8 @@ public class ViewProjectSteps {
     public void timeIntervalIsShown(String projectInterval) {
         assertEquals(projectInterval, this.projectVariables.get("Project interval"));
     }
-    @Then("the activities in the project with project ID {string} is shown")
-    public void theActivitiesInTheProjectWithProjectIDIsShown(String string) {
-        Object activities = this.projectVariables.get("Project activities");
-        assert activities instanceof List; // Check that it's a list that is returned
-        List<?> activityList = (List<?>) activities; // Check that each element in the list is of type Activity
-        for (Object activity : activityList) {
-            assert activity instanceof Activity;}
-
-    }
-    @Then("the option for generating a project report for the project with project ID {string} is shown")
-    public void theOptionForGeneratingAProjectReportForTheProjectWithProjectIDIsShown(String projectID) {
+    @Then("the option for generating a project report for the project is shown")
+    public void theOptionForGeneratingAProjectReportForTheProjectIsShown() {
         try {
             timeManager.getProjectReport(project); // If no exception is thrown, the option is available
         } catch (Exception e) {

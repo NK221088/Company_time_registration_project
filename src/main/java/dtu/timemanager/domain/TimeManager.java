@@ -28,8 +28,8 @@ public class TimeManager {
         activity.unassignUser(user);
     }
 
-    public void setCurrentUser(String userInitials) {
-        current_user = getUserFromInitials(userInitials);
+    public void setCurrentUser(User user) {
+        current_user = user;
     }
 
     public void addUser(User user) {
@@ -57,7 +57,7 @@ public class TimeManager {
         return new Project(projectName, id);
     }
 
-    public Project createExampleProject(String projectName, Integer numberOfActivities) {
+    public Project createExampleProject(String projectName, Integer numberOfActivities) throws Exception {
         Project project = createProject(projectName);
         project.setProjectStartDate(LocalDate.parse("2025-01-01"));
         project.setProjectEndDate(LocalDate.parse("2025-01-08"));
@@ -72,7 +72,7 @@ public class TimeManager {
     }
 
     public void addProject(Project project) {
-        if (!projectExists(project.getProjectName())) {
+        if (!projectExists(project)) {
             projectMap.put(project.getProjectID(), project);
             projects.add(project);
         } else {
@@ -89,17 +89,6 @@ public class TimeManager {
         return projects;
     }
 
-    public Project getProjectFromID(String projectID) {
-        return projectMap.get(projectID);
-    }
-
-    public Project getProjectFromName(String projectName) {
-        return projects.stream()
-                .filter(project -> project.getProjectName().equals(projectName))
-                .findFirst() // Returns an Optional<Project>
-                .orElse(null); // If no project is found, return null
-    }
-
     public int incProjectCount() {
         return ++projectCount;
     }
@@ -108,27 +97,15 @@ public class TimeManager {
         return projectCount;
     }
 
-    public boolean projectExists(String projectName) {
-        return projects.stream().map(Project::getProjectName).anyMatch(name -> name.equals(projectName));
+    public boolean projectExists(Project project) {
+        return projects.contains(project);
     }
-
-    public boolean projectDuplicateExists(String projectName) {
-        long counted = projects.stream()
-                .map(Project::getProjectName)
-                .filter(name -> name.equals(projectName))
-                .count();
-        return counted > 1;
+    public boolean projectExists(String projectName) {
+        return projects.contains(projectName);
     }
 
     public Map viewProject(Project project) {
         Map<String, Object> projectVariables = new HashMap<>();
-
-        String projectID = project.getProjectID();
-        String projectName = project.getProjectName();
-        List<Activity> activities = project.getActivities();
-        User projectLead = project.getProjectLead();
-
-
 
         LocalDate startDate = project.getStartDate();
         LocalDate endDate = project.getEndDate();
@@ -140,15 +117,15 @@ public class TimeManager {
             projectInterval = "";
         }
 
-        projectVariables.put("Project name", projectName);
-        projectVariables.put("Project ID", projectID);
-        if (projectLead != null) {
-            projectVariables.put("Project Lead", projectLead);
+        projectVariables.put("Project name", project.getProjectName());
+        projectVariables.put("Project ID", project.getProjectID());
+        if (project.getProjectLead() != null) {
+            projectVariables.put("Project Lead", project.getProjectLead());
         } else {
             projectVariables.put("Project Lead", "");
         }
         projectVariables.put("Project interval", projectInterval);
-        projectVariables.put("Project activities", activities);
+        projectVariables.put("Project activities", project.getActivities());
 
         return projectVariables;
     }
@@ -224,13 +201,8 @@ public class TimeManager {
         return reportVariables;
     }
 
-    public void logout() {
-        current_user = null;
-    }
-
     public void addTimeRegistration(TimeRegistration timeRegistration) {
         time_registrations.add(timeRegistration);
-//        this function needs to
     }
 
     public List<TimeRegistration> getTimeRegistrations() {
@@ -238,7 +210,7 @@ public class TimeManager {
     }
 
     public void addIndependentActivity(Activity activity) throws Exception {
-        if (!independentActivities.stream().anyMatch(a -> a.getActivityName().equals(activity.getActivityName()))) {
+        if (!independentActivities.contains(activity)) {
             independentActivities.add(activity);
         } else {
             throw new RuntimeException(
@@ -249,7 +221,7 @@ public class TimeManager {
 
     public List<Activity> getIndependentActivities() { return independentActivities; }
 
-    public void appInitialize() {
+    public void appInitialize() throws Exception {
         User isak = new User("isak");
         User bria = new User("bria");
         User huba = new User("huba");

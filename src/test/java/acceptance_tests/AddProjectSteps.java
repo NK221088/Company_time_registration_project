@@ -7,6 +7,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddProjectSteps {
@@ -26,7 +28,7 @@ public class AddProjectSteps {
        assertEquals(2025, year);
     }
     @Given("the current project count is {int}")
-    public void theCurrentProjectCountIs(Integer projectCount) {
+    public void theCurrentProjectCountIs(Integer projectCount) throws Exception {
         Project project1 = timeManager.createExampleProject("Project To Test Count 1", 1);
         Project project2 = timeManager.createExampleProject("Project To Test Count 2", 1);
         timeManager.addProject(project1);
@@ -36,7 +38,9 @@ public class AddProjectSteps {
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
         try {
-            timeManager.addProject(timeManager.createProject(projectName));
+            this.project = timeManager.createProject(projectName);
+            timeManager.addProject(project);
+
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -44,17 +48,22 @@ public class AddProjectSteps {
 
     @Then("a project named {string} should exist in the system")
     public void aProjectNamedShouldExistInTheSystem(String projectName) {
-        assertTrue(timeManager.projectExists(projectName));
+        assertTrue(timeManager.projectExists(project));
     }
 
     @Then("the project is assigned a project id {string}")
-    public void theProjectIsAssignedAProjectId(String ProjectID) {
-        assertNotNull(timeManager.getProjectFromID(ProjectID));
+    public void theProjectIsAssignedAProjectId(String projectID) {
+        assertEquals(project.getProjectID(), projectID);
     }
 
     @Then("the new project with name {string} is not created")
     public void theNewProjectWithNameIsNotCreated(String projectName) {
-        assertFalse(timeManager.projectDuplicateExists(projectName));
+        List<Project> projects = timeManager.getProjects();
+        long counted = projects.stream()
+                .map(Project::getProjectName)
+                .filter(name -> name.equals(projectName))
+                .count();
+        assertFalse(counted > 1);
     }
 
 

@@ -9,33 +9,19 @@ import io.cucumber.java.en.When;
 public class UnassignUserSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
-//    private String testUserInitials;
-//    private User testUser;
-//    private Activity testActivity1;
-//    private Activity testActivity2;
+    private ProjectHolder projectHolder;
+    private Project project;
 
-    public UnassignUserSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public UnassignUserSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
+        this.project = this.projectHolder.getProject();
     }
-
-//    @Given("that the user with initials: {string} is assigned the activity: {string}")
-//    public void thatTheUserWithInitialsIsAssignedTheActivity(String userInitials, String activityName) {
-//        testUser = timeManager.getUserFromInitials(userInitials);
-//        testActivity1 = new Activity(activityName);
-//        testActivity1.assignUser(testUser);
-//    }
-
-//    @Given("that the user with initials: {string} is not assigned the activity: {string}")
-//    public void thatTheUserWithInitialsIsNotAssignedTheActivity(String userInitials, String activityName) {
-//        testUser = timeManager.getUserFromInitials(userInitials);
-//        testActivity2 = new Activity(activityName);
-//    }
 
     @When("the user {string} is unassigned from the activity {string}")
     public void theUserIsUnassignedFromTheActivity(String userInitials, String activityName) {
         User user = timeManager.getUserFromInitials(userInitials);
-        Project project = timeManager.getProjectFromName("Project 1");
         Activity activity = project.getActivityFromName(activityName);
 
         try {

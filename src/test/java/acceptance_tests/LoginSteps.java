@@ -27,7 +27,8 @@ public class LoginSteps {
     @When("the user types in their initials {string}")
     public void theUserTypesInTheirInitials(String user_initials) {
         try {
-            timeManager.setCurrentUser(user_initials);
+            User user = timeManager.getUserFromInitials(user_initials);
+            timeManager.setCurrentUser(user);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -49,8 +50,9 @@ public class LoginSteps {
 
     @Given("the user {string} is logged in")
     public void theUserIsLoggedIn(String user_initials) {
-        timeManager.addUser(new User(user_initials));
-        timeManager.setCurrentUser(user_initials);
+        User user = new User(user_initials);
+        timeManager.addUser(user);
+        timeManager.setCurrentUser(user);
         assertNotNull(timeManager.getCurrentUser());
     }
 }

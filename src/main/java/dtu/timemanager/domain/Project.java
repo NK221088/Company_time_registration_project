@@ -42,12 +42,20 @@ public class Project {
 
     public String getProjectID() { return projectID; }
 
-    public void setProjectStartDate(LocalDate startDate) {
-        this.startDate = startDate;
+    public void setProjectStartDate(LocalDate startDate) throws Exception {
+        if (endDate==null || startDate.isBefore(endDate)) {
+            this.startDate = startDate;
+        } else {
+            throw new Exception("The start date of the project can't be after the end date of the project.");
+        }
     }
 
-    public void setProjectEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public void setProjectEndDate(LocalDate endDate) throws Exception {
+        if (startDate==null || endDate.isAfter(startDate)) {
+            this.endDate = endDate;
+        } else {
+            throw new Exception("The end date of the project can't be before the start date of the project.");
+        }
     }
 
     public LocalDate getStartDate() {

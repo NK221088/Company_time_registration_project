@@ -49,7 +49,7 @@ public class projectMenu {
     private Boolean hasSelectedIndependent = false;
 
     @FXML
-    private void initialize() {
+    private void initialize() throws Exception {
         timeManager = TimeManagerProvider.getInstance();
         loadProjectTree();
         setSelectionListener();
@@ -640,7 +640,11 @@ public class projectMenu {
 
                 startPicker.setOnAction(e -> {
                     if (startPicker.getValue() != null) {
-                        project.setProjectStartDate(startPicker.getValue());
+                        try {
+                            project.setProjectStartDate(startPicker.getValue());
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
 
                         // Reset end picker's cell factory to reflect new start date constraint
                         endPicker.setDayCellFactory(picker -> new DateCell() {
@@ -666,7 +670,11 @@ public class projectMenu {
 
                 endPicker.setOnAction(e -> {
                     if (endPicker.getValue() != null) {
-                        project.setProjectEndDate(endPicker.getValue());
+                        try {
+                            project.setProjectEndDate(endPicker.getValue());
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
 
                         // Reset start picker's cell factory to reflect new end date constraint
                         startPicker.setDayCellFactory(picker -> new DateCell() {
@@ -892,7 +900,7 @@ public class projectMenu {
                 return;
             }
 
-            if (timeManager.projectDuplicateExists(name)) {
+            if (timeManager.projectExists(name)) {
                 showError("A project with name '" + name + "' already exists in the system.\nPlease choose a different name.");
                 event.consume();
                 return;
@@ -1381,10 +1389,18 @@ public class projectMenu {
                 Optional<Pair<LocalDate, LocalDate>> result = dialog.showAndWait();
                 result.ifPresent(dates -> {
                     if (dates.getKey() != null) {
-                        activity.setActivityStartTime(dates.getKey());
+                        try {
+                            activity.setActivityStartTime(dates.getKey());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     if (dates.getValue() != null) {
-                        activity.setActivityEndTime(dates.getValue());
+                        try {
+                            activity.setActivityEndTime(dates.getValue());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     showActivityInformation(activity);
                 });

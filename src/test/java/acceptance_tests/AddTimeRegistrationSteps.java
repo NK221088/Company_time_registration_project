@@ -37,9 +37,9 @@ public class AddTimeRegistrationSteps {
 
         assertFalse(activity.getFinalized());
     }
-    @When("the user selects the activity {string} in project {string}")
-    public void theUserSelectsTheActivityInProject(String activityName, String projectName) {
-        registeredActivity = timeManager.getProjectFromName(projectName).getActivityFromName(activityName);
+    @When("the user selects the activity {string}")
+    public void theUserSelectsTheActivity(String activityName) {
+        registeredActivity = this.project.getActivityFromName(activityName);
     }
     @When("the user enters {string} hours")
     public void theUserEntersHours(String activityHours) {
@@ -49,7 +49,7 @@ public class AddTimeRegistrationSteps {
     public void theUserSelectsTheDate(String activityDate) {
         registeredDate = LocalDate.parse(activityDate);
     }
-    @Then("a new Time Registration is added with:")
+    @Then("a new time registration is added with:")
     public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) throws Exception {
         TimeRegistration time_registration = new TimeRegistration(
             timeManager.getCurrentUser(),

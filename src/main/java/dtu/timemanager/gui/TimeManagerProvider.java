@@ -6,7 +6,7 @@ public class TimeManagerProvider {
 
     private static TimeManager instance;
 
-    public static TimeManager getInstance() {
+    public static TimeManager getInstance() throws Exception {
         if (instance == null) {
             instance = new TimeManager();
             instance.appInitialize();

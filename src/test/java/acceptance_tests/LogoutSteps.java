@@ -18,7 +18,7 @@ public class LogoutSteps {
 
     @When("the user {string} logs out")
     public void theUserLogsOut(String string) {
-        timeManager.logout();
+        timeManager.setCurrentUser(null);
         assertNull(timeManager.getCurrentUser());
     }
     @Then("they are logged out")

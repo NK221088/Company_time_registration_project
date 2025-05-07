@@ -95,16 +95,27 @@ public class Activity {
         return activityStartTime;
     }
 
-    public void setActivityStartTime(LocalDate activityStartTime) {
-        this.activityStartTime = activityStartTime;
+    public void setActivityStartTime(LocalDate activityStartTime) throws Exception {
+
+        if (activityEndTime==null || activityStartTime.isBefore(activityEndTime)) {
+            this.activityStartTime = activityStartTime;
+        } else {
+            throw new Exception("The start date of the activity can't be after the start date of the activity.");
+        }
+
     }
 
     public LocalDate getActivityEndTime() {
         return activityEndTime;
     }
 
-    public void setActivityEndTime(LocalDate activityEndTime) {
-        this.activityEndTime = activityEndTime;
+    public void setActivityEndTime(LocalDate activityEndTime) throws Exception {
+        if (activityStartTime==null || activityEndTime.isAfter(activityStartTime)) {
+            this.activityEndTime = activityEndTime;
+        } else {
+            throw new Exception("The end date of the activity can't be before the start date of the activity.");
+        }
+
     }
 
     public void setActivityAsFinalized() {

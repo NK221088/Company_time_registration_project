@@ -19,17 +19,23 @@ public class GenerateProjectReportSteps {
     private Map<String, Object> reportVariables = new HashMap<>();
     private ProjectHolder projectHolder;
     private Project project;
+    private ActivityHolder activityHolder;
 
-    public GenerateProjectReportSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
+    public GenerateProjectReportSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder, ActivityHolder activityHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
         this.projectHolder = projectHolder;
         this.project = projectHolder.getProject();
+        this.activityHolder = activityHolder;
     }
 
     @Given("the project has an activity named {string}")
     public void theProjectHasAnActivityNamed(String activityName) throws Exception {
-        project.addActivity(new Activity(activityName));
+        Activity activity = new Activity(activityName);
+        project.addActivity(activity);
+        activityHolder.setActivity(activity);
+
+
     }
     @When("the user generates the project report for the project")
     public void theUserGeneratesTheProjectReportForTheProject() {

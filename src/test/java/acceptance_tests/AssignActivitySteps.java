@@ -28,7 +28,7 @@ public class AssignActivitySteps {
     }
 
     @Given("the user {string} has {int} assigned activities")
-    public void theUserHasAssignedActivities(String userInitials, Integer activityCount) {
+    public void theUserHasAssignedActivities(String userInitials, Integer activityCount) throws Exception {
         this.user2 = new User(userInitials);
         Project projectWithActivities = timeManager.createExampleProject("Project With " + activityCount.toString() + " Activities", activityCount);
         timeManager.addProject(projectWithActivities);
@@ -57,7 +57,6 @@ public class AssignActivitySteps {
 
     @Given("the user {string} is already assigned to {string} in {string}")
     public void theUserIsAlreadyAssignedToIn(String userInitials, String activityName, String projectName) {
-        Project project = timeManager.getProjectFromName(projectName);
         Activity activity = project.getActivityFromName(activityName);
         try {
             timeManager.assignUser(activity, user2); // If no exception is thrown, the option is available

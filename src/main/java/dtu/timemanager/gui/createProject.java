@@ -19,7 +19,7 @@ public class createProject {
     private Label errorMessage;
 
     @FXML
-    private void initialize() {
+    private void initialize() throws Exception {
         timeManager = TimeManagerProvider.getInstance();
         errorMessage.setVisible(false);
     }

@@ -8,7 +8,7 @@ import java.io.IOException;
 public class main {
     private TimeManager timeManager;
 
-    private void initialize() {
+    private void initialize() throws Exception {
         timeManager = TimeManagerProvider.getInstance();
     }
 
@@ -23,6 +23,6 @@ public class main {
     public void logout(ActionEvent actionEvent) throws IOException {
         App.setRoot("login");
         // MAKE TIME MANAGER A GLOBALLY ACCESSED THINGAMAJIG
-        timeManager.logout();
+        timeManager.setCurrentUser(null);
     }
 }

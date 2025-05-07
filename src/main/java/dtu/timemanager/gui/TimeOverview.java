@@ -113,7 +113,11 @@
          * Initialize the controller with data from TimeManager
          */
         public void initialize(URL location, ResourceBundle resources) {
-            timeManager = TimeManagerProvider.getInstance();
+            try {
+                timeManager = TimeManagerProvider.getInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             SpinnerValueFactory<Integer> valueFactory =
                     new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, daysToShow);
