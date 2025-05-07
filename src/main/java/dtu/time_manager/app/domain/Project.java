@@ -114,6 +114,4 @@ public class Project {
     private void setUnFinalized() {
         this.isFinalized = false;
     }
-
-
 }

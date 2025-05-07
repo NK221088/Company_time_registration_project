@@ -113,4 +113,3 @@ public class Activity {
         this.isFinalized = false;
     }
 }
-

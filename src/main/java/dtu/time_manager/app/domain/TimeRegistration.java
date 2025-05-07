@@ -59,5 +59,4 @@ public class TimeRegistration {
     public void setRegisteredDate(LocalDate registeredDate) {
         this.registeredDate = registeredDate;
     }
-
 }

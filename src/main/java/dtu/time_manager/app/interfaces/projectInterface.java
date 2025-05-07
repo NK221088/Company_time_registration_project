@@ -18,5 +18,4 @@ public interface projectInterface {
     Map<String, Object> viewProject(String projectID);
     Map<String, Object> getProjectReport(String projectID);
     void assignProjectLead(Project project, User user);
-
 }
