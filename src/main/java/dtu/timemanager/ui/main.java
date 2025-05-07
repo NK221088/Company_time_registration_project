@@ -1,6 +1,6 @@
-package dtu.example.ui;
+package dtu.timemanager.ui;
 
-import dtu.time_manager.app.domain.TimeManager;
+import dtu.timemanager.domain.TimeManager;
 import javafx.event.ActionEvent;
 
 import java.io.IOException;

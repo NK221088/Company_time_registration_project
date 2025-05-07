@@ -1,6 +1,6 @@
-package dtu.example.ui;
+package dtu.timemanager.ui;
 
-import dtu.time_manager.app.TimeManager;
+import dtu.timemanager.domain.TimeManager;
 
 public class TimeManagerProvider {
 

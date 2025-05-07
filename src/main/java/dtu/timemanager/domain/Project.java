@@ -1,10 +1,8 @@
-package dtu.time_manager.app.domain;
+package dtu.timemanager.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import dtu.time_manager.app.domain.Activity;
 
 
 public class Project {

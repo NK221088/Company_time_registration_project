@@ -1,6 +1,6 @@
-package dtu.example.ui;
+package dtu.timemanager.ui;
 
-import dtu.time_manager.app.domain.*;
+import dtu.timemanager.domain.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

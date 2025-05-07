@@ -1,8 +1,7 @@
-package dtu.time_manager.app.services;
-import dtu.time_manager.app.domain.User;
-import dtu.time_manager.app.interfaces.projectInterface;
-import dtu.time_manager.app.domain.Activity;
-import dtu.time_manager.app.domain.Project;
+package dtu.timemanager.services;
+import dtu.timemanager.domain.User;
+import dtu.timemanager.interfaces.projectInterface;
+import dtu.timemanager.domain.Project;
 
 import java.time.LocalDate;
 import java.util.*;

@@ -4,8 +4,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import dtu.time_manager.app.domain.TimeManager;
-import dtu.time_manager.app.domain.Activity;
+import dtu.timemanager.domain.TimeManager;
+import dtu.timemanager.domain.Activity;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddIndependentActivitySteps {

@@ -2,9 +2,8 @@ module hellofx {
     requires transitive javafx.controls;
     requires javafx.fxml;
 
-    exports dtu.time_manager.app;
+    exports dtu.timemanager.domain;
 
-    opens dtu.example.ui to javafx.fxml; // Gives access to fxml files
-    exports dtu.example.ui;
-    exports dtu.time_manager.app.domain; // Exports the class inheriting from javafx.application.Application
+    opens dtu.timemanager.ui to javafx.fxml; // Gives access to fxml files
+    exports dtu.timemanager.ui;
 }

@@ -1,4 +1,4 @@
-package dtu.time_manager.app;
+package dtu.timemanager.domain;
 
 import java.time.LocalDate;
 

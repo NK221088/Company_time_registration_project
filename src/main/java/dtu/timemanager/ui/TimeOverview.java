@@ -1,6 +1,6 @@
-    package dtu.example.ui;
+    package dtu.timemanager.ui;
 
-    import dtu.time_manager.app.domain.*;
+    import dtu.timemanager.domain.*;
     import javafx.beans.property.SimpleStringProperty;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;

@@ -1,11 +1,9 @@
-package dtu.time_manager.app.interfaces;
-import dtu.time_manager.app.domain.Activity;
-import dtu.time_manager.app.domain.Project;
-import dtu.time_manager.app.domain.User;
+package dtu.timemanager.interfaces;
+import dtu.timemanager.domain.Project;
+import dtu.timemanager.domain.User;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 public interface projectInterface {

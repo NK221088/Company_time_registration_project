@@ -1,4 +1,4 @@
-package dtu.example.ui;
+package dtu.timemanager.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,9 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
-import dtu.time_manager.app.TimeManager;
-import dtu.example.ui.TimeManagerProvider;
 
 public class App extends Application {
 

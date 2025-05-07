@@ -1,6 +1,6 @@
 package acceptance_tests;
 
-import dtu.time_manager.app.Project;
+import dtu.timemanager.domain.Project;
 
 public class ProjectHolder {
     private Project project;
