@@ -1,4 +1,4 @@
-package dtu.timemanager.ui;
+package dtu.timemanager.gui;
 
 import java.io.IOException;
 

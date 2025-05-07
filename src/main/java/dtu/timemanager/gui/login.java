@@ -1,4 +1,4 @@
-package dtu.timemanager.ui;
+package dtu.timemanager.gui;
 
 import dtu.timemanager.domain.TimeManager;
 import javafx.fxml.FXML;

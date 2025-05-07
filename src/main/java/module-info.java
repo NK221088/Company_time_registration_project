@@ -4,6 +4,6 @@ module hellofx {
 
     exports dtu.timemanager.domain;
 
-    opens dtu.timemanager.ui to javafx.fxml; // Gives access to fxml files
-    exports dtu.timemanager.ui;
+    opens dtu.timemanager.gui to javafx.fxml; // Gives access to fxml files
+    exports dtu.timemanager.gui;
 }
