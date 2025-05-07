@@ -7,6 +7,7 @@ Feature: Add Time Registration
     And a project, "Project 1", exists in the system
     And that the project has an activity named "Activity 1" which is set as in progress
     When the user selects the activity "Activity 1" in project "Project 1"
+    And the user tries to add a time registration
     And the user enters "4" hours
     And the user selects the date "2025-04-20"
     Then a new Time Registration is added with:

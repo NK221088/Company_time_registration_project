@@ -12,10 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AddProjectSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
+    private ProjectHolder projectHolder;
+    private Project project;
 
-    public AddProjectSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
+    public AddProjectSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+        this.projectHolder = projectHolder;
     }
 
     @Given("the current year is {int}")
@@ -49,23 +52,10 @@ public class AddProjectSteps {
         assertNotNull(timeManager.getProjectFromID(ProjectID));
     }
 
-
-    @Given("a project with name {string} exists in the system")
-    public void aProjectWithNameExistsInTheSystem(String projectName) {
-        try {
-            timeManager.addProject(timeManager.createProject(projectName));
-        } catch (Exception e) {
-            this.errorMessage.setErrorMessage(e.getMessage());
-        }
-    }
-
-    @Then("the project with name {string} is not created")
-    public void theProjectIsNotCreated(String projectName) {
+    @Then("the new project with name {string} is not created")
+    public void theNewProjectWithNameIsNotCreated(String projectName) {
         assertFalse(timeManager.projectDuplicateExists(projectName));
     }
 
-    @Then("the project error message {string} is given")
-    public void theErrorMessageAProjectWithNameAlreadyExistsInTheSystemAndTwoProjectsCanTHaveTheSameNameIsGiven(String errorMessage) {
-        assertEquals(errorMessage, this.errorMessage.getErrorMessage());
-    }
+
 }
