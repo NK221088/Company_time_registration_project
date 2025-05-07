@@ -424,36 +424,56 @@
             // Create date columns
             for (LocalDate date : dates) {
                 String dateStr = dateFormatter.format(date);
-                final String columnDate = dateStr; // For lambda capture
+                final LocalDate columnDate = date;  // <-- keep the real LocalDate!
 
                 TreeTableColumn<TimeEntryRow, String> dateColumn = new TreeTableColumn<>(dateStr);
                 dateColumn.setCellValueFactory(param ->
-                        new SimpleStringProperty(param.getValue().getValue().getHoursForDate(columnDate)));
+                        new SimpleStringProperty(param.getValue().getValue().getHoursForDate(dateStr))
+                );
 
-                // Custom cell factory for styling
                 dateColumn.setCellFactory(col -> new TreeTableCell<TimeEntryRow, String>() {
                     @Override
-                    protected void updateItem(String item, boolean empty) {
+                    protected void updateItem (String item,boolean empty){
                         super.updateItem(item, empty);
-                        if (empty || item == null) {
+                        if (empty) {
                             setText(null);
                             setStyle(null);
-                        } else {
-                            setText(item);
-                            setStyle("-fx-alignment: CENTER;");
+                            return;
+                        }
 
-                            // Get the row data to determine if it's a project, activity, or time registration
-                            TimeEntryRow rowData = getTreeTableRow().getItem();
-                            if (rowData != null) {
-                                if (rowData.isProject()) {
-                                    setStyle("-fx-alignment: CENTER; -fx-font-weight: bold;");
-                                } else if (rowData.isActivity()) {
-                                    setStyle("-fx-alignment: CENTER; -fx-font-style: italic;");
-                                } else if (rowData.isTimeRegistration()) {
-                                    // Add a visual indicator that this row is editable
-                                    setStyle("-fx-alignment: CENTER; -fx-text-fill: #0066cc; -fx-cursor: hand;");
+                        TimeEntryRow rowData = getTreeTableRow().getItem();
+                        // default: clear
+                        setText(empty ? null : item);
+                        setStyle("-fx-alignment: CENTER;");
+
+                        if (rowData == null) return;
+
+                        // 1) PROJECT row styling...
+                        if (rowData.isProject()) {
+                            setStyle("-fx-alignment: CENTER; -fx-font-weight: bold;");
+                            return;
+                        }
+                        // 2) ACTIVITY row styling...
+                        if (rowData.isActivity()) {
+                            setStyle("-fx-alignment: CENTER; -fx-font-style: italic;");
+                            return;
+                        }
+                        // 3) TIME REGISTRATION row
+                        if (rowData.isTimeRegistration()) {
+                            TimeRegistration tr = rowData.getTimeRegistration();
+                            // --- INTERVAL CASE ---
+                            if (tr instanceof IntervalTimeRegistration itr) {
+                                if (!columnDate.isBefore(itr.getStartDate()) &&
+                                        !columnDate.isAfter(itr.getEndDate())) {
+                                    // paint vacation color
+                                    setText(""); // no text
+                                    setStyle("-fx-background-color: green; -fx-alignment: CENTER;");
+                                    return;
                                 }
                             }
+                            // --- SINGLE-DAY CASE (fallback) ---
+                            // keep your existing clickable styling
+                            setStyle("-fx-alignment: CENTER; -fx-text-fill: #0066cc; -fx-cursor: hand;");
                         }
                     }
                 });
@@ -548,25 +568,38 @@
 
                     // Add time registrations for this activity
                     for (TimeRegistration tr : timeRegs) {
-                        // Only include time registrations within our date range
-                        String trDateStr = dateFormatter.format(tr.getRegisteredDate());
-                        if (dates.contains(tr.getRegisteredDate())) {
-                            // Create description for time registration
-                            String description = "Time: " + tr.getRegisteredHours() + "h";
-                            if (tr.getRegisteredHours() == 1) {
-                                description = "Time: 1h";
-                            }
-
-                            // Create time registration row with reference to the TR object
+                        if (tr instanceof IntervalTimeRegistration itr) {
+                            // create one row for the whole interval
+                            String description = String.format("Interval: %s–%s",
+                                    dateFormatter.format(itr.getStartDate()),
+                                    dateFormatter.format(itr.getEndDate()));
                             TimeEntryRow trRow = new TimeEntryRow(description, false, false, true, tr);
-                            trRow.setHoursForDate(trDateStr, String.valueOf(tr.getRegisteredHours()));
                             TreeItem<TimeEntryRow> trItem = new TreeItem<>(trRow);
                             activityItem.getChildren().add(trItem);
 
-                            // Add to totals - convert double to int if needed
-                            int hoursAsInt = (int)tr.getRegisteredHours();
-                            activityDateTotals.put(trDateStr, activityDateTotals.get(trDateStr) + hoursAsInt);
-                            projectTotals.put(trDateStr, projectTotals.get(trDateStr) + hoursAsInt);
+                            // mark each day in the interval
+                            for (LocalDate d : dates) {
+                                if (!d.isBefore(itr.getStartDate()) && !d.isAfter(itr.getEndDate())) {
+                                    String dayStr = dateFormatter.format(d);
+                                    trRow.setHoursForDate(dayStr, "◼");   // or "V" for vacation, your choice
+                                    // accumulate to totals if you like:
+                                    activityDateTotals.put(dayStr, activityDateTotals.get(dayStr) + 1);
+                                    projectTotals.put(dayStr, projectTotals.get(dayStr) + 1);
+                                }
+                            }
+                        } else {
+                            String trDateStr = dateFormatter.format(tr.getRegisteredDate());
+                            if (dates.contains(tr.getRegisteredDate())) {
+                                String description = "Time: " + tr.getRegisteredHours() + "h";
+                                TimeEntryRow trRow = new TimeEntryRow(description, false, false, true, tr);
+                                trRow.setHoursForDate(trDateStr, String.valueOf(tr.getRegisteredHours()));
+                                TreeItem<TimeEntryRow> trItem = new TreeItem<>(trRow);
+                                activityItem.getChildren().add(trItem);
+
+                                int hoursAsInt = (int)tr.getRegisteredHours();
+                                activityDateTotals.put(trDateStr, activityDateTotals.get(trDateStr) + hoursAsInt);
+                                projectTotals.put(trDateStr, projectTotals.get(trDateStr) + hoursAsInt);
+                            }
                         }
                     }
 
@@ -767,101 +800,142 @@
             ButtonType registerButtonType = new ButtonType("Register", ButtonBar.ButtonData.OK_DONE);
             dialog.getDialogPane().getButtonTypes().addAll(registerButtonType, ButtonType.CANCEL);
 
-            // Activity choices: only assigned activities
-            ChoiceBox<Activity> activityChoiceBox = new ChoiceBox<>();
             User currentUser = this.timeManager.getCurrentUser();
 
+            // ←— NEW: rebuild the activity choice box
+            ChoiceBox<Activity> activityChoiceBox = new ChoiceBox<>();
             List<Activity> assignedActivities = this.timeManager.getProjects().stream()
                     .flatMap(p -> p.getActivities().stream())
-                    .filter(a -> a.getAssignedUsers().contains(currentUser) || a.getWorkingUsers().contains(currentUser))
+                    .filter(a -> a.getAssignedUsers().contains(currentUser)
+                            || a.getWorkingUsers().contains(currentUser))
                     .distinct()
-                    .collect(Collectors.toList());
-
+                    .toList();
             activityChoiceBox.getItems().addAll(assignedActivities);
 
-            // Hours and minutes
+            // --- add a toggle between single-date vs. interval ---
+            CheckBox intervalCheckBox = new CheckBox("Register as interval");
+
+            // FOR INTERVAL TIME REGISTRATIONS:
+            ChoiceBox<String> leaveTypeChoiceBox = new ChoiceBox<>(
+                    FXCollections.observableArrayList("Vacation", "Sick Leave")
+            );
+            leaveTypeChoiceBox.setValue("Vacation");
+            leaveTypeChoiceBox.setVisible(false);
+
+            // Single-date controls:
             ChoiceBox<Integer> hoursChoiceBox = new ChoiceBox<>();
             for (int i = 0; i <= 23; i++) hoursChoiceBox.getItems().add(i);
             hoursChoiceBox.setValue(0);
-
             ChoiceBox<Integer> minutesChoiceBox = new ChoiceBox<>();
             for (int i = 0; i < 60; i += 5) minutesChoiceBox.getItems().add(i);
             minutesChoiceBox.setValue(0);
+            DatePicker singleDatePicker = new DatePicker(LocalDate.now());
 
-            // Date picker
-            DatePicker datePicker = new DatePicker(LocalDate.now());
-            datePicker.setEditable(false);
-            datePicker.setDayCellFactory(picker -> new DateCell() {
-                @Override
-                public void updateItem(LocalDate date, boolean empty) {
-                    super.updateItem(date, empty);
-                    if (date.isAfter(LocalDate.now())) {
-                        setDisable(true);
-                        setStyle("-fx-background-color: #ffc0cb;");
-                    }
-                }
+            // Interval controls (initially hidden):
+            DatePicker startPicker = new DatePicker(LocalDate.now());
+            DatePicker endPicker   = new DatePicker(LocalDate.now());
+            startPicker.setVisible(false);
+            endPicker  .setVisible(false);
+
+            // When toggling, show/hide relevant controls:
+            intervalCheckBox.selectedProperty().addListener((obs, oldV, isInterval) -> {
+                activityChoiceBox.setVisible(!isInterval);
+                leaveTypeChoiceBox.setVisible(isInterval);
+                hoursChoiceBox.setDisable(isInterval);
+                minutesChoiceBox.setDisable(isInterval);
+                singleDatePicker.setVisible(!isInterval);
+                startPicker.setVisible(isInterval);
+                endPicker.setVisible(isInterval);
             });
 
-            // Layout
             GridPane grid = new GridPane();
             grid.setHgap(10);
             grid.setVgap(10);
-            grid.add(new Label("Activity:"), 0, 0);
-            grid.add(activityChoiceBox, 1, 0);
-            grid.add(new Label("Time:"), 0, 1);
-            grid.add(new HBox(5, hoursChoiceBox, new Label("h"), minutesChoiceBox, new Label("m")), 1, 1);
-            grid.add(new Label("Date:"), 0, 2);
-            grid.add(datePicker, 1, 2);
+            grid.add(new Label("Activity:"),   0, 0);
+            grid.add(activityChoiceBox,        1, 0);
+            grid.add(intervalCheckBox,         0, 1, 2, 1);
+            grid.add(new Label("Leave Type:"),       0, 2);
+            grid.add(leaveTypeChoiceBox,             1, 2);
+            grid.add(new Label("Date:"),       0, 2);
+            grid.add(singleDatePicker,         1, 2);
+            grid.add(new Label("Start:"),      0, 3);
+            grid.add(startPicker,              1, 3);
+            grid.add(new Label("End:"),        0, 4);
+            grid.add(endPicker,                1, 4);
+            grid.add(new Label("Time:"),       0, 5);
+            grid.add(new HBox(5, hoursChoiceBox, new Label("h"), minutesChoiceBox, new Label("m")), 1, 5);
 
             dialog.getDialogPane().setContent(grid);
 
-            final Button registerButton = (Button) dialog.getDialogPane().lookupButton(registerButtonType);
+            Button registerButton = (Button) dialog.getDialogPane().lookupButton(registerButtonType);
             registerButton.addEventFilter(ActionEvent.ACTION, event -> {
-                Activity selectedActivity = activityChoiceBox.getValue();
-                int hours = hoursChoiceBox.getValue();
-                int minutes = minutesChoiceBox.getValue();
-                LocalDate date = datePicker.getValue();
+                boolean isInterval = intervalCheckBox.isSelected();
 
-                if (selectedActivity == null) {
-                    showError("Please select an activity.");
-                    event.consume();
-                    return;
-                }
-                if (date == null) {
-                    showError("Please select a date.");
-                    event.consume();
-                    return;
-                }
-
-                double totalHours;
-                if (15 <= minutes && minutes <= 44) {
-                    totalHours = hours + 0.5;
-                } else if (minutes >= 45) {
-                    totalHours = hours + 1;
+                // 1) Validate activity or leave type
+                if (!isInterval) {
+                    // single-day: must pick an activity
+                    Activity a = activityChoiceBox.getValue();
+                    if (a == null) {
+                        showError("Please select an activity.");
+                        event.consume();
+                        return;
+                    }
                 } else {
-                    totalHours = hours;
+                    // interval: must pick a leave type
+                    String leaveType = leaveTypeChoiceBox.getValue();
+                    if (leaveType == null) {
+                        showError("Please select a leave type.");
+                        event.consume();
+                        return;
+                    }
                 }
 
                 try {
-                    TimeRegistration tr = new TimeRegistration(currentUser, selectedActivity, totalHours, date);
-                    this.timeManager.addTimeRegistration(tr);
+                    if (isInterval) {
+                        // INTERVAL registration
+                        LocalDate start = startPicker.getValue();
+                        LocalDate end   = endPicker.getValue();
+                        if (start == null || end == null) {
+                            showError("Please select both start and end dates.");
+                            event.consume();
+                            return;
+                        }
+                        // map leaveType → the proper Activity instance
+                        Activity leaveActivity = new Activity(leaveTypeChoiceBox.getValue());
+                        IntervalTimeRegistration itr = new IntervalTimeRegistration(currentUser, leaveActivity, start, end);
+                        timeManager.addTimeRegistration(itr);
 
-                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
-                    successAlert.setHeaderText(null);
-                    successAlert.setContentText("Time registered successfully!");
-                    successAlert.showAndWait();
+                    } else {
+                        // SINGLE‐DAY registration
+                        Activity a      = activityChoiceBox.getValue();
+                        LocalDate date  = singleDatePicker.getValue();
+                        int h           = hoursChoiceBox.getValue();
+                        int m           = minutesChoiceBox.getValue();
+                        double totalHours = h + (m >= 45 ? 1 : (m >= 15 ? 0.5 : 0));
 
+                        if (date == null) {
+                            showError("Please select a date.");
+                            event.consume();
+                            return;
+                        }
+
+                        TimeRegistration tr =
+                                new TimeRegistration(currentUser, a, totalHours, date);
+                        timeManager.addTimeRegistration(tr);
+                    }
+
+                    dialog.close();
                     refreshViews();
-                } catch (Exception e) {
-                    showError("Error: " + e.getMessage());
+
+                } catch (Exception ex) {
+                    showError("Error: " + ex.getMessage());
                     event.consume();
                 }
             });
 
-            dialog.setResultConverter(dialogButton -> null);
             dialog.showAndWait();
         }
+
 
         private int extractLeadingNumber(String text) {
             Matcher m = Pattern.compile("(\\d+)").matcher(text);
