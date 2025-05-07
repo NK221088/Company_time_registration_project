@@ -41,7 +41,7 @@ public class TimeManager {
     public User getUserFromInitials(String user_initials) {
         try {
             return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
-        } catch (Exception _) {
+        } catch (Exception e) {
             throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
         }
     }
