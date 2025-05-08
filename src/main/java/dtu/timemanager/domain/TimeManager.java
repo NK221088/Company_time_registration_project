@@ -14,7 +14,6 @@ public class TimeManager {
     private List<User> users = new ArrayList<>();
     private List<Project> projects = new ArrayList<>();
     private List<Activity> independentActivities = new ArrayList<>();
-    private Map<String, Project> projectMap = new HashMap<>();
     private List<TimeRegistration> time_registrations = new ArrayList<>();
     private int projectCount = 0;
 
@@ -73,7 +72,6 @@ public class TimeManager {
 
     public void addProject(Project project) {
         if (!projectExists(project)) {
-            projectMap.put(project.getProjectID(), project);
             projects.add(project);
         } else {
             decProjectCount();
@@ -102,10 +100,6 @@ public class TimeManager {
     }
     public boolean projectExists(String projectName) {
         return projects.contains(projectName);
-    }
-
-    public ProjectReport viewProject(Project project) {
-        return new ProjectReport(project);
     }
 
     public ProjectReport getProjectReport(Project project) {
