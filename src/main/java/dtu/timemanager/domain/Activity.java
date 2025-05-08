@@ -49,15 +49,14 @@ public class Activity {
     }
 
     public void assignUser(User user) {
-        Integer activityCount = user.getActivityCount();
-        if (activityCount < 20){
-            if(assignedUsers.contains(user)){
-                throw new RuntimeException(user.getUserInitials() + " is already assigned to the activity " + getActivityName());
+        if (user.getActivityCount() < 20){ // 1
+            if(assignedUsers.contains(user)){ // 2
+                throw new RuntimeException(user.getUserInitials() + " is already assigned to the activity " + getActivityName()); // 3
             }
-            assignedUsers.add(user);
-            user.incrementActivityCount();
+            assignedUsers.add(user); // 4
+            user.incrementActivityCount(); // 5
         } else {
-            throw new RuntimeException(user.getUserInitials() + " is already assigned to the maximum number of 20 activities");
+            throw new RuntimeException(user.getUserInitials() + " is already assigned to the maximum number of 20 activities"); // 6
         }
     }
 

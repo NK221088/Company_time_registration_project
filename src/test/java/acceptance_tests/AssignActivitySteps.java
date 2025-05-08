@@ -8,6 +8,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AssignActivitySteps {
@@ -17,58 +19,71 @@ public class AssignActivitySteps {
     private ProjectHolder projectHolder;
     private Project project;
     private User user1;
-    private User user2;
+    private ActivityHolder activityHolder;
+    private Activity activity;
 
-    public AssignActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
+    public AssignActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder, ActivityHolder activityHolder) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
         this.projectHolder = projectHolder;
-        this.project = projectHolder.getProject();
         this.user1 = timeManager.getCurrentUser();
+        this.project = projectHolder.getProject();
+        this.activityHolder = activityHolder;
+        this.activity = activityHolder.getActivity();
+
     }
 
     @Given("the user {string} has {int} assigned activities")
     public void theUserHasAssignedActivities(String userInitials, Integer activityCount) throws Exception {
-        this.user2 = new User(userInitials);
+        boolean initialsFound = timeManager.getUsers().stream()
+                .anyMatch(user -> user.getUserInitials().equals(userInitials));
+        if (!initialsFound){
+            this.user1 = new User(userInitials);
+            timeManager.addUser(user1);
+        }
         Project projectWithActivities = timeManager.createExampleProject("Project With " + activityCount.toString() + " Activities", activityCount);
         timeManager.addProject(projectWithActivities);
-        for (Activity activity : projectWithActivities.getActivities()) { timeManager.assignUser(activity, user2); }
-        assertEquals(activityCount, user2.getActivityCount());
+        for (Activity activity : projectWithActivities.getActivities()) { timeManager.assignUser(activity, user1); }
+        assertEquals(activityCount, user1.getActivityCount());
     }
-    @When("the user {string} assigns the user {string} to {string} in {string}")
-    public void theUserAssignsTheUserToIn(String userInitials1, String userInitials2, String activityName, String projectName) {
-        Activity activity = project.getActivityFromName(activityName);
+    @Given("the user {string} has {int} assigned activity, {string} in {string}")
+    public void theUserHasAssignedActivityIn(String userInitials, Integer int1, String string2, String string3) {
+        boolean initialsFound = timeManager.getUsers().stream()
+                .anyMatch(user -> user.getUserInitials().equals(userInitials));
+        if (!initialsFound){
+            this.user1 = new User(userInitials);
+            timeManager.addUser(user1);
+        }
+        this.activity.assignUser(user1);
+    }
+    @When("the user {string} assigns the user {string} to the activity {string} in {string}")
+    public void theUserAssignsTheUserToTheActivityIn(String string, String string2, String string3, String string4) {
         try {
-            timeManager.assignUser(activity, user2); // If no exception is thrown, the option is available
+            activity.assignUser(user1);
         } catch (Exception e) {
-            errorMessage.setErrorMessage(e.getMessage());
+            this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
-
     @Then("the user {string} is assigned to {string} in {string}")
     public void theUserIsAssignedToIn(String userInitials, String activityName, String projectName) {
-        Activity activity = project.getActivityFromName(activityName);
-        assertTrue(activity.getAssignedUsers().contains(user2));
+        assertTrue(activity.getAssignedUsers().contains(user1));
     }
     @Then("the user {string}'s count of currently assigned activities is {int}")
     public void theUserSCountOfCurrentlyAssignedActivitiesIs(String userInitials, Integer activityCount) {
-        assertEquals(activityCount, user2.getActivityCount());
-    }
-
-    @Given("the user {string} is already assigned to {string} in {string}")
-    public void theUserIsAlreadyAssignedToIn(String userInitials, String activityName, String projectName) {
-        Activity activity = project.getActivityFromName(activityName);
-        try {
-            timeManager.assignUser(activity, user2); // If no exception is thrown, the option is available
-        } catch (Exception e) {
-            errorMessage.setErrorMessage(e.getMessage());
-        }
+        assertEquals(activityCount, user1.getActivityCount());
     }
 
     @Then("the user {string} isn't assigned to {string} in {string}")
     public void theUserIsnTAssignedToIn(String userInitials, String activityName, String projectName) {
         Activity activity = project.getActivityFromName(activityName);
-        assertFalse(activity.getAssignedUsers().contains(user2));
+        assertFalse(activity.getAssignedUsers().contains(user1));
+    }
+    @Then("the user {string} isn't assigned to {string} in {string} again")
+    public void theUserIsnTAssignedToInAgain(String userInitials, String string2, String string3) {
+        long count = activity.getAssignedUsers().stream()
+                .filter(user -> user.getUserInitials().equals(userInitials))
+                .count();
+        assertTrue(count == 1);
     }
 
 //    @Then("the user with initials {string}'s count of assigned activities is incremented")

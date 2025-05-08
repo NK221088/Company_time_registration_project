@@ -19,9 +19,6 @@ public class Project {
         this.projectID = projectID;
         this.activities = new ArrayList<>();
     }
-    public void setProjectID(String projectID) {
-        this.projectID = projectID;
-    }
 
     public void assignProjectLead(User projectLead) {
         this.projectLead = projectLead;
