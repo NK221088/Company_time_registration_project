@@ -12,12 +12,11 @@ public class projectService implements projectInterface {
 
     @Override
     public void addProject(Project project) {
-        if (!projectExists(project.getProjectName())) {
-            project.setProjectID("P" + incProjectCount());
+        if (!projectExists(project)) {
             projects.add(project);
         } else {
             decProjectCount();
-            throw new RuntimeException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can't have the same name.");
+            throw new RuntimeException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
     }
 
@@ -35,12 +34,14 @@ public class projectService implements projectInterface {
     }
 
     @Override
-    public boolean projectExists(String projectName) {
-        return projects.stream()
-                .map(Project::getProjectName)
-                .anyMatch(name -> name.equals(projectName));
+    public boolean projectExists(Project project) {
+        return projects.contains(project);
     }
 
+    @Override
+    public boolean projectExists(String projectName) {
+        return projects.contains(projectName);
+    }
 
     @Override
     public ProjectReport getProjectReport(Project project) {
@@ -52,11 +53,20 @@ public class projectService implements projectInterface {
         project.setProjectLead(user);
     }
 
-    private static int incProjectCount() {
+
+    @Override
+    public int incProjectCount() {
         return ++projectCount;
     }
 
-    private static void decProjectCount() {
+    @Override
+    public void decProjectCount() {
         projectCount--;
     }
+
+    @Override
+    public int getProjectCount() {return projectCount;}
+
+
+
 }

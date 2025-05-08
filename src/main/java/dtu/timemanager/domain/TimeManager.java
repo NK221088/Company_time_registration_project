@@ -73,12 +73,7 @@ public class TimeManager {
     }
 
     public void addProject(Project project) {
-        if (!projectExists(project)) {
-            projects.add(project);
-        } else {
-            decProjectCount();
-            throw new RuntimeException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
-        }
+        IProjectService.addProject(project);
     }
 
     private void decProjectCount() {
@@ -86,26 +81,22 @@ public class TimeManager {
     }
 
     public List<Project> getProjects() {
-        return projects;
-    }
-
-    public int incProjectCount() {
-        return ++projectCount;
+        return IProjectService.getProjects();
     }
 
     public int getProjectCount() {
-        return projectCount;
+        return IProjectService.getProjectCount();
     }
 
     public boolean projectExists(Project project) {
-        return projects.contains(project);
+        return IProjectService.projectExists(project);
     }
     public boolean projectExists(String projectName) {
-        return projects.contains(projectName);
+        return IProjectService.projectExists(projectName);
     }
 
     public ProjectReport getProjectReport(Project project) {
-        return new ProjectReport(project);
+        return IProjectService.getProjectReport(project);
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
