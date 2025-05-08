@@ -1,9 +1,9 @@
 package dtu.timemanager.services;
+import dtu.timemanager.domain.ProjectReport;
 import dtu.timemanager.domain.User;
 import dtu.timemanager.interfaces.projectInterface;
 import dtu.timemanager.domain.Project;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class projectService implements projectInterface {
@@ -41,17 +41,10 @@ public class projectService implements projectInterface {
                 .anyMatch(name -> name.equals(projectName));
     }
 
-    @Override
-    public boolean projectDuplicateExists(String projectName) {
-        return projects.stream()
-                .map(Project::getProjectName)
-                .filter(name -> name.equals(projectName))
-                .count() > 1;
-    }
 
     @Override
-    public Map<String, Object> getProjectReport(String projectID) {
-
+    public ProjectReport getProjectReport(Project project) {
+        return new ProjectReport(project);
     }
 
     @Override

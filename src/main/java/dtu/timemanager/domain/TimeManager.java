@@ -1,4 +1,5 @@
 package dtu.timemanager.domain;
+import dtu.timemanager.services.projectService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class TimeManager {
     private List<Activity> independentActivities = new ArrayList<>();
     private List<TimeRegistration> time_registrations = new ArrayList<>();
     private int projectCount = 0;
+    private projectService IProjectService = new projectService();
 
     public TimeManager() {}
 
