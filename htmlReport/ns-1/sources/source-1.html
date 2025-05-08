@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Activity</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtu.timemanager.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Activity (dtu.timemanager.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Activity</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.4%
+  </span>
+  <span class="absValue">
+    (8/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    13.3%
+  </span>
+  <span class="absValue">
+    (4/30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.9%
+  </span>
+  <span class="absValue">
+    (17/55)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtu.timemanager.domain;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;public class Activity {
+&nbsp;
+&nbsp;    private String activityName;
+<b class="fc">&nbsp;    private ArrayList&lt;User&gt; assignedUsers = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private ArrayList&lt;User&gt; workingUsers = new ArrayList&lt;&gt;();</b>
+&nbsp;    private double expectedWorkHours;
+&nbsp;    private LocalDate activityStartTime;
+&nbsp;    private LocalDate activityEndTime;
+<b class="fc">&nbsp;    private Boolean isFinalized = false;</b>
+&nbsp;
+<b class="fc">&nbsp;    public Activity(String activityName) {</b>
+<b class="fc">&nbsp;        this.activityName = activityName;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }</b>
+<b class="nc">&nbsp;    public double getExpectedWorkHours() { return this.expectedWorkHours;}</b>
+&nbsp;
+&nbsp;    public double getWorkedHours() {
+<b class="fc">&nbsp;        double workedHours = 0.0;</b>
+<b class="pc">&nbsp;        for (User user : getWorkingUsers()) {</b>
+<b class="nc">&nbsp;            for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {</b>
+<b class="nc">&nbsp;                workedHours += timeReg.getRegisteredHours();</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return workedHours;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public ArrayList&lt;User&gt; getAssignedUsers() { return this.assignedUsers;}</b>
+<b class="fc">&nbsp;    public String getActivityName() { return this.activityName;}</b>
+&nbsp;
+&nbsp;    public Map&lt;String, Object&gt; viewActivity() {
+<b class="nc">&nbsp;        Map&lt;String,Object&gt; info = new HashMap();</b>
+<b class="nc">&nbsp;        info.put(&quot;Name&quot;, getActivityName());</b>
+<b class="nc">&nbsp;        info.put(&quot;Assigned employees&quot;, getAssignedUsers());</b>
+<b class="nc">&nbsp;        info.put(&quot;Contributing employees&quot;, getWorkingUsers());</b>
+<b class="nc">&nbsp;        info.put(&quot;ExpectedWorkHours&quot;, getExpectedWorkHours());</b>
+<b class="nc">&nbsp;        info.put(&quot;WorkedHours&quot;, getWorkedHours());</b>
+<b class="nc">&nbsp;        info.put(&quot;StartTime&quot;, getActivityStartTime());</b>
+<b class="nc">&nbsp;        info.put(&quot;EndTime&quot;, getActivityEndTime());</b>
+&nbsp;
+<b class="nc">&nbsp;        return info;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void assignUser(User user) {
+<b class="nc">&nbsp;        if (user.getActivityCount() &lt; 20){ // 1</b>
+<b class="nc">&nbsp;            if(assignedUsers.contains(user)){ // 2</b>
+<b class="nc">&nbsp;                throw new RuntimeException(user.getUserInitials() + &quot; is already assigned to the activity &quot; + getActivityName()); // 3</b>
+&nbsp;            }
+<b class="nc">&nbsp;            assignedUsers.add(user); // 4</b>
+<b class="nc">&nbsp;            user.incrementActivityCount(); // 5</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new RuntimeException(user.getUserInitials() + &quot; is already assigned to the maximum number of 20 activities&quot;); // 6</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void unassignUser(User user) {
+<b class="nc">&nbsp;        if (this.assignedUsers.contains(user)) {</b>
+<b class="nc">&nbsp;            this.assignedUsers.remove(user);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;The user can not be unassigned from an activity they are not assigned to&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addWorkingUser(User user) {
+<b class="nc">&nbsp;        if (!workingUsers.contains(user)) {</b>
+<b class="nc">&nbsp;            workingUsers.add(user);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    public boolean equals(Object obj) {
+<b class="pc">&nbsp;        if (this == obj) return true;</b>
+<b class="pc">&nbsp;        if (obj == null || getClass() != obj.getClass()) return false;</b>
+<b class="fc">&nbsp;        Activity activity = (Activity) obj;</b>
+<b class="fc">&nbsp;        return activityName.equals(activity.getActivityName());</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public ArrayList&lt;User&gt; getWorkingUsers() { return this.workingUsers; }</b>
+&nbsp;
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return activityName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setActivityName(String activityName) {
+<b class="nc">&nbsp;        this.activityName = activityName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public LocalDate getActivityStartTime() {
+<b class="nc">&nbsp;        return activityStartTime;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setActivityStartTime(LocalDate activityStartTime) throws Exception {
+&nbsp;
+<b class="nc">&nbsp;        if (activityEndTime==null || activityStartTime.isBefore(activityEndTime)) {</b>
+<b class="nc">&nbsp;            this.activityStartTime = activityStartTime;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new Exception(&quot;The start date of the activity can&#39;t be after the start date of the activity.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    public LocalDate getActivityEndTime() {
+<b class="nc">&nbsp;        return activityEndTime;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getTimeInterval() {
+<b class="nc">&nbsp;        String p1 = getActivityStartTime() != null ? getActivityStartTime().toString() : &quot;&quot;;</b>
+<b class="nc">&nbsp;        String p2 = getActivityEndTime() != null ? getActivityEndTime().toString() : &quot;&quot;;</b>
+<b class="nc">&nbsp;        return p1 + &quot; - &quot; + p2;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setActivityEndTime(LocalDate activityEndTime) throws Exception {
+<b class="nc">&nbsp;        if (activityStartTime==null || activityEndTime.isAfter(activityStartTime)) {</b>
+<b class="nc">&nbsp;            this.activityEndTime = activityEndTime;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new Exception(&quot;The end date of the activity can&#39;t be before the start date of the activity.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setActivityAsFinalized() {
+<b class="fc">&nbsp;        this.isFinalized = true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean getFinalized() {
+<b class="fc">&nbsp;        return isFinalized;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setActivityAsUnFinalized() {
+<b class="fc">&nbsp;        this.isFinalized = false;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-08 23:39</div>
+</div>
+</body>
+</html>

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class TimeManager {
     private User current_user;
     private List<User> users = new ArrayList<>();
-    private List<Project> projects = new ArrayList<>();
+//    private List<Project> projects = new ArrayList<>();
     private List<Activity> independentActivities = new ArrayList<>();
     private List<TimeRegistration> time_registrations = new ArrayList<>();
     private int projectCount = 0;
@@ -74,10 +74,6 @@ public class TimeManager {
 
     public void addProject(Project project) {
         IProjectService.addProject(project);
-    }
-
-    private void decProjectCount() {
-        projectCount--;
     }
 
     public List<Project> getProjects() {

@@ -7,8 +7,8 @@ import dtu.timemanager.domain.Project;
 import java.util.*;
 
 public class projectService implements projectInterface {
-    private static final List<Project> projects = new ArrayList<>();
-    private static int projectCount = 0;
+    private final List<Project> projects = new ArrayList<>();
+    private int projectCount = 0;
 
     @Override
     public void addProject(Project project) {

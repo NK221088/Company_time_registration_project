@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TimeRegistration</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtu.timemanager.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: TimeRegistration (dtu.timemanager.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TimeRegistration</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (2/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34.8%
+  </span>
+  <span class="absValue">
+    (8/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtu.timemanager.domain;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;public class TimeRegistration {
+&nbsp;    private User registeredUser;
+&nbsp;    private Activity registeredActivity;
+&nbsp;    private double registeredHours;
+&nbsp;    private LocalDate registeredDate;
+&nbsp;
+<b class="fc">&nbsp;    public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) throws Exception {</b>
+<b class="fc">&nbsp;        this.registeredUser = registeredUser;</b>
+<b class="fc">&nbsp;        this.registeredActivity = registeredActivity;</b>
+<b class="fc">&nbsp;        this.registeredHours = registeredHours;</b>
+<b class="fc">&nbsp;        this.registeredDate = registeredDate;</b>
+&nbsp;
+<b class="pc">&nbsp;        if (registeredDate.isAfter(LocalDate.now())) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Date is after now&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (this.registeredActivity.getFinalized()){</b>
+<b class="fc">&nbsp;            throw new Exception(&quot;The activity is set as finalized: Time registrations can&#39;t be added.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        registeredUser.addTimeRegistration(this);</b>
+&nbsp;    }
+&nbsp;    public User getRegisteredUser() {
+<b class="nc">&nbsp;        return registeredUser;</b>
+&nbsp;    }
+&nbsp;    public Activity getRegisteredActivity() {
+<b class="nc">&nbsp;        return registeredActivity;</b>
+&nbsp;    }
+&nbsp;    public double getRegisteredHours() {
+<b class="nc">&nbsp;        return registeredHours;</b>
+&nbsp;    }
+&nbsp;    public LocalDate getRegisteredDate() {
+<b class="nc">&nbsp;        return registeredDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setRegisteredUser(User registeredUser) {
+<b class="nc">&nbsp;        Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; registrationList = this.registeredUser.getActivityRegistrations();</b>
+<b class="nc">&nbsp;        List&lt;TimeRegistration&gt; actRegList = registrationList.get(this.registeredActivity);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (this.registeredUser != null &amp;&amp; this.registeredUser != registeredUser &amp;&amp; actRegList.size() &lt;= 1) {</b>
+<b class="nc">&nbsp;            this.registeredActivity.getWorkingUsers().remove(this.registeredUser);</b>
+<b class="nc">&nbsp;            this.registeredUser = registeredUser;</b>
+&nbsp;
+<b class="nc">&nbsp;        } else { this.registeredUser = registeredUser;}</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setRegisteredActivity(Activity registeredActivity) {
+<b class="nc">&nbsp;        this.registeredActivity = registeredActivity;</b>
+&nbsp;    }
+&nbsp;    public void setRegisteredHours(double registeredHours) {
+<b class="nc">&nbsp;        this.registeredHours = registeredHours;</b>
+&nbsp;    }
+&nbsp;    public void setRegisteredDate(LocalDate registeredDate) {
+<b class="nc">&nbsp;        this.registeredDate = registeredDate;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-08 23:39</div>
+</div>
+</body>
+</html>

@@ -52,5 +52,4 @@ public class EditProjectSteps {
     public void theProjectSStartDateIsChanged() {
         assertNotEquals(project.getStartDate(), this.projectHolder.getOldDate().toString());
     }
-
 }
