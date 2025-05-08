@@ -2,6 +2,7 @@ package acceptance_tests;
 
 import dtu.timemanager.domain.Activity;
 import dtu.timemanager.domain.Project;
+import dtu.timemanager.domain.ProjectReport;
 import dtu.timemanager.domain.TimeManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -19,7 +20,7 @@ public class ViewProjectSteps {
     private ErrorMessageHolder errorMessage;
     private ProjectHolder projectHolder;
     private Project project;
-    private Map<String, Object> projectVariables = new HashMap<>();
+    private ProjectReport projectReport;
 
     public ViewProjectSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
@@ -49,17 +50,13 @@ public class ViewProjectSteps {
     }
     @Then("the activities in the project are shown")
     public void theActivitiesInTheProjectAreShown() {
-        Object activities = this.projectVariables.get("Project activities");
-        assert activities instanceof List; // Check that it's a list that is returned
-        List<?> activityList = (List<?>) activities; // Check that each element in the list is of type Activity
-        for (Object activity : activityList) {
-            assert activity instanceof Activity;}
+        assertTrue(this.projectReport.getActivities() != null);
     }
 
     @When("the user views the project")
     public void theUserViewsTheProject() {
         try {
-            this.projectVariables = timeManager.viewProject(project); // If no exception is thrown, the option is available
+            this.projectReport = timeManager.getProjectReport(project); // If no exception is thrown, the option is available
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
@@ -67,16 +64,16 @@ public class ViewProjectSteps {
 
     @Then("the project name {string} is shown")
     public void theProjectNameIsShown(String projectName) {
-        assertEquals(projectName, this.projectVariables.get("Project name"));
+        assertEquals(projectName, this.projectReport.getProjectName());
     }
 
     @Then("the project ID {string} is shown")
     public void theProjectIDIsShown(String projectID) {
-        assertEquals(projectID, this.projectVariables.get("Project ID"));
+        assertEquals(projectID, this.projectReport.getProjectID());
     }
     @Then("time interval {string} is shown")
     public void timeIntervalIsShown(String projectInterval) {
-        assertEquals(projectInterval, this.projectVariables.get("Project interval"));
+        assertEquals(projectInterval, this.projectReport.getProjectInterval());
     }
     @Then("the option for generating a project report for the project is shown")
     public void theOptionForGeneratingAProjectReportForTheProjectIsShown() {

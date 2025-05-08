@@ -122,4 +122,10 @@ public class Project {
     private void setUnFinalized() {
         this.isFinalized = false;
     }
+
+    public String getTimeInterval() {
+        String p1 = getStartDate() != null ? getStartDate().toString() : "";
+        String p2 = getEndDate() != null ? getEndDate().toString() : "";
+        return p1 + " - " + p2;
+    }
 }

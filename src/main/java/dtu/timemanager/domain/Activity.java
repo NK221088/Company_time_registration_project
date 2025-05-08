@@ -102,11 +102,15 @@ public class Activity {
         } else {
             throw new Exception("The start date of the activity can't be after the start date of the activity.");
         }
-
     }
-
     public LocalDate getActivityEndTime() {
         return activityEndTime;
+    }
+
+    public String getTimeInterval() {
+        String p1 = getActivityStartTime() != null ? getActivityStartTime().toString() : "";
+        String p2 = getActivityEndTime() != null ? getActivityEndTime().toString() : "";
+        return p1 + " - " + p2;
     }
 
     public void setActivityEndTime(LocalDate activityEndTime) throws Exception {

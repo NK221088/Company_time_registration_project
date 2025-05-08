@@ -104,101 +104,12 @@ public class TimeManager {
         return projects.contains(projectName);
     }
 
-    public Map viewProject(Project project) {
-        Map<String, Object> projectVariables = new HashMap<>();
-
-        LocalDate startDate = project.getStartDate();
-        LocalDate endDate = project.getEndDate();
-        String projectInterval;
-
-        if (startDate != null) {
-            projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
-        } else {
-            projectInterval = "";
-        }
-
-        projectVariables.put("Project name", project.getProjectName());
-        projectVariables.put("Project ID", project.getProjectID());
-        if (project.getProjectLead() != null) {
-            projectVariables.put("Project Lead", project.getProjectLead());
-        } else {
-            projectVariables.put("Project Lead", "");
-        }
-        projectVariables.put("Project interval", projectInterval);
-        projectVariables.put("Project activities", project.getActivities());
-
-        return projectVariables;
+    public ProjectReport viewProject(Project project) {
+        return new ProjectReport(project);
     }
 
-    public Map getProjectReport(Project project) {
-        String projectID = project.getProjectID(); // Retrieve the project for which to generate the project report
-        Map<String, Object> reportVariables = new HashMap<>();
-        reportVariables.put("Project Name", project.getProjectName()); // Insert the name in the report
-        reportVariables.put("Project ID", projectID); // Insert the project ID in the report
-        LocalDate startDate = project.getStartDate();
-        LocalDate endDate = project.getEndDate();
-        String projectInterval;
-        User projectLead = project.getProjectLead();
-
-        if (startDate != null) {
-            projectInterval = startDate.toString() + " - " + endDate.toString(); // Formatting the project interval so it looks correct
-        } else {
-            projectInterval = "";
-        }
-        reportVariables.put("Project interval", projectInterval);
-        reportVariables.put("Project ID", projectID);
-        if (projectLead != null) {
-            reportVariables.put("Project Lead", projectLead);
-        } else {
-            reportVariables.put("Project Lead", "");
-        }
-        List<Activity> activities = project.getActivities();
-        Map<Activity, Double> workedHours = project.getActivities().stream()
-        .collect(Collectors.toMap(
-                Function.identity(),        // key mapping function
-                Activity::getWorkedHours   // value mapping function
-        ));
-        reportVariables.put("Worked hours", workedHours);
-
-        Map<Activity, Double> expectedHours = project.getActivities().stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),        // key mapping function
-                        Activity::getWorkedHours   // value mapping function
-                ));
-        reportVariables.put("Expected hours", expectedHours);
-
-        reportVariables.put("Project Activities", activities); // List all the activities in the project
-        Map<Activity, List> assignedEmployees = project.getActivities().stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),        // key mapping function
-                        Activity::getAssignedUsers   // value mapping function
-                ));
-        reportVariables.put("Assigned employees", assignedEmployees);
-        Map<Activity, List> contributingEmployees = project.getActivities().stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),        // key mapping function
-                        Activity::getWorkingUsers   // value mapping function
-                ));
-        reportVariables.put("Contributing employees", assignedEmployees);
-        Map<Activity, String> activityIntervals = project.getActivities().stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        activity -> {
-                            String start = activity.getActivityStartTime() != null
-                                    ? activity.getActivityStartTime().toString()
-                                    : "";
-                            String end = activity.getActivityEndTime() != null
-                                    ? activity.getActivityEndTime().toString()
-                                    : "";
-                            return start + "-" + end;
-                        }
-                ));
-
-
-        reportVariables.put("Activity intervals", activityIntervals);
-
-
-        return reportVariables;
+    public ProjectReport getProjectReport(Project project) {
+        return new ProjectReport(project);
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {

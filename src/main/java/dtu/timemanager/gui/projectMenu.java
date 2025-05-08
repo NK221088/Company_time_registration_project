@@ -443,21 +443,21 @@ public class projectMenu {
         }
 
         // Get all project information using the TimeManager.viewProject method
-        Map<String, Object> projectInfo = timeManager.viewProject(selectedProject);
+        ProjectReport projectReport = timeManager.getProjectReport(selectedProject);
 
         // Display project name (editable)
-        Label nameLabel = new Label("Project name: " + projectInfo.get("Project name"));
+        Label nameLabel = new Label("Project name: " + projectReport.getProjectName());
         setupEditableName(nameLabel, selectedProject);
 
         // Display project ID (non-editable)
-        Label idLabel = new Label("Project ID: " + projectInfo.get("Project ID"));
+        Label idLabel = new Label("Project ID: " + projectReport.getProjectID());
 
         // Display project ID (non-editable)
-        Label projectLeadLabel = new Label("Project lead: " + projectInfo.get("Project Lead"));
+        Label projectLeadLabel = new Label("Project lead: " + projectReport.getProjectLead());
         setupEditableProjectLead(projectLeadLabel, selectedProject);
 
         // Display interval (editable)
-        Label intervalLabel = new Label("Project interval: " + projectInfo.get("Project interval"));
+        Label intervalLabel = new Label("Project interval: " + projectReport.getProjectInterval());
         setupEditableInterval(intervalLabel, selectedProject);
 
         // Add the basic info to the container
@@ -730,8 +730,8 @@ public class projectMenu {
         if (selectedProject != null) {
             String projectName = selectedProject.toString();
             try {
-                Map<String, Object> projectReport = timeManager.getProjectReport(selectedProject);
-                List<Activity> activities = selectedProject.getActivities();
+                ProjectReport projectReport = timeManager.getProjectReport(selectedProject);
+                List<Activity> activities = projectReport.getActivities();
 
                 // Build the report text with better formatting
                 StringBuilder reportText = new StringBuilder();
@@ -746,15 +746,15 @@ public class projectMenu {
                 // Project Details Section
                 reportText.append("PROJECT DETAILS\n");
                 reportText.append("-----------------------------------\n");
-                reportText.append("Project Name: ").append(projectReport.get("Project Name")).append("\n");
-                reportText.append("Project ID: ").append(projectReport.get("Project ID")).append("\n");
-                String projectLead = projectReport.get("Project Lead").toString();
+                reportText.append("Project Name: ").append(projectReport.getProjectName()).append("\n");
+                reportText.append("Project ID: ").append(projectReport.getProjectID()).append("\n");
+                String projectLead = projectReport.getProjectLead().toString();
                 if (projectLead == ""){
                     reportText.append("Project Lead: ").append("No one assigned yet").append("\n");
                 } else {
                     reportText.append("Project Lead: ").append(projectLead).append("\n");
                 }
-                reportText.append("Time Period: ").append(projectReport.get("Project interval")).append("\n\n");
+                reportText.append("Time Period: ").append(projectReport.getProjectInterval()).append("\n\n");
 
                 // Activity Details Section
                 reportText.append("ACTIVITY DETAILS\n");
