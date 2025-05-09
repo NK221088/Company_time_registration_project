@@ -9,8 +9,7 @@ import io.cucumber.java.en.When;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EditProjectSteps {
     private TimeManager timeManager;
@@ -51,5 +50,14 @@ public class EditProjectSteps {
     @Then("the project's start date is changed")
     public void theProjectSStartDateIsChanged() {
         assertNotEquals(project.getStartDate(), this.projectHolder.getOldDate().toString());
+    }
+
+    @When("the user changes the project name of {string} to {string}")
+    public void theUserChangesTheProjectNameOfTo(String projectName1, String projectName2) {
+        this.project.setProjectName(projectName2);
+    }
+    @Then("the project name is changed to {string}")
+    public void theProjectNameIsChangedTo(String projectName) {
+        assertEquals(this.project.getProjectName(), projectName);
     }
 }

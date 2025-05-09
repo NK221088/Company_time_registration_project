@@ -26,12 +26,12 @@ Feature: Editing already existing projects
   Scenario: Successful edit of name for a project
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
-    When the user changes the name of "Project 1" to "Project 2"
-    Then the name is changed to "Activity 2"
+    When the user changes the project name of "Project 1" to "Project 2"
+    Then the project name is changed to "Project 2"
 
   Scenario: Unsuccessful edit of name for a project
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
     And a project, "Project 2", exists in the system
-    When the user changes the name of "Project 1" to "Project 2"
+    When the user changes the project name of "Project 1" to "Project 2"
     Then the error message "A project with name 'Project 2' already exists and two projects cannot exist with the same name." is given
