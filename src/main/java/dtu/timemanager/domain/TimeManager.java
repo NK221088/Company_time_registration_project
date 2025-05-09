@@ -67,9 +67,7 @@ public class TimeManager {
             for (int i = 1; i <= numberOfActivities; i++) {
                 project.addActivity(new Activity("Activity "+String.valueOf(i)));
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        } catch (Exception ignored) {}
         return project;
     }
 
@@ -115,18 +113,4 @@ public class TimeManager {
     }
 
     public List<Activity> getIndependentActivities() { return independentActivities; }
-
-    public void appInitialize() throws Exception {
-        User isak = new User("isak");
-        User bria = new User("bria");
-        User huba = new User("huba");
-
-        addUser(isak); addUser(bria); addUser(huba);
-
-        Project project1 = addExampleProject("Project 1", 1);
-        Project project2 = addExampleProject("Project 2", 2);
-
-        for (Activity activity : project1.getActivities()) { assignUser(activity, bria); }
-        for (Activity activity : project2.getActivities()) { assignUser(activity, isak); }
-    }
 }

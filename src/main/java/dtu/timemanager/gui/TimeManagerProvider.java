@@ -1,15 +1,32 @@
 package dtu.timemanager.gui;
 
+import dtu.timemanager.domain.Activity;
+import dtu.timemanager.domain.Project;
 import dtu.timemanager.domain.TimeManager;
+import dtu.timemanager.domain.User;
 
 public class TimeManagerProvider {
 
     private static TimeManager instance;
 
+    public static void appInitialize(TimeManager timeManager) throws Exception {
+        User isak = new User("isak");
+        User bria = new User("bria");
+        User huba = new User("huba");
+
+        timeManager.addUser(isak); timeManager.addUser(bria); timeManager.addUser(huba);
+
+        Project project1 = timeManager.addExampleProject("Project 1", 1);
+        Project project2 = timeManager.addExampleProject("Project 2", 2);
+
+        for (Activity activity : project1.getActivities()) { timeManager.assignUser(activity, bria); }
+        for (Activity activity : project2.getActivities()) { timeManager.assignUser(activity, isak); }
+    }
+
     public static TimeManager getInstance() throws Exception {
         if (instance == null) {
             instance = new TimeManager();
-            instance.appInitialize();
+            appInitialize(instance);
         }
         return instance;
     }
