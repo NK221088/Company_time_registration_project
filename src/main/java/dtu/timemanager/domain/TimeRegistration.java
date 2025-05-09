@@ -16,14 +16,12 @@ public class TimeRegistration {
         this.registeredHours = registeredHours;
         this.registeredDate = registeredDate;
 
-        if (registeredDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Date is after now");
+        if (!(this instanceof IntervalTimeRegistration)) {
+            if (this.registeredActivity.getFinalized()) {
+                throw new Exception("The activity is set as finalized: Time registrations can't be added.");
+            }
+            registeredUser.addTimeRegistration(this);
         }
-        if (this.registeredActivity.getFinalized()){
-            throw new Exception("The activity is set as finalized: Time registrations can't be added.");
-        }
-
-        registeredUser.addTimeRegistration(this);
     }
     public User getRegisteredUser() {
         return registeredUser;

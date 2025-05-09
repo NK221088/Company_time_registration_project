@@ -23,6 +23,7 @@ public class User {
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
+
         Activity a = timeRegistration.getRegisteredActivity();
         List<TimeRegistration> activity_value = activity_registrations.get(a);
         if (activity_value != null) {

@@ -5,12 +5,14 @@ import java.time.LocalDate;
 public class IntervalTimeRegistration extends TimeRegistration {
     private LocalDate startDate;
     private LocalDate endDate;
+    private String leaveOption;
 
-    public IntervalTimeRegistration(User user, Activity activity, LocalDate startDate, LocalDate endDate) throws Exception {
-        super(user, activity, 0.0, LocalDate.now());
+    public IntervalTimeRegistration(User user, String leaveOption, LocalDate startDate, LocalDate endDate) throws Exception {
+        super(user, null, 0.0, LocalDate.now());
 
         if (endDate.isBefore(startDate)) { throw new IllegalArgumentException("End date must not be before start date"); }
 
+        this.leaveOption = leaveOption;
         this.startDate = startDate;
         this.endDate   = endDate;
     }
@@ -32,5 +34,15 @@ public class IntervalTimeRegistration extends TimeRegistration {
     @Override
     public LocalDate getRegisteredDate() {
         return endDate;
+    }
+
+    public String getLeaveOption() {
+        return leaveOption;
+    }
+
+    public String getTimeInterval() {
+        String p1 = getStartDate() != null ? getStartDate().toString() : "";
+        String p2 = getEndDate() != null ? getEndDate().toString() : "";
+        return p1 + " - " + p2;
     }
 }

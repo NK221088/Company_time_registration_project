@@ -1,18 +1,12 @@
 package acceptance_tests;
 
-import dtu.timemanager.domain.Activity;
-import dtu.timemanager.domain.Project;
-import dtu.timemanager.domain.TimeManager;
+import dtu.timemanager.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddActivitySteps {
     private TimeManager timeManager;

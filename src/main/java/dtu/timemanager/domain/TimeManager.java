@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
 public class TimeManager {
     private User current_user;
     private List<User> users = new ArrayList<>();
-//    private List<Project> projects = new ArrayList<>();
-    private List<Activity> independentActivities = new ArrayList<>();
+    private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> time_registrations = new ArrayList<>();
     private int projectCount = 0;
     private projectService IProjectService = new projectService();
@@ -102,15 +101,11 @@ public class TimeManager {
         return time_registrations;
     }
 
-    public void addIndependentActivity(Activity activity) throws Exception {
-        if (!independentActivities.contains(activity)) {
-            independentActivities.add(activity);
-        } else {
-            throw new RuntimeException(
-                "An independent activity with name '" + activity.getActivityName() + "' already exists."
-            );
-        }
+    public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {
+        intervalTimeRegistrations.add(intervalTimeRegistration);
     }
 
-    public List<Activity> getIndependentActivities() { return independentActivities; }
+    public List<IntervalTimeRegistration> getIntervalTimeRegistrations() {
+        return intervalTimeRegistrations;
+    }
 }

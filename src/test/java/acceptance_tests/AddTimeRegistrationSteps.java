@@ -34,7 +34,6 @@ public class AddTimeRegistrationSteps {
     public void thatTheProjectHasAnActivityNamedWhichIsSetAsInProgress(String activityName) throws Exception {
         this.activity = new Activity(activityName);
         project.addActivity(activity);
-
         assertFalse(activity.getFinalized());
     }
     @When("the user selects the activity {string}")
@@ -89,6 +88,5 @@ public class AddTimeRegistrationSteps {
     public void theTimeRegistrationIsNotCreated() {
         Activity activity = timeManager.getProjects().getFirst().getActivities().getFirst();
         assertEquals(workedHours, activity.getWorkedHours());
-
     }
 }

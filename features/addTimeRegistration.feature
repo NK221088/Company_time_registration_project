@@ -14,7 +14,7 @@ Feature: Add time registration
       | activity       | hours | date       |
       | Activity 1     | 4     | 2025-04-20 |
 
-  Scenario: Try register a new time registration for an activity set as finalized
+  Scenario: Try registering a new time registration for an activity set as finalized
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
     And that the project has an activity named "Activity 1" which is set as finalized

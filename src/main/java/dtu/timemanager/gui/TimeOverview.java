@@ -902,7 +902,7 @@
                             return;
                         }
                         // map leaveType → the proper Activity instance
-                        Activity leaveActivity = new Activity(leaveTypeChoiceBox.getValue());
+                        String leaveActivity = new Activity(leaveTypeChoiceBox.getValue()).getActivityName();
                         IntervalTimeRegistration itr = new IntervalTimeRegistration(currentUser, leaveActivity, start, end);
                         timeManager.addTimeRegistration(itr);
 

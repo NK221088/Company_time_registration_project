@@ -147,11 +147,6 @@ public class projectMenu {
         TreeItem<Object> independentActivitiesItem = new TreeItem<>("Independent Activities");
         independentActivitiesItem.setExpanded(true);
 
-        for (Activity activity : timeManager.getIndependentActivities()) {
-            TreeItem<Object> activityItem = new TreeItem<>(activity);
-            independentActivitiesItem.getChildren().add(activityItem);
-        }
-
         TreeItem<Object> invisibleRoot = new TreeItem<>();
         invisibleRoot.setExpanded(true);
         invisibleRoot.getChildren().addAll(projectsItem, independentActivitiesItem);
@@ -977,7 +972,6 @@ public class projectMenu {
             try {
                 Activity activity = new Activity(activityName);
                 if (hasSelectedIndependent) {
-                    timeManager.addIndependentActivity(activity);
                 } else {
                     selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
                 }
