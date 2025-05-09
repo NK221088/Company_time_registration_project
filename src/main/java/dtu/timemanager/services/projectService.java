@@ -47,6 +47,7 @@ public class projectService implements projectInterface {
     public boolean projectExists(String projectName) {
         return projects.contains(projectName);
     }
+    
 
     @Override
     public ProjectReport getProjectReport(Project project) {

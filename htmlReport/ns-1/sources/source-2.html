@@ -48,34 +48,34 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">IntervalTimeRegistration</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    62.5%
   </span>
   <span class="absValue">
-    (0/6)
+    (5/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/2)
+    (3/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    78.6%
   </span>
   <span class="absValue">
-    (0/9)
+    (11/14)
   </span>
 </td>
 </tr>
@@ -94,33 +94,45 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;public class IntervalTimeRegistration extends TimeRegistration {
 &nbsp;    private LocalDate startDate;
 &nbsp;    private LocalDate endDate;
+&nbsp;    private String leaveOption;
 &nbsp;
-&nbsp;    public IntervalTimeRegistration(User user, Activity activity, LocalDate startDate, LocalDate endDate) throws Exception {
-<b class="nc">&nbsp;        super(user, activity, 0.0, LocalDate.now());</b>
+&nbsp;    public IntervalTimeRegistration(User user, String leaveOption, LocalDate startDate, LocalDate endDate) throws Exception {
+<b class="fc">&nbsp;        super(user, null, 0.0, LocalDate.now());</b>
 &nbsp;
-<b class="nc">&nbsp;        if (endDate.isBefore(startDate)) { throw new IllegalArgumentException(&quot;End date must not be before start date&quot;); }</b>
+<b class="pc">&nbsp;        if (endDate.isBefore(startDate)) { throw new IllegalArgumentException(&quot;End date must not be before start date&quot;); }</b>
 &nbsp;
-<b class="nc">&nbsp;        this.startDate = startDate;</b>
-<b class="nc">&nbsp;        this.endDate   = endDate;</b>
+<b class="fc">&nbsp;        this.leaveOption = leaveOption;</b>
+<b class="fc">&nbsp;        this.startDate = startDate;</b>
+<b class="fc">&nbsp;        this.endDate   = endDate;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setStartDate(LocalDate startDate) {
 <b class="nc">&nbsp;        this.startDate = startDate;</b>
 &nbsp;    }
 &nbsp;    public LocalDate getStartDate() {
-<b class="nc">&nbsp;        return startDate;</b>
+<b class="fc">&nbsp;        return startDate;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setEndDate(LocalDate endDate) {
 <b class="nc">&nbsp;        this.endDate = endDate;</b>
 &nbsp;    }
 &nbsp;    public LocalDate getEndDate() {
-<b class="nc">&nbsp;        return endDate;</b>
+<b class="fc">&nbsp;        return endDate;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public LocalDate getRegisteredDate() {
 <b class="nc">&nbsp;        return endDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getLeaveOption() {
+<b class="fc">&nbsp;        return leaveOption;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getTimeInterval() {
+<b class="pc">&nbsp;        String p1 = getStartDate() != null ? getStartDate().toString() : &quot;&quot;;</b>
+<b class="pc">&nbsp;        String p2 = getEndDate() != null ? getEndDate().toString() : &quot;&quot;;</b>
+<b class="fc">&nbsp;        return p1 + &quot; - &quot; + p2;</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -146,7 +158,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 14:45</div>
+    <div style="float:right;">generated on 2025-05-09 20:41</div>
 </div>
 </body>
 </html>

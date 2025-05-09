@@ -83,6 +83,7 @@ public class TimeManager {
     }
 
     public boolean projectExists(Project project) {
+
         return IProjectService.projectExists(project);
     }
     public boolean projectExists(String projectName) {

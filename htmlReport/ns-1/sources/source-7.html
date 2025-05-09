@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    87.5%
+    88.9%
   </span>
   <span class="absValue">
-    (7/8)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    75%
   </span>
   <span class="absValue">
-    (2/2)
+    (6/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    94.4%
+    95.5%
   </span>
   <span class="absValue">
-    (17/18)
+    (21/22)
   </span>
 </td>
 </tr>
@@ -112,6 +112,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void addTimeRegistration(TimeRegistration timeRegistration) {
+&nbsp;
 <b class="fc">&nbsp;        Activity a = timeRegistration.getRegisteredActivity();</b>
 <b class="fc">&nbsp;        List&lt;TimeRegistration&gt; activity_value = activity_registrations.get(a);</b>
 <b class="fc">&nbsp;        if (activity_value != null) {</b>
@@ -138,6 +139,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    public void decrementActivityCount() {
 <b class="fc">&nbsp;    activityCount--;}</b>
+&nbsp;
+&nbsp;    public boolean equals(Object obj) {
+<b class="fc">&nbsp;        if (this == obj) return true;</b>
+<b class="pc">&nbsp;        if (obj == null || getClass() != obj.getClass()) return false;</b>
+<b class="fc">&nbsp;        User user = (User) obj;</b>
+<b class="fc">&nbsp;        return getUserInitials().equals(user.getUserInitials());</b>
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -162,7 +170,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 14:45</div>
+    <div style="float:right;">generated on 2025-05-09 20:41</div>
 </div>
 </body>
 </html>

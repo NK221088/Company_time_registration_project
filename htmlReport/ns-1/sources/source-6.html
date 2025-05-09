@@ -64,18 +64,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    30%
+    40%
   </span>
   <span class="absValue">
-    (3/10)
+    (4/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    52.2%
+    54.5%
   </span>
   <span class="absValue">
-    (12/23)
+    (12/22)
   </span>
 </td>
 </tr>
@@ -105,14 +105,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        this.registeredHours = registeredHours;</b>
 <b class="fc">&nbsp;        this.registeredDate = registeredDate;</b>
 &nbsp;
-<b class="pc">&nbsp;        if (registeredDate.isAfter(LocalDate.now())) {</b>
-<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Date is after now&quot;);</b>
+<b class="fc">&nbsp;        if (!(this instanceof IntervalTimeRegistration)) {</b>
+<b class="fc">&nbsp;            if (this.registeredActivity.getFinalized()) {</b>
+<b class="fc">&nbsp;                throw new Exception(&quot;The activity is set as finalized: Time registrations can&#39;t be added.&quot;);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            registeredUser.addTimeRegistration(this);</b>
 &nbsp;        }
-<b class="fc">&nbsp;        if (this.registeredActivity.getFinalized()){</b>
-<b class="fc">&nbsp;            throw new Exception(&quot;The activity is set as finalized: Time registrations can&#39;t be added.&quot;);</b>
-&nbsp;        }
-&nbsp;
-<b class="fc">&nbsp;        registeredUser.addTimeRegistration(this);</b>
 &nbsp;    }
 &nbsp;    public User getRegisteredUser() {
 <b class="fc">&nbsp;        return registeredUser;</b>
@@ -172,7 +170,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 14:45</div>
+    <div style="float:right;">generated on 2025-05-09 20:41</div>
 </div>
 </body>
 </html>

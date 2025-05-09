@@ -2,6 +2,15 @@ Feature: Editing already existing projects
   Description: A user edit a project in the system
   Actors: User
 
+  Scenario: Successful addition of time interval for a project
+    Given the user "huba" is logged in
+    And a project, "Project 1", exists in the system
+    And the project has no defined time interval
+    When the user changes the project's end date to "2025-01-10"
+    And the user changes the project's start date to "2025-01-30"
+    Then the project's start date is changed
+    And the project's end date is changed
+
   Scenario: Successful edit of time interval for a project
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system

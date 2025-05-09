@@ -78,7 +78,7 @@ public class Project {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Project project = (Project) obj;
-        return projectName.equals(project.projectName);
+        return getProjectName().equals(project.getProjectName());
     }
 
     public Activity getActivityFromName(String activityName) {

@@ -36,6 +36,10 @@ public class GenerateProjectReportSteps {
         project.addActivity(activity);
         activityHolder.setActivity(activity);
     }
+    @Given("the project has a project lead {string}")
+    public void theProjectHasAProjectLead(String string) {
+        project.setProjectLead(timeManager.getCurrentUser());
+    }
     @When("the user generates the project report for the project")
     public void theUserGeneratesTheProjectReportForTheProject() {
         this.projectReport = timeManager.getProjectReport(project); // If no exception is thrown, the option is available
@@ -57,6 +61,10 @@ public class GenerateProjectReportSteps {
     @Then("the users assigned to activities in the project")
     public void theUsersAssignedToActivitiesInTheProject() {
         assertTrue(this.projectReport.getAssignedUsers() != null);
+    }
+    @Then("the project lead")
+    public void theProjectLead() {
+        assertTrue(this.projectReport.getProjectLead() != null);
     }
     @Then("the users who have worked on activities in the project")
     public void theUsersWhoHaveWorkedOnActivitiesInTheProject() {

@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    90.5%
+    95.2%
   </span>
   <span class="absValue">
-    (19/21)
+    (20/21)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    75%
+    83.3%
   </span>
   <span class="absValue">
-    (18/24)
+    (20/24)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    90.5%
+    92.9%
   </span>
   <span class="absValue">
-    (38/42)
+    (39/42)
   </span>
 </td>
 </tr>
@@ -118,7 +118,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setProjectName(String projectName) {
-<b class="nc">&nbsp;        this.projectName = projectName;</b>
+<b class="fc">&nbsp;        this.projectName = projectName;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getProjectName() {
@@ -136,7 +136,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setProjectEndDate(LocalDate endDate) throws Exception {
-<b class="pc">&nbsp;        if (startDate==null || endDate.isAfter(startDate)) {</b>
+<b class="fc">&nbsp;        if (startDate==null || endDate.isAfter(startDate)) {</b>
 <b class="fc">&nbsp;            this.endDate = endDate;</b>
 &nbsp;        } else {
 <b class="fc">&nbsp;            throw new Exception(&quot;The end date of the project can&#39;t be before the start date of the project.&quot;);</b>
@@ -164,7 +164,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public boolean equals(Object obj) {
-<b class="pc">&nbsp;        if (this == obj) return true;</b>
+<b class="fc">&nbsp;        if (this == obj) return true;</b>
 <b class="pc">&nbsp;        if (obj == null || getClass() != obj.getClass()) return false;</b>
 <b class="fc">&nbsp;        Project project = (Project) obj;</b>
 <b class="fc">&nbsp;        return projectName.equals(project.projectName);</b>
@@ -237,7 +237,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 14:45</div>
+    <div style="float:right;">generated on 2025-05-09 20:41</div>
 </div>
 </body>
 </html>

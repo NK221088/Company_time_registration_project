@@ -2,6 +2,16 @@ Feature: Editing already existing activities
   Description: A user edit an activity in the system
   Actors: User
 
+  Scenario: Successful addition of time interval for an activity
+    Given the user "huba" is logged in
+    And a project, "Project 1", exists in the system
+    And the project has an activity named "Activity 1"
+    And the activity has no defined time interval
+    When the user changes the end date to "2025-01-10"
+    And the user changes the start date to "2025-01-20"
+    Then the start date is changed
+    And the end end date is changed
+
   Scenario: Successful edit of time interval for an activity
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system

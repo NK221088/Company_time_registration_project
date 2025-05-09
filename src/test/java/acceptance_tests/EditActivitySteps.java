@@ -31,7 +31,14 @@ public class EditActivitySteps {
     @When("the user changes the start date to {string}")
     public void theUserChangesTheStartDateTo(String newStartDate) {
         try {
-            this.activityHolder.setOldDate(activity.getActivityStartTime().toString());
+            LocalDate date = activity.getActivityEndTime();
+            String oldDate;
+            if (date == null) {
+                oldDate = "";
+            } else {
+                oldDate = date.toString();
+            }
+            this.activityHolder.setOldDate(oldDate);
             this.activity.setActivityStartTime(LocalDate.parse(newStartDate));
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
@@ -40,7 +47,14 @@ public class EditActivitySteps {
     @When("the user changes the end date to {string}")
     public void theUserChangesTheEndDateTo(String newEndDate) {
         try {
-            this.activityHolder.setOldDate(activity.getActivityEndTime().toString());
+            LocalDate date = activity.getActivityEndTime();
+            String oldDate;
+            if (date == null) {
+                oldDate = "";
+            } else {
+                oldDate = date.toString();
+            }
+            this.activityHolder.setOldDate(oldDate);
             this.activity.setActivityEndTime(LocalDate.parse(newEndDate));
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
@@ -58,5 +72,9 @@ public class EditActivitySteps {
     @Then("the start date is changed")
     public void theStartDateIsChanged() {
         assertNotEquals(activityHolder.getOldDate(), activity.getActivityStartTime());
+    }
+    @Then("the end end date is changed")
+    public void theEndEndDateIsChanged() {
+        assertNotEquals(activityHolder.getOldDate(), activity.getActivityEndTime());
     }
 }

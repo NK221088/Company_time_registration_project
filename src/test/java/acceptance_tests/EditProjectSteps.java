@@ -31,6 +31,14 @@ public class EditProjectSteps {
     @When("the user changes the project's start date to {string}")
     public void theUserChangesTheProjectSStartDateTo(String newStartDate) {
         try {
+            LocalDate date = project.getStartDate();
+            String oldDate;
+            if (date == null) {
+                oldDate = "";
+            } else {
+                oldDate = date.toString();
+            }
+            this.projectHolder.setOldDate(oldDate);
             this.projectHolder.setOldDate(project.getStartDate().toString());
             this.project.setProjectStartDate(LocalDate.parse(newStartDate));
         } catch (Exception e) {
@@ -41,7 +49,14 @@ public class EditProjectSteps {
     @When("the user changes the project's end date to {string}")
     public void theUserChangesTheProjectSEndDateTo(String newEndDate) {
         try {
-            this.projectHolder.setOldDate(project.getEndDate().toString());
+            LocalDate date = project.getStartDate();
+            String oldDate;
+            if (date == null) {
+                oldDate = "";
+            } else {
+                oldDate = date.toString();
+            }
+            this.projectHolder.setOldDate(oldDate);
             this.project.setProjectEndDate(LocalDate.parse(newEndDate));
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
@@ -50,6 +65,10 @@ public class EditProjectSteps {
     @Then("the project's start date is changed")
     public void theProjectSStartDateIsChanged() {
         assertNotEquals(project.getStartDate(), this.projectHolder.getOldDate().toString());
+    }
+    @Then("the project's end date is changed")
+    public void theProjectSEndDateIsChanged() {
+        assertNotEquals(project.getEndDate(), this.projectHolder.getOldDate().toString());
     }
 
     @When("the user changes the project name of {string} to {string}")
@@ -60,4 +79,5 @@ public class EditProjectSteps {
     public void theProjectNameIsChangedTo(String projectName) {
         assertEquals(this.project.getProjectName(), projectName);
     }
+
 }

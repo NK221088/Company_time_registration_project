@@ -6,6 +6,7 @@ Feature: Add time registration
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
     And that the project has an activity named "Activity 1" which is set as in progress
+    And the hours worked on the activity is 0
     When the user selects the activity "Activity 1"
     And the user tries to add a time registration
     And the user enters "4" hours
@@ -13,6 +14,7 @@ Feature: Add time registration
     Then a new time registration is added with:
       | activity       | hours | date       |
       | Activity 1     | 4     | 2025-04-20 |
+    And the hours worked on the activity is 4
 
   Scenario: Try registering a new time registration for an activity set as finalized
     Given the user "huba" is logged in
