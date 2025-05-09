@@ -29,18 +29,14 @@ public class AddProjectSteps {
     }
     @Given("the current project count is {int}")
     public void theCurrentProjectCountIs(Integer projectCount) throws Exception {
-        Project project1 = timeManager.createExampleProject("Project To Test Count 1", 1);
-        Project project2 = timeManager.createExampleProject("Project To Test Count 2", 1);
-        timeManager.addProject(project1);
-        timeManager.addProject(project2);
+        Project project1 = timeManager.addExampleProject("Project To Test Count 1", 1);
+        Project project2 = timeManager.addExampleProject("Project To Test Count 2", 1);
         assertEquals(timeManager.getProjectCount(), projectCount);
     }
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
         try {
-            this.project = timeManager.createProject(projectName);
-            timeManager.addProject(project);
-
+            this.project = timeManager.addProject(projectName);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }

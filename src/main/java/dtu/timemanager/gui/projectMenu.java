@@ -907,7 +907,7 @@ public class projectMenu {
             }
 
             try {
-                Project project = timeManager.createProject(name);
+                Project project = timeManager.addProject(name);
 
                 // Only set dates if they are chosen
                 if (startDate != null) {
@@ -916,8 +916,6 @@ public class projectMenu {
                 if (endDate != null) {
                     project.setProjectEndDate(endDate);
                 }
-
-                timeManager.addProject(project);
                 loadProjectTree();
             } catch (Exception e) {
                 showError("Error adding project: " + e.getMessage());

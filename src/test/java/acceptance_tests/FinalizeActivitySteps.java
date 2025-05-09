@@ -29,10 +29,7 @@ public class FinalizeActivitySteps {
     @Given("two unfinalized activities exists in a project")
     public void twoUnfinalizedActivitiesExistsInAProject() throws Exception {
         this.timeManager = new TimeManager();
-        Project project = timeManager.createProject("Project with finalized activity");
-        timeManager.addProject(project);
-
-        this.project = project;
+        this.project = timeManager.addProject("Project with finalized activity");;
         this.firstActivity = new Activity("Activity to be finalized");
         this.secondActivity = new Activity("Unfinalized activity");
         this.project.addActivity(firstActivity);
@@ -75,7 +72,7 @@ public class FinalizeActivitySteps {
     }
     @Given("a finalized activity exists in a project")
     public void aFinalizedActivityExistsInAProject() throws Exception {
-        this.project = timeManager.createProject("Project with finalized activity");
+        this.project = timeManager.addProject("Project with finalized activity");
         this.firstActivity = new Activity("Activity to be finalized");
         this.firstActivity.setActivityAsFinalized();
         this.secondActivity = new Activity("Unfinalized activity");

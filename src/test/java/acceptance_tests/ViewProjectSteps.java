@@ -26,9 +26,8 @@ public class ViewProjectSteps {
 
     @Given("a project, {string}, exists in the system")
     public void aProjectExistsInTheSystem(String projectName) throws Exception {
-        this.project = timeManager.createExampleProject(projectName, 0);
+        this.project = timeManager.addExampleProject(projectName, 0);
         this.projectHolder.setProject(project);
-        timeManager.addProject(this.project);
     }
     @Given("the project has the start date {string} and end date {string}")
     public void theProjectHasTheStartDateAndEndDate(String startDate, String endDate) throws Exception {

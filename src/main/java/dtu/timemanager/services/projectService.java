@@ -10,13 +10,18 @@ public class projectService implements projectInterface {
     private final List<Project> projects = new ArrayList<>();
     private int projectCount = 0;
 
+    private String formatID(int count) { return "25" + String.format("%03d", count); }
+
     @Override
-    public void addProject(Project project) {
+    public Project addProject(String projectName) {
+        String id = formatID(++this.projectCount);
+        Project project = new Project(projectName, id);
         if (!projectExists(project)) {
             projects.add(project);
+            return project;
         } else {
-            decProjectCount();
-            throw new RuntimeException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
+            --this.projectCount;
+            throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
     }
 
@@ -53,16 +58,15 @@ public class projectService implements projectInterface {
         project.setProjectLead(user);
     }
 
-
     @Override
-    public int incProjectCount() {
-        return ++projectCount;
+    public void incProjectCount() {
+        ++projectCount;
     }
 
-    @Override
-    public void decProjectCount() {
-        projectCount--;
-    }
+//    @Override
+//    public void decProjectCount() {
+//        projectCount--;
+//    }
 
     @Override
     public int getProjectCount() {return projectCount;}

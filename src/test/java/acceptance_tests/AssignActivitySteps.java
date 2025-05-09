@@ -38,10 +38,10 @@ public class AssignActivitySteps {
         if (!initialsFound){
             this.user1 = new User(userInitials);
             timeManager.addUser(user1);
+        } else {
+            this.user1 = timeManager.getUserFromInitials(userInitials);
         }
-        else {this.user1 = timeManager.getUserFromInitials(userInitials);}
-        Project projectWithActivities = timeManager.createExampleProject("Project With " + activityCount.toString() + " Activities", activityCount);
-        timeManager.addProject(projectWithActivities);
+        Project projectWithActivities = timeManager.addExampleProject("Project With " + activityCount.toString() + " Activities", activityCount);
         for (Activity activity : projectWithActivities.getActivities()) { timeManager.assignUser(activity, user1); }
         assertEquals(activityCount, user1.getActivityCount());
     }

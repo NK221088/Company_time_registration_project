@@ -47,7 +47,6 @@ public class TimeManager {
         }
     }
 
-
     public User getUserFromInitials(String user_initials) {
         try {
             return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
@@ -60,15 +59,8 @@ public class TimeManager {
 
     public User getCurrentUser() { return current_user; }
 
-    private String formatID(int count) { return "25" + String.format("%03d", count); }
-
-    public Project createProject(String projectName) {
-        String id = formatID(++this.projectCount);
-        return new Project(projectName, id);
-    }
-
-    public Project createExampleProject(String projectName, Integer numberOfActivities) throws Exception {
-        Project project = createProject(projectName);
+    public Project addExampleProject(String projectName, Integer numberOfActivities) throws Exception {
+        Project project = addProject(projectName);
 //        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
 //        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
         try {
@@ -81,8 +73,8 @@ public class TimeManager {
         return project;
     }
 
-    public void addProject(Project project) {
-        IProjectService.addProject(project);
+    public Project addProject(String projectName) {
+        return IProjectService.addProject(projectName);
     }
 
     public List<Project> getProjects() {
@@ -131,9 +123,8 @@ public class TimeManager {
 
         addUser(isak); addUser(bria); addUser(huba);
 
-        Project project1 = createExampleProject("Project 1", 1);
-        Project project2 = createExampleProject("Project 2", 2);
-        addProject(project1); addProject(project2);
+        Project project1 = addExampleProject("Project 1", 1);
+        Project project2 = addExampleProject("Project 2", 2);
 
         for (Activity activity : project1.getActivities()) { assignUser(activity, bria); }
         for (Activity activity : project2.getActivities()) { assignUser(activity, isak); }

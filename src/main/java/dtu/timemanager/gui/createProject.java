@@ -27,8 +27,7 @@ public class createProject {
     @FXML
     private void createProject() throws IOException {
         try {
-            Project project = timeManager.createProject(projectName.getText());
-            timeManager.addProject(project);
+            timeManager.addProject(projectName.getText());
             errorMessage.setVisible(false);
         } catch (Exception e) {
             errorMessage.setText(e.getMessage());
