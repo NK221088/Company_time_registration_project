@@ -33,11 +33,20 @@ public class TimeManager {
         current_user = user;
     }
 
-    public void addUser(User user) {
+    public void addUser(User user) throws Exception {
+        String initials = user.getUserInitials();
+
+        if (!initials.matches("[a-zA-Z]{4}")) {
+            throw new Exception("The user initials must be 4 letters.");
+        }
+
         if (!users.contains(user)) {
             users.add(user);
+        } else {
+            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
         }
     }
+
 
     public User getUserFromInitials(String user_initials) {
         try {
@@ -60,8 +69,8 @@ public class TimeManager {
 
     public Project createExampleProject(String projectName, Integer numberOfActivities) throws Exception {
         Project project = createProject(projectName);
-        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
-        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
+//        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
+//        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
         try {
             for (int i = 1; i <= numberOfActivities; i++) {
                 project.addActivity(new Activity("Activity "+String.valueOf(i)));

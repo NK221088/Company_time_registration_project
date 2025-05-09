@@ -45,6 +45,10 @@ public class ViewActivitySteps {
     public void theActivityHasTheExpectedHours(String expectedHours) {
         this.activity.setExpectedWorkHours(Double.parseDouble(expectedHours));
     }
+    @Given("the activity has no defined time interval")
+    public void theActivityHasNoDefinedTimeInterval() {
+        assertEquals(activity.getTimeInterval(), " - ");
+    }
     @When("select the activity with name {string}")
     public void selectTheActivityWithName(String activityName) {
         assertEquals(activityName, activity.getActivityName());
@@ -65,14 +69,7 @@ public class ViewActivitySteps {
         Map <String, Object> info = this.activity.viewActivity();
         assertEquals(Double.parseDouble(assignedWorkHours), info.get("WorkedHours"));
     }
-   @Then("the start date is shown")
-    public void theStartDateIsShown() throws Exception {
-       assertNotNull(this.activity.viewActivity().get("StartTime"));
-    }
-    @Then("the end date is shown")
-    public void theEndDateIsShown() {
-        assertEquals(this.activity.getActivityEndTime(), this.activity.viewActivity().get("EndTime"));
-    }
+
     @Then("the assigned users are shown")
     public void theAssignedUsersAreShown() {
         assertNotNull(this.activity.viewActivity().get("Assigned employees"));
@@ -80,5 +77,9 @@ public class ViewActivitySteps {
     @Then("the users who have worked on the activity are shown")
     public void theUsersWhoHaveWorkedOnTheActivityAreShown() {
         assertNotNull(this.activity.viewActivity().get("Contributing employees"));
+    }
+    @Then("time interval {string} is shown for the activity")
+    public void timeIntervalIsShownForTheActivity(String timeInterval) {
+        assertEquals(this.activity.viewActivity().get("Time interval"), timeInterval);
     }
 }

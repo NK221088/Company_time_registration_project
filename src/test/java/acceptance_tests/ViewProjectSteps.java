@@ -44,6 +44,10 @@ public class ViewProjectSteps {
     public void projectID(String projectID) {
         assertEquals(this.project.getProjectID(), projectID);
     }
+    @Given("the project has no defined time interval")
+    public void theProjectHasNoDefinedTimeInterval() {
+        assertEquals(project.getTimeInterval(), " - ");
+    }
     @Then("the activities in the project are shown")
     public void theActivitiesInTheProjectAreShown() {
         assertTrue(this.projectReport.getActivities() != null);

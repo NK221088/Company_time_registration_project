@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    9.1%
+    90.9%
   </span>
   <span class="absValue">
-    (1/11)
+    (10/11)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    94.4%
   </span>
   <span class="absValue">
-    (3/18)
+    (17/18)
   </span>
 </td>
 </tr>
@@ -93,40 +93,40 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getProjectID() {
-<b class="nc">&nbsp;        return project.getProjectID();</b>
+<b class="fc">&nbsp;        return project.getProjectID();</b>
 &nbsp;    }
 &nbsp;    public String getProjectName() {
-<b class="nc">&nbsp;        return project.getProjectName();</b>
+<b class="fc">&nbsp;        return project.getProjectName();</b>
 &nbsp;    }
 &nbsp;    public List&lt;Activity&gt; getActivities() {
-<b class="nc">&nbsp;        return activities;</b>
+<b class="fc">&nbsp;        return activities;</b>
 &nbsp;    }
 &nbsp;    public User getProjectLead() {
 <b class="nc">&nbsp;        return project.getProjectLead();</b>
 &nbsp;    }
 &nbsp;    public String getProjectInterval() {
-<b class="nc">&nbsp;        return project.getTimeInterval();</b>
+<b class="fc">&nbsp;        return project.getTimeInterval();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Map&lt;Activity, Double&gt; getWorkedHours() {
-<b class="nc">&nbsp;        return this.activities.stream()</b>
-<b class="nc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getWorkedHours));</b>
+<b class="fc">&nbsp;        return this.activities.stream()</b>
+<b class="fc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getWorkedHours));</b>
 &nbsp;    }
 &nbsp;    public Map&lt;Activity, Double&gt; getExpectedHours() {
-<b class="nc">&nbsp;        return this.activities.stream()</b>
-<b class="nc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getExpectedWorkHours));</b>
+<b class="fc">&nbsp;        return this.activities.stream()</b>
+<b class="fc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getExpectedWorkHours));</b>
 &nbsp;    }
 &nbsp;    public Map&lt;Activity, List&lt;User&gt;&gt; getAssignedUsers() {
-<b class="nc">&nbsp;        return this.activities.stream()</b>
-<b class="nc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getAssignedUsers));</b>
+<b class="fc">&nbsp;        return this.activities.stream()</b>
+<b class="fc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getAssignedUsers));</b>
 &nbsp;    }
 &nbsp;    public Map&lt;Activity, List&lt;User&gt;&gt; getContributingEmployees() {
-<b class="nc">&nbsp;        return this.activities.stream()</b>
-<b class="nc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getWorkingUsers));</b>
+<b class="fc">&nbsp;        return this.activities.stream()</b>
+<b class="fc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getWorkingUsers));</b>
 &nbsp;    }
 &nbsp;    public Map&lt;Activity, String&gt; getActivityIntervals() {
-<b class="nc">&nbsp;        return this.activities.stream()</b>
-<b class="nc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getTimeInterval));</b>
+<b class="fc">&nbsp;        return this.activities.stream()</b>
+<b class="fc">&nbsp;                .collect(Collectors.toMap(Function.identity(), Activity::getTimeInterval));</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -152,7 +152,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-08 23:39</div>
+    <div style="float:right;">generated on 2025-05-09 14:45</div>
 </div>
 </body>
 </html>

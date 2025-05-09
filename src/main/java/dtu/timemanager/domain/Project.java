@@ -20,14 +20,13 @@ public class Project {
         this.activities = new ArrayList<>();
     }
 
-    public void assignProjectLead(User projectLead) {
+    public void setProjectLead(User projectLead) {
         this.projectLead = projectLead;
     }
 
     public User getProjectLead() {
         return this.projectLead;
     }
-    public void setProjectLead(User projectLead) {}
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;

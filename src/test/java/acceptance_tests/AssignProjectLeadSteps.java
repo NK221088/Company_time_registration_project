@@ -32,7 +32,7 @@ public class AssignProjectLeadSteps {
     @When("the user is assigned the role project lead")
     public void theUserIsAssignedTheRoleProjectLead() {
         this.user = timeManager.getCurrentUser();
-        this.project.assignProjectLead(this.user);
+        this.project.setProjectLead(this.user);
     }
 
     @Then("the user is given the role project lead")
@@ -42,13 +42,13 @@ public class AssignProjectLeadSteps {
 
     @Given("there is a current project lead of a project")
     public void thereIsACurrentProjectLeadOfAProject() {
-        this.project.assignProjectLead(this.user);
+        this.project.setProjectLead(this.user);
         assertNotNull(this.project.getProjectLead());
     }
 
     @Then("The user will replace the current project lead and assume the role of project lead")
     public void theUserWillReplaceTheCurrentProjectLeadAndAssumeTheRoleOfProjectLead() {
-        this.project.assignProjectLead(this.user);
+        this.project.setProjectLead(this.user);
     }
 
 }

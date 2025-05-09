@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LoginSteps {
     private final TimeManager timeManager;
     private final ErrorMessageHolder errorMessage;
-    private String user_initials;
+    private User user;
 
     public LoginSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
         this.timeManager = timeManager;
@@ -21,8 +21,12 @@ public class LoginSteps {
     }
 
     @Given("the user {string} is registered")
-    public void theUserIsRegistered(String user_initials) {
-        timeManager.addUser(new User(user_initials));
+    public void theUserIsRegistered(String user_initials) throws Exception {
+        try {
+            timeManager.addUser(new User(user_initials));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     @When("the user types in their initials {string}")
     public void theUserTypesInTheirInitials(String user_initials) {
@@ -49,9 +53,14 @@ public class LoginSteps {
     }
 
     @Given("the user {string} is logged in")
-    public void theUserIsLoggedIn(String user_initials) {
-        User user = new User(user_initials);
-        timeManager.addUser(user);
+    public void theUserIsLoggedIn(String userInitials) throws Exception {
+        boolean initialsFound = timeManager.getUsers().stream()
+                .anyMatch(user -> user.getUserInitials().equals(userInitials));
+        if (!initialsFound){
+            this.user = new User(userInitials);
+            timeManager.addUser(user);
+        }
+        else {this.user = timeManager.getUserFromInitials(userInitials);}
         timeManager.setCurrentUser(user);
         assertNotNull(timeManager.getCurrentUser());
     }

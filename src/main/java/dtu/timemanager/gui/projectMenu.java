@@ -565,7 +565,7 @@ public class projectMenu {
                     }
 
                     try {
-                        project.assignProjectLead(selectedUser);
+                        project.setProjectLead(selectedUser);
                         showInformation(null); // Refresh view
                     } catch (Exception ex) {
                         showError("Error assigning project lead: " + ex.getMessage());
@@ -576,7 +576,7 @@ public class projectMenu {
                 // Handle the clear button
                 final Button clearButton = (Button) dialog.getDialogPane().lookupButton(clearButtonType);
                 clearButton.addEventFilter(ActionEvent.ACTION, e -> {
-                    project.assignProjectLead(null);
+                    project.setProjectLead(null);
                     showInformation(null); // Refresh view
                     dialog.close();
                 });

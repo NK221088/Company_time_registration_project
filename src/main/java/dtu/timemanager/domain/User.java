@@ -46,4 +46,14 @@ public class User {
     public void incrementActivityCount() {
         activityCount++;
     }
+
+    public void decrementActivityCount() {
+    activityCount--;}
+
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return getUserInitials().equals(user.getUserInitials());
+    }
 }

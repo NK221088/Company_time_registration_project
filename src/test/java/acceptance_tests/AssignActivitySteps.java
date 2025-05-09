@@ -39,13 +39,14 @@ public class AssignActivitySteps {
             this.user1 = new User(userInitials);
             timeManager.addUser(user1);
         }
+        else {this.user1 = timeManager.getUserFromInitials(userInitials);}
         Project projectWithActivities = timeManager.createExampleProject("Project With " + activityCount.toString() + " Activities", activityCount);
         timeManager.addProject(projectWithActivities);
         for (Activity activity : projectWithActivities.getActivities()) { timeManager.assignUser(activity, user1); }
         assertEquals(activityCount, user1.getActivityCount());
     }
     @Given("the user {string} has {int} assigned activity, {string} in {string}")
-    public void theUserHasAssignedActivityIn(String userInitials, Integer int1, String string2, String string3) {
+    public void theUserHasAssignedActivityIn(String userInitials, Integer int1, String string2, String string3) throws Exception {
         boolean initialsFound = timeManager.getUsers().stream()
                 .anyMatch(user -> user.getUserInitials().equals(userInitials));
         if (!initialsFound){

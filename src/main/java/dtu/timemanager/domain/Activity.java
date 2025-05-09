@@ -42,8 +42,7 @@ public class Activity {
         info.put("Contributing employees", getWorkingUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
         info.put("WorkedHours", getWorkedHours());
-        info.put("StartTime", getActivityStartTime());
-        info.put("EndTime", getActivityEndTime());
+        info.put("Time interval", getTimeInterval());
 
         return info;
     }
@@ -62,6 +61,7 @@ public class Activity {
 
     public void unassignUser(User user) {
         if (this.assignedUsers.contains(user)) {
+            user.decrementActivityCount();
             this.assignedUsers.remove(user);
         } else {
             throw new RuntimeException("The user can not be unassigned from an activity they are not assigned to");

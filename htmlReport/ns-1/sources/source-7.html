@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    28.6%
+    87.5%
   </span>
   <span class="absValue">
-    (2/7)
+    (7/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/2)
+    (2/2)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    29.4%
+    94.4%
   </span>
   <span class="absValue">
-    (5/17)
+    (17/18)
   </span>
 </td>
 </tr>
@@ -108,24 +108,24 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Integer getActivityCount() {
-<b class="nc">&nbsp;        return activityCount;</b>
+<b class="fc">&nbsp;        return activityCount;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void addTimeRegistration(TimeRegistration timeRegistration) {
-<b class="nc">&nbsp;        Activity a = timeRegistration.getRegisteredActivity();</b>
-<b class="nc">&nbsp;        List&lt;TimeRegistration&gt; activity_value = activity_registrations.get(a);</b>
-<b class="nc">&nbsp;        if (activity_value != null) {</b>
-<b class="nc">&nbsp;            activity_value.add(timeRegistration);</b>
+<b class="fc">&nbsp;        Activity a = timeRegistration.getRegisteredActivity();</b>
+<b class="fc">&nbsp;        List&lt;TimeRegistration&gt; activity_value = activity_registrations.get(a);</b>
+<b class="fc">&nbsp;        if (activity_value != null) {</b>
+<b class="fc">&nbsp;            activity_value.add(timeRegistration);</b>
 &nbsp;        } else {
-<b class="nc">&nbsp;            ArrayList&lt;TimeRegistration&gt; timeReg = new ArrayList&lt;&gt;();</b>
-<b class="nc">&nbsp;            timeReg.add(timeRegistration);</b>
-<b class="nc">&nbsp;            activity_registrations.put(a, timeReg);</b>
+<b class="fc">&nbsp;            ArrayList&lt;TimeRegistration&gt; timeReg = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            timeReg.add(timeRegistration);</b>
+<b class="fc">&nbsp;            activity_registrations.put(a, timeReg);</b>
 &nbsp;        }
-<b class="nc">&nbsp;        a.addWorkingUser(timeRegistration.getRegisteredUser());</b>
+<b class="fc">&nbsp;        a.addWorkingUser(timeRegistration.getRegisteredUser());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; getActivityRegistrations() {
-<b class="nc">&nbsp;        return activity_registrations;</b>
+<b class="fc">&nbsp;        return activity_registrations;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String toString() {
@@ -133,8 +133,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void incrementActivityCount() {
-<b class="nc">&nbsp;        activityCount++;</b>
+<b class="fc">&nbsp;        activityCount++;</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    public void decrementActivityCount() {
+<b class="fc">&nbsp;    activityCount--;}</b>
 &nbsp;}
 </code>
 </pre>
@@ -159,7 +162,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-08 23:39</div>
+    <div style="float:right;">generated on 2025-05-09 14:45</div>
 </div>
 </body>
 </html>

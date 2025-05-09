@@ -7,6 +7,7 @@ import dtu.timemanager.domain.User;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class UnassignUserSteps {
@@ -28,7 +29,7 @@ public class UnassignUserSteps {
     }
 
     @When("the user {string} is unassigned from the activity")
-    public void theUserIsUnassignedFromTheActivity(String userInitials) {
+    public void theUserIsUnassignedFromTheActivity(String userInitials) throws Exception {
         boolean initialsFound = timeManager.getUsers().stream()
                 .anyMatch(user -> user.getUserInitials().equals(userInitials));
         if (!initialsFound){
@@ -36,6 +37,7 @@ public class UnassignUserSteps {
             timeManager.addUser(user);
         }
         try {
+            this.user = timeManager.getUserFromInitials("huba");
             timeManager.unassignUser(activity, user);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
@@ -45,5 +47,9 @@ public class UnassignUserSteps {
     @Then("the user isn't assigned to the activity")
     public void theUserIsnTAssignedToTheActivity() {
         assertFalse(activity.getAssignedUsers().contains(user));
+    }
+    @Then("the user's count of currently assigned activities is {int}")
+    public void theUserSCountOfCurrentlyAssignedActivitiesIs(Integer activityCount) {
+        assertEquals(activityCount, user.getActivityCount());
     }
 }

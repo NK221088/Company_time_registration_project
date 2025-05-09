@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    63.6%
+    90.5%
   </span>
   <span class="absValue">
-    (14/22)
+    (19/21)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    37.5%
+    75%
   </span>
   <span class="absValue">
-    (9/24)
+    (18/24)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    65.1%
+    90.5%
   </span>
   <span class="absValue">
-    (28/43)
+    (38/42)
   </span>
 </td>
 </tr>
@@ -109,14 +109,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        this.activities = new ArrayList&lt;&gt;();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void assignProjectLead(User projectLead) {
+&nbsp;    public void setProjectLead(User projectLead) {
 <b class="fc">&nbsp;        this.projectLead = projectLead;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public User getProjectLead() {
 <b class="fc">&nbsp;        return this.projectLead;</b>
 &nbsp;    }
-<b class="nc">&nbsp;    public void setProjectLead(User projectLead) {}</b>
 &nbsp;
 &nbsp;    public void setProjectName(String projectName) {
 <b class="nc">&nbsp;        this.projectName = projectName;</b>
@@ -126,13 +125,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return projectName;</b>
 &nbsp;    }
 &nbsp;
-<b class="nc">&nbsp;    public String getProjectID() { return projectID; }</b>
+<b class="fc">&nbsp;    public String getProjectID() { return projectID; }</b>
 &nbsp;
 &nbsp;    public void setProjectStartDate(LocalDate startDate) throws Exception {
-<b class="pc">&nbsp;        if (endDate==null || startDate.isBefore(endDate)) {</b>
+<b class="fc">&nbsp;        if (endDate==null || startDate.isBefore(endDate)) {</b>
 <b class="fc">&nbsp;            this.startDate = startDate;</b>
 &nbsp;        } else {
-<b class="nc">&nbsp;            throw new Exception(&quot;The start date of the project can&#39;t be after the end date of the project.&quot;);</b>
+<b class="fc">&nbsp;            throw new Exception(&quot;The start date of the project can&#39;t be after the end date of the project.&quot;);</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -140,26 +139,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="pc">&nbsp;        if (startDate==null || endDate.isAfter(startDate)) {</b>
 <b class="fc">&nbsp;            this.endDate = endDate;</b>
 &nbsp;        } else {
-<b class="nc">&nbsp;            throw new Exception(&quot;The end date of the project can&#39;t be before the start date of the project.&quot;);</b>
+<b class="fc">&nbsp;            throw new Exception(&quot;The end date of the project can&#39;t be before the start date of the project.&quot;);</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
 &nbsp;    public LocalDate getStartDate() {
-<b class="nc">&nbsp;        return startDate;</b>
+<b class="fc">&nbsp;        return startDate;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public LocalDate getEndDate() {
-<b class="nc">&nbsp;        return endDate;</b>
+<b class="fc">&nbsp;        return endDate;</b>
 &nbsp;    }
 &nbsp;
 <b class="fc">&nbsp;    public ArrayList&lt;Activity&gt; getActivities() {return activities;}</b>
 &nbsp;
 &nbsp;
 &nbsp;    public void addActivity(Activity activity) throws Exception {
-<b class="pc">&nbsp;        if (!activities.contains(activity)) {</b>
+<b class="fc">&nbsp;        if (!activities.contains(activity)) {</b>
 <b class="fc">&nbsp;            activities.add(activity);</b>
 &nbsp;        } else {
-<b class="nc">&nbsp;            throw new Exception(&quot;An activity with name &#39;&quot; + activity.getActivityName() + &quot;&#39; already exists within &#39;&quot; + this.getProjectName() + &quot;&#39; two activities cannot exist with the same name within the same project.&quot;);</b>
+<b class="fc">&nbsp;            throw new Exception(&quot;An activity with name &#39;&quot; + activity.getActivityName() + &quot;&#39; already exists within &#39;&quot; + this.getProjectName() + &quot;&#39; two activities cannot exist with the same name within the same project.&quot;);</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -172,7 +171,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Activity getActivityFromName(String activityName) {
-<b class="nc">&nbsp;        return getActivities().stream().filter(activity -&gt; activity.getActivityName().equals(activityName)).findFirst().orElse(null);</b>
+<b class="fc">&nbsp;        return getActivities().stream().filter(activity -&gt; activity.getActivityName().equals(activityName)).findFirst().orElse(null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String toString() {
@@ -210,9 +209,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getTimeInterval() {
-<b class="nc">&nbsp;        String p1 = getStartDate() != null ? getStartDate().toString() : &quot;&quot;;</b>
-<b class="nc">&nbsp;        String p2 = getEndDate() != null ? getEndDate().toString() : &quot;&quot;;</b>
-<b class="nc">&nbsp;        return p1 + &quot; - &quot; + p2;</b>
+<b class="fc">&nbsp;        String p1 = getStartDate() != null ? getStartDate().toString() : &quot;&quot;;</b>
+<b class="fc">&nbsp;        String p2 = getEndDate() != null ? getEndDate().toString() : &quot;&quot;;</b>
+<b class="fc">&nbsp;        return p1 + &quot; - &quot; + p2;</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -238,7 +237,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-08 23:39</div>
+    <div style="float:right;">generated on 2025-05-09 14:45</div>
 </div>
 </body>
 </html>

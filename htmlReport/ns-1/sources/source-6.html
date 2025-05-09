@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    11.1%
+    44.4%
   </span>
   <span class="absValue">
-    (1/9)
+    (4/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    20%
+    30%
   </span>
   <span class="absValue">
-    (2/10)
+    (3/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    34.8%
+    52.2%
   </span>
   <span class="absValue">
-    (8/23)
+    (12/23)
   </span>
 </td>
 </tr>
@@ -108,20 +108,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="pc">&nbsp;        if (registeredDate.isAfter(LocalDate.now())) {</b>
 <b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Date is after now&quot;);</b>
 &nbsp;        }
-<b class="pc">&nbsp;        if (this.registeredActivity.getFinalized()){</b>
+<b class="fc">&nbsp;        if (this.registeredActivity.getFinalized()){</b>
 <b class="fc">&nbsp;            throw new Exception(&quot;The activity is set as finalized: Time registrations can&#39;t be added.&quot;);</b>
 &nbsp;        }
 &nbsp;
-<b class="nc">&nbsp;        registeredUser.addTimeRegistration(this);</b>
+<b class="fc">&nbsp;        registeredUser.addTimeRegistration(this);</b>
 &nbsp;    }
 &nbsp;    public User getRegisteredUser() {
-<b class="nc">&nbsp;        return registeredUser;</b>
+<b class="fc">&nbsp;        return registeredUser;</b>
 &nbsp;    }
 &nbsp;    public Activity getRegisteredActivity() {
-<b class="nc">&nbsp;        return registeredActivity;</b>
+<b class="fc">&nbsp;        return registeredActivity;</b>
 &nbsp;    }
 &nbsp;    public double getRegisteredHours() {
-<b class="nc">&nbsp;        return registeredHours;</b>
+<b class="fc">&nbsp;        return registeredHours;</b>
 &nbsp;    }
 &nbsp;    public LocalDate getRegisteredDate() {
 <b class="nc">&nbsp;        return registeredDate;</b>
@@ -172,7 +172,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-08 23:39</div>
+    <div style="float:right;">generated on 2025-05-09 14:45</div>
 </div>
 </body>
 </html>
