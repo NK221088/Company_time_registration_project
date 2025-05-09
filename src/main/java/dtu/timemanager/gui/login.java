@@ -11,7 +11,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.Optional;
