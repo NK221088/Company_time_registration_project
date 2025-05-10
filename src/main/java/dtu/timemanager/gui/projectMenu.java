@@ -899,7 +899,7 @@ public class projectMenu {
                 return;
             }
 
-            if (timeManager.projectExists(name)) {
+            if (timeManager.projectExists(selectedProject)) {
                 showError("A project with name '" + name + "' already exists in the system.\nPlease choose a different name.");
                 event.consume();
                 return;

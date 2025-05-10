@@ -149,8 +149,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    public Project addExampleProject(String projectName, Integer numberOfActivities) throws Exception {
 <b class="fc">&nbsp;        Project project = addProject(projectName);</b>
-&nbsp;//        project.setProjectStartDate(LocalDate.parse(&quot;2025-01-01&quot;));
-&nbsp;//        project.setProjectEndDate(LocalDate.parse(&quot;2025-01-08&quot;));
 &nbsp;        try {
 <b class="fc">&nbsp;            for (int i = 1; i &lt;= numberOfActivities; i++) {</b>
 <b class="fc">&nbsp;                project.addActivity(new Activity(&quot;Activity &quot;+String.valueOf(i)));</b>
@@ -171,11 +169,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return IProjectService.getProjectCount();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public boolean projectExists(Project project) {
-<b class="fc">&nbsp;        return IProjectService.projectExists(project);</b>
-&nbsp;    }
-&nbsp;    public boolean projectExists(String projectName) {
-<b class="nc">&nbsp;        return IProjectService.projectExists(projectName);</b>
+&nbsp;    public boolean projectExists(Project project2) {
+<b class="fc">&nbsp;        return IProjectService.getProjects().contains(project2);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public ProjectReport getProjectReport(Project project) {
@@ -183,7 +178,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void addTimeRegistration(TimeRegistration timeRegistration) {
-<b class="fc">&nbsp;        time_registrations.add(timeRegistration);</b>
+<b class="nc">&nbsp;        time_registrations.add(timeRegistration);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;TimeRegistration&gt; getTimeRegistrations() {
@@ -191,11 +186,16 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {
+&nbsp;
 <b class="fc">&nbsp;        intervalTimeRegistrations.add(intervalTimeRegistration);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;IntervalTimeRegistration&gt; getIntervalTimeRegistrations() {
 <b class="fc">&nbsp;        return intervalTimeRegistrations;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void renameProject(Project project, String newName) {
+<b class="fc">&nbsp;        IProjectService.renameProject(project, newName);</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -221,7 +221,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 20:41</div>
+    <div style="float:right;">generated on 2025-05-11 00:07</div>
 </div>
 </body>
 </html>

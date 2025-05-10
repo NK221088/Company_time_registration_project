@@ -14,9 +14,8 @@ public class Project {
     private ArrayList<Activity> activities;
     private boolean isFinalized;
 
-    public Project(String projectName, String projectID) {
+    public Project(String projectName) {
         this.projectName = projectName;
-        this.projectID = projectID;
         this.activities = new ArrayList<>();
     }
 
@@ -75,15 +74,11 @@ public class Project {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (obj instanceof Project project) {
-            return getProjectName().equals(project.getProjectName());
+        if (obj instanceof Project) {
+            return Objects.equals(getProjectName(), ((Project) obj).getProjectName());
+        } else {
+            return false;
         }
-        if (obj instanceof String) {
-            return getProjectName().equals(obj);
-        }
-        return false;
     }
 
     public Activity getActivityFromName(String activityName) {
@@ -91,12 +86,8 @@ public class Project {
     }
 
     public String toString() {
-        if (Objects.equals(projectName, "")) {
-            return projectID;
-        } else {
             return projectName;
         }
-    }
 
     public boolean getFinalized() {
         return this.isFinalized;
@@ -128,5 +119,19 @@ public class Project {
         String p1 = getStartDate() != null ? getStartDate().toString() : "";
         String p2 = getEndDate() != null ? getEndDate().toString() : "";
         return p1 + " - " + p2;
+    }
+
+    public void renameActivity(Activity activity, String newName) throws Exception {
+        for (Activity a : activities) {
+            if (a.getActivityName().equals(newName)) {
+                throw new Exception("An activity with name " + newName + " already exists within "+ this.getProjectName() + ". Two activities cannot exist with the same name within the same project.");
+            }
+        }
+        activity.setActivityName(newName);
+    }
+
+
+    public void setProjectID(String id) {
+        this.projectID = id;
     }
 }

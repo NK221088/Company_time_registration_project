@@ -64,18 +64,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    75%
+    62.5%
   </span>
   <span class="absValue">
-    (6/8)
+    (5/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    95.5%
+    90.9%
   </span>
   <span class="absValue">
-    (21/22)
+    (20/22)
   </span>
 </td>
 </tr>
@@ -95,16 +95,16 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.util.Map;
 &nbsp;
 &nbsp;public class User {
-&nbsp;    private String user_initials;
-<b class="fc">&nbsp;    private Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; activity_registrations = new HashMap&lt;Activity, List&lt;TimeRegistration&gt;&gt;();</b>
+&nbsp;    private String userInitials;
+<b class="fc">&nbsp;    private Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; activityRegistrations = new HashMap&lt;Activity, List&lt;TimeRegistration&gt;&gt;();</b>
 <b class="fc">&nbsp;    private Integer activityCount = 0;</b>
 &nbsp;
 <b class="fc">&nbsp;    public User(String userInitials) {</b>
-<b class="fc">&nbsp;        this.user_initials = userInitials;</b>
+<b class="fc">&nbsp;        this.userInitials = userInitials;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getUserInitials() {
-<b class="fc">&nbsp;        return this.user_initials;</b>
+<b class="fc">&nbsp;        return this.userInitials;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Integer getActivityCount() {
@@ -112,25 +112,24 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void addTimeRegistration(TimeRegistration timeRegistration) {
-&nbsp;
 <b class="fc">&nbsp;        Activity a = timeRegistration.getRegisteredActivity();</b>
-<b class="fc">&nbsp;        List&lt;TimeRegistration&gt; activity_value = activity_registrations.get(a);</b>
-<b class="fc">&nbsp;        if (activity_value != null) {</b>
-<b class="fc">&nbsp;            activity_value.add(timeRegistration);</b>
+<b class="fc">&nbsp;        List&lt;TimeRegistration&gt; activity_value = activityRegistrations.get(a);</b>
+<b class="pc">&nbsp;        if (activity_value != null) {</b>
+<b class="nc">&nbsp;            activity_value.add(timeRegistration);</b>
 &nbsp;        } else {
 <b class="fc">&nbsp;            ArrayList&lt;TimeRegistration&gt; timeReg = new ArrayList&lt;&gt;();</b>
 <b class="fc">&nbsp;            timeReg.add(timeRegistration);</b>
-<b class="fc">&nbsp;            activity_registrations.put(a, timeReg);</b>
+<b class="fc">&nbsp;            activityRegistrations.put(a, timeReg);</b>
 &nbsp;        }
-<b class="fc">&nbsp;        a.addWorkingUser(timeRegistration.getRegisteredUser());</b>
+<b class="fc">&nbsp;        a.addContributingUser(timeRegistration.getRegisteredUser());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; getActivityRegistrations() {
-<b class="fc">&nbsp;        return activity_registrations;</b>
+<b class="fc">&nbsp;        return activityRegistrations;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String toString() {
-<b class="nc">&nbsp;        return user_initials;</b>
+<b class="nc">&nbsp;        return userInitials;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void incrementActivityCount() {
@@ -170,7 +169,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 20:41</div>
+    <div style="float:right;">generated on 2025-05-11 00:07</div>
 </div>
 </body>
 </html>

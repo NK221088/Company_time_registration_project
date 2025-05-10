@@ -49,4 +49,4 @@ Feature: Editing already existing activities
     And the project has an activity named "Activity 1"
     And the project has an activity named "Activity 2"
     When the user changes the name of "Activity 1" to "Activity 2"
-    Then the error message "An activity with name 'Activity 2' already exists within 'Project 1' two activities cannot exist with the same name within the same project." is given
+    Then the error message "An activity with name Activity 2 already exists within Project 1. Two activities cannot exist with the same name within the same project." is given

@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    95.5%
+    100%
   </span>
   <span class="absValue">
-    (21/22)
+    (22/22)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    90%
+    86.7%
   </span>
   <span class="absValue">
-    (27/30)
+    (26/30)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    98.2%
+    100%
   </span>
   <span class="absValue">
-    (54/55)
+    (55/55)
   </span>
 </td>
 </tr>
@@ -98,7 +98,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    private String activityName;
 <b class="fc">&nbsp;    private ArrayList&lt;User&gt; assignedUsers = new ArrayList&lt;&gt;();</b>
-<b class="fc">&nbsp;    private ArrayList&lt;User&gt; workingUsers = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private ArrayList&lt;User&gt; contributingUsers = new ArrayList&lt;&gt;();</b>
 &nbsp;    private double expectedWorkHours;
 &nbsp;    private LocalDate activityStartTime;
 &nbsp;    private LocalDate activityEndTime;
@@ -113,7 +113,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    public double getWorkedHours() {
 <b class="fc">&nbsp;        double workedHours = 0.0;</b>
-<b class="fc">&nbsp;        for (User user : getWorkingUsers()) {</b>
+<b class="fc">&nbsp;        for (User user : getContributingUsers()) {</b>
 <b class="fc">&nbsp;            for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {</b>
 <b class="fc">&nbsp;                workedHours += timeReg.getRegisteredHours();</b>
 &nbsp;            }
@@ -128,7 +128,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        Map&lt;String,Object&gt; info = new HashMap();</b>
 <b class="fc">&nbsp;        info.put(&quot;Name&quot;, getActivityName());</b>
 <b class="fc">&nbsp;        info.put(&quot;Assigned employees&quot;, getAssignedUsers());</b>
-<b class="fc">&nbsp;        info.put(&quot;Contributing employees&quot;, getWorkingUsers());</b>
+<b class="fc">&nbsp;        info.put(&quot;Contributing employees&quot;, getContributingUsers());</b>
 <b class="fc">&nbsp;        info.put(&quot;ExpectedWorkHours&quot;, getExpectedWorkHours());</b>
 <b class="fc">&nbsp;        info.put(&quot;WorkedHours&quot;, getWorkedHours());</b>
 <b class="fc">&nbsp;        info.put(&quot;Time interval&quot;, getTimeInterval());</b>
@@ -156,10 +156,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;            throw new RuntimeException(&quot;The user can not be unassigned from an activity they are not assigned to&quot;);</b>
 &nbsp;        }
 &nbsp;    }
-&nbsp;
-&nbsp;    public void addWorkingUser(User user) {
-<b class="fc">&nbsp;        if (!workingUsers.contains(user)) {</b>
-<b class="fc">&nbsp;            workingUsers.add(user);</b>
+&nbsp;    public void addContributingUser(User user) {
+<b class="pc">&nbsp;        if (!contributingUsers.contains(user)) {</b>
+<b class="fc">&nbsp;            contributingUsers.add(user);</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;    public boolean equals(Object obj) {
@@ -169,10 +168,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return activityName.equals(activity.getActivityName());</b>
 &nbsp;    }
 &nbsp;
-<b class="fc">&nbsp;    public ArrayList&lt;User&gt; getWorkingUsers() { return this.workingUsers; }</b>
+<b class="fc">&nbsp;    public ArrayList&lt;User&gt; getContributingUsers() { return this.contributingUsers; }</b>
 &nbsp;
 &nbsp;    public String toString() {
-<b class="nc">&nbsp;        return activityName;</b>
+<b class="fc">&nbsp;        return activityName;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setActivityName(String activityName) {
@@ -245,7 +244,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 20:41</div>
+    <div style="float:right;">generated on 2025-05-11 00:07</div>
 </div>
 </body>
 </html>

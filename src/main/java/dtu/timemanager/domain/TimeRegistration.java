@@ -10,10 +10,6 @@ public class TimeRegistration {
     private double registeredHours;
     private LocalDate registeredDate;
 
-    public TimeRegistration(User user) throws Exception {
-        registeredUser = user;
-    }
-
     public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) throws Exception {
         this.registeredUser = registeredUser;
         this.registeredActivity = registeredActivity;
@@ -22,7 +18,7 @@ public class TimeRegistration {
 
         if (!(this instanceof IntervalTimeRegistration)) {
             if (this.registeredActivity.getFinalized()) {
-                throw new Exception("The activity is set as finalized: Time registrations can't be added.");
+                throw new Exception("The activity is set as finalized: time registrations can't be added.");
             }
             registeredUser.addTimeRegistration(this);
         }
@@ -47,8 +43,12 @@ public class TimeRegistration {
         if (this.registeredUser != null && this.registeredUser != registeredUser && actRegList.size() <= 1) {
             this.registeredActivity.getContributingUsers().remove(this.registeredUser);
             this.registeredUser = registeredUser;
+            this.registeredActivity.addContributingUser(this.registeredUser);
 
-        } else { this.registeredUser = registeredUser;}
+        } else {
+            this.registeredUser = registeredUser;
+
+        }
 
     }
 
@@ -61,7 +61,11 @@ public class TimeRegistration {
     public void setRegisteredHours(double registeredHours) {
         this.registeredHours = registeredHours;
     }
-    public void setRegisteredDate(LocalDate registeredDate) {
-        this.registeredDate = registeredDate;
+    public void setRegisteredDate(LocalDate registeredDate) throws Exception {
+        if (!registeredDate.isAfter(LocalDate.now())) {
+            this.registeredDate = registeredDate;
+        } else {
+            throw new Exception("Registered date cannot be in the future.");
+        }
     }
 }

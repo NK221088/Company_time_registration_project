@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    44.4%
+    88.9%
   </span>
   <span class="absValue">
-    (4/9)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    40%
+    57.1%
   </span>
   <span class="absValue">
-    (4/10)
+    (8/14)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    54.5%
+    81.5%
   </span>
   <span class="absValue">
-    (12/22)
+    (22/27)
   </span>
 </td>
 </tr>
@@ -107,7 +107,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 <b class="fc">&nbsp;        if (!(this instanceof IntervalTimeRegistration)) {</b>
 <b class="fc">&nbsp;            if (this.registeredActivity.getFinalized()) {</b>
-<b class="fc">&nbsp;                throw new Exception(&quot;The activity is set as finalized: Time registrations can&#39;t be added.&quot;);</b>
+<b class="fc">&nbsp;                throw new Exception(&quot;The activity is set as finalized: time registrations can&#39;t be added.&quot;);</b>
 &nbsp;            }
 <b class="fc">&nbsp;            registeredUser.addTimeRegistration(this);</b>
 &nbsp;        }
@@ -122,29 +122,40 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return registeredHours;</b>
 &nbsp;    }
 &nbsp;    public LocalDate getRegisteredDate() {
-<b class="nc">&nbsp;        return registeredDate;</b>
+<b class="fc">&nbsp;        return registeredDate;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setRegisteredUser(User registeredUser) {
-<b class="nc">&nbsp;        Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; registrationList = this.registeredUser.getActivityRegistrations();</b>
-<b class="nc">&nbsp;        List&lt;TimeRegistration&gt; actRegList = registrationList.get(this.registeredActivity);</b>
+<b class="fc">&nbsp;        Map&lt;Activity, List&lt;TimeRegistration&gt;&gt; registrationList = this.registeredUser.getActivityRegistrations();</b>
+<b class="fc">&nbsp;        List&lt;TimeRegistration&gt; actRegList = registrationList.get(this.registeredActivity);</b>
 &nbsp;
-<b class="nc">&nbsp;        if (this.registeredUser != null &amp;&amp; this.registeredUser != registeredUser &amp;&amp; actRegList.size() &lt;= 1) {</b>
-<b class="nc">&nbsp;            this.registeredActivity.getWorkingUsers().remove(this.registeredUser);</b>
+<b class="pc">&nbsp;        if (this.registeredUser != null &amp;&amp; this.registeredUser != registeredUser &amp;&amp; actRegList.size() &lt;= 1) {</b>
+<b class="fc">&nbsp;            this.registeredActivity.getContributingUsers().remove(this.registeredUser);</b>
+<b class="fc">&nbsp;            this.registeredUser = registeredUser;</b>
+<b class="fc">&nbsp;            this.registeredActivity.addContributingUser(this.registeredUser);</b>
+&nbsp;
+&nbsp;        } else {
 <b class="nc">&nbsp;            this.registeredUser = registeredUser;</b>
 &nbsp;
-<b class="nc">&nbsp;        } else { this.registeredUser = registeredUser;}</b>
+&nbsp;        }
 &nbsp;
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setRegisteredActivity(Activity registeredActivity) {
+&nbsp;    public void setRegisteredActivity(Activity registeredActivity) throws Exception {
 <b class="nc">&nbsp;        this.registeredActivity = registeredActivity;</b>
+<b class="nc">&nbsp;        if (this.registeredActivity.getFinalized()) {</b>
+<b class="nc">&nbsp;            throw new Exception(&quot;The activity is set as finalized: Time registrations can&#39;t be added.&quot;);</b>
+&nbsp;        }
 &nbsp;    }
 &nbsp;    public void setRegisteredHours(double registeredHours) {
-<b class="nc">&nbsp;        this.registeredHours = registeredHours;</b>
+<b class="fc">&nbsp;        this.registeredHours = registeredHours;</b>
 &nbsp;    }
-&nbsp;    public void setRegisteredDate(LocalDate registeredDate) {
-<b class="nc">&nbsp;        this.registeredDate = registeredDate;</b>
+&nbsp;    public void setRegisteredDate(LocalDate registeredDate) throws Exception {
+<b class="pc">&nbsp;        if (!registeredDate.isAfter(LocalDate.now())) {</b>
+<b class="fc">&nbsp;            this.registeredDate = registeredDate;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new Exception(&quot;Registered date cannot be in the future.&quot;);</b>
+&nbsp;        }
 &nbsp;    }
 &nbsp;}
 </code>
@@ -170,7 +181,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 20:41</div>
+    <div style="float:right;">generated on 2025-05-11 00:07</div>
 </div>
 </body>
 </html>

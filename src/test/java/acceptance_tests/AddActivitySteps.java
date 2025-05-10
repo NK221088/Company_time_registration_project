@@ -13,6 +13,7 @@ public class AddActivitySteps {
     private ErrorMessageHolder errorMessage;
     private ProjectHolder projectHolder;
     private Project project;
+    Activity activity;
 
     public AddActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder) {
         this.timeManager = timeManager;
@@ -24,6 +25,7 @@ public class AddActivitySteps {
     @When("adds an activity named {string} to the project")
     public void addsAnActivityNamedToTheProject(String activityName) {
         Activity activity = new Activity(activityName);
+        this.activity = activity;
         try {
             project.addActivity(activity);
         } catch (Exception e) {
@@ -34,6 +36,7 @@ public class AddActivitySteps {
     public void theActivityNamedShouldBeAddedToTheProject(String activityName) {
         List<Activity> activities = project.getActivities();
         assertTrue(activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName)));
+        assertEquals(activityName, activity.toString());
     }
 
     @Then("the activity should not be added to the project")

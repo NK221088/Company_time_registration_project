@@ -37,6 +37,7 @@ public class LoginSteps {
             this.errorMessage.setErrorMessage(e.getMessage());
         }
     }
+
     @Then("they are logged into the system")
     public void theyAreLoggedIntoTheSystem() {
         assertNotNull(timeManager.getCurrentUser());
@@ -48,7 +49,6 @@ public class LoginSteps {
     }
     @Then("the error message {string} is given")
     public void theErrorMessageIsGiven(String errorMessage) {
-        this.errorMessage.setErrorMessage(errorMessage);
         assertEquals(errorMessage, this.errorMessage.getErrorMessage());
     }
 

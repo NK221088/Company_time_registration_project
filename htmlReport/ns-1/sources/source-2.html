@@ -64,10 +64,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    66.7%
   </span>
   <span class="absValue">
-    (3/6)
+    (4/6)
   </span>
 </td>
 <td class="coverageStat">
@@ -97,9 +97,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private String leaveOption;
 &nbsp;
 &nbsp;    public IntervalTimeRegistration(User user, String leaveOption, LocalDate startDate, LocalDate endDate) throws Exception {
-<b class="fc">&nbsp;        super(user, null, 0.0, LocalDate.now());</b>
+<b class="fc">&nbsp;        super(user, null, 0.0, null);</b>
 &nbsp;
-<b class="pc">&nbsp;        if (endDate.isBefore(startDate)) { throw new IllegalArgumentException(&quot;End date must not be before start date&quot;); }</b>
+<b class="fc">&nbsp;        if (endDate.isBefore(startDate)) { throw new IllegalArgumentException(&quot;End date must not be before start date&quot;); }</b>
 &nbsp;
 <b class="fc">&nbsp;        this.leaveOption = leaveOption;</b>
 <b class="fc">&nbsp;        this.startDate = startDate;</b>
@@ -158,7 +158,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 20:41</div>
+    <div style="float:right;">generated on 2025-05-11 00:07</div>
 </div>
 </body>
 </html>

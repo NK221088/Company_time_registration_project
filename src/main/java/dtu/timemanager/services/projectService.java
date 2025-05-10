@@ -10,17 +10,27 @@ public class projectService implements projectInterface {
     private final List<Project> projects = new ArrayList<>();
     private int projectCount = 0;
 
+    @Override
+    public void renameProject(Project project, String newName) throws IllegalArgumentException {
+        for (Project p : projects) {
+            if (p.getProjectName().equals(newName)) {
+                throw new RuntimeException("A project with name " + newName + " already exists and two projects cannot exist with the same name.");
+            }
+        }
+        project.setProjectName(newName);
+    }
+
     private String formatID(int count) { return "25" + String.format("%03d", count); }
 
     @Override
     public Project addProject(String projectName) {
-        String id = formatID(++this.projectCount);
-        Project project = new Project(projectName, id);
+        Project project = new Project(projectName);
         if (!projectExists(project)) {
+            String id = formatID(++this.projectCount);
+            project.setProjectID(id);
             projects.add(project);
             return project;
         } else {
-            --this.projectCount;
             throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
     }

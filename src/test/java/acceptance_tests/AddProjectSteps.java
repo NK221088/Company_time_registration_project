@@ -33,6 +33,11 @@ public class AddProjectSteps {
         Project project2 = timeManager.addExampleProject("Project To Test Count 2", 1);
         assertEquals(timeManager.getProjectCount(), projectCount);
     }
+    @Given("no project with project name {string} exists in the system")
+    public void noProjectWithProjectNameExistsInTheSystem(String projectName) {
+        Project project = new Project(projectName);
+        assertFalse(timeManager.projectExists(project));
+    }
     @When("a new project with name {string} is added")
     public void aNewProjectWithNameIsAdded(String projectName) {
         try {
@@ -45,6 +50,8 @@ public class AddProjectSteps {
     @Then("a project named {string} should exist in the system")
     public void aProjectNamedShouldExistInTheSystem(String projectName) {
         assertTrue(timeManager.projectExists(project));
+        assertFalse(project.equals(null));
+        assertEquals(projectName, project.toString());
     }
 
     @Then("the project is assigned a project id {string}")
@@ -54,13 +61,12 @@ public class AddProjectSteps {
 
     @Then("the new project with name {string} is not created")
     public void theNewProjectWithNameIsNotCreated(String projectName) {
-        List<Project> projects = timeManager.getProjects();
-        long counted = projects.stream()
-                .map(Project::getProjectName)
-                .filter(name -> name.equals(projectName))
-                .count();
-        assertFalse(counted > 1);
+        Integer count = 0;
+        for (Project project : timeManager.getProjects()) {
+            if (project.getProjectName().equals(projectName)) {
+                count++;
+            }
+        }
+        assertFalse(count > 1);
     }
-
-
 }

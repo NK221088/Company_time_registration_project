@@ -60,8 +60,6 @@ public class TimeManager {
 
     public Project addExampleProject(String projectName, Integer numberOfActivities) throws Exception {
         Project project = addProject(projectName);
-//        project.setProjectStartDate(LocalDate.parse("2025-01-01"));
-//        project.setProjectEndDate(LocalDate.parse("2025-01-08"));
         try {
             for (int i = 1; i <= numberOfActivities; i++) {
                 project.addActivity(new Activity("Activity "+String.valueOf(i)));
@@ -83,18 +81,7 @@ public class TimeManager {
     }
 
     public boolean projectExists(Project project2) {
-        for (Project project1 : IProjectService.getProjects()) {
-            if (project1.getProjectName().equals(project2.getProjectName())) {
-                return true;
-            }
-        }
-        return false;
-//        return IProjectService.projectExists(project);
-    }
-
-
-    public boolean projectExists(String projectName) {
-        return IProjectService.projectExists(projectName);
+        return IProjectService.getProjects().contains(project2);
     }
 
     public ProjectReport getProjectReport(Project project) {
@@ -110,10 +97,15 @@ public class TimeManager {
     }
 
     public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {
+
         intervalTimeRegistrations.add(intervalTimeRegistration);
     }
 
     public List<IntervalTimeRegistration> getIntervalTimeRegistrations() {
         return intervalTimeRegistrations;
+    }
+
+    public void renameProject(Project project, String newName) {
+        IProjectService.renameProject(project, newName);
     }
 }

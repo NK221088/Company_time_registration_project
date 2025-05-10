@@ -27,13 +27,18 @@ public class EditTimeRegistrationSteps {
         this.project = projectHolder.getProject();
         this.activity = activityHolder.getActivity();
     }
-
-    @Given("the user {string} has a time registration with {string}")
-    public void theUserHasATimeRegistrationWith(String userInitials, String activityName) throws Exception {
+    @Given("the user {string} has {int} time registration with {string}")
+    public void theUserHasTimeRegistrationWith(String userInitials, Integer numberOfActivities, String string2) throws Exception {
         User user = timeManager.getUserFromInitials(userInitials);
         Activity registeredActivity = activityHolder.getActivity();
         this.timeRegistration = new TimeRegistration(user, registeredActivity, 8, LocalDate.now());
-        user.addTimeRegistration(this.timeRegistration);
+        assertEquals(user.getActivityRegistrations().get(registeredActivity).size(), numberOfActivities);
+    }
+    @Given("there are registered {int} work hours on the project")
+    public void thereAreRegisteredWorkHoursOnTheProject(Integer registeredHours) throws Exception {
+        this.timeRegistration = new TimeRegistration(timeManager.getCurrentUser(), this.activity, registeredHours, LocalDate.now());
+        Double workedHours = this.activity.getWorkedHours();
+        assertEquals(workedHours, registeredHours, 0.0001);
     }
     @When("the user changes the registered user on the time registration to {string}")
     public void theUserChangesTheRegisteredUserOnTheTimeRegistrationTo(String userInitials) {
@@ -53,5 +58,33 @@ public class EditTimeRegistrationSteps {
     public void theUserHasContributedToTheActivity(String userInitials) {
         User user = timeManager.getUserFromInitials(userInitials);
         assertTrue(this.activity.getContributingUsers().contains(user));
+    }
+    @Given("the registered date is {string}")
+    public void theRegisteredDateIs(String newDate) throws Exception {
+        try {timeRegistration.setRegisteredDate(LocalDate.parse(newDate));}
+        catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+    @When("the user changes the registered date to {string}")
+    public void theUserChangesTheRegisteredDateTo(String newDate) {
+        try {
+            timeRegistration.setRegisteredDate(LocalDate.parse(newDate));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+    @When("the user changes the registered hours to {int}")
+    public void theUserChangesTheRegisteredHoursTo(Integer newHours) {
+        timeRegistration.setRegisteredHours(newHours);
+    }
+    @Then("the registered date is changed to {string}")
+    public void theRegisteredDateIsChangedTo(String newDate) {
+        assertEquals(timeRegistration.getRegisteredDate().toString(), newDate);
+    }
+    @Then("the registered hours is changed to {int}")
+    public void theRegisteredHoursIsChangedTo(Integer newHours) {
+        Double registeredHours = timeRegistration.getRegisteredHours();
+        assertEquals(registeredHours, newHours, 0.0001);
     }
 }

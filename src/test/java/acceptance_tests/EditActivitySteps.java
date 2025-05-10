@@ -63,7 +63,10 @@ public class EditActivitySteps {
 
     @When("the user changes the name of {string} to {string}")
     public void theUserChangesTheNameOfTo(String activityName1, String activityName2) {
-        this.activity.setActivityName(activityName2);
+        try {this.project.renameActivity(this.activity, activityName2);}
+        catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
     @Then("the name is changed to {string}")
     public void theNameIsChangedTo(String activityName) {

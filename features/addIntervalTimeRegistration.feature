@@ -19,4 +19,4 @@ Feature: Add interval time registration
     And the user selects the end date "2025-04-20"
     And the user tries to add an interval time registration
     Then the interval time registration is not created
-    And the error message "The activity is set as finalized: time registrations can't be added." is given
+    And the error message "End date must not be before start date" is given

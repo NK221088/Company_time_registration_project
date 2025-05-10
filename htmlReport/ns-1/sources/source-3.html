@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    95.2%
+    100%
   </span>
   <span class="absValue">
-    (20/21)
+    (23/23)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    83.3%
+    100%
   </span>
   <span class="absValue">
-    (20/24)
+    (22/22)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    92.9%
+    100%
   </span>
   <span class="absValue">
-    (39/42)
+    (43/43)
   </span>
 </td>
 </tr>
@@ -103,9 +103,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private ArrayList&lt;Activity&gt; activities;
 &nbsp;    private boolean isFinalized;
 &nbsp;
-<b class="fc">&nbsp;    public Project(String projectName, String projectID) {</b>
+<b class="fc">&nbsp;    public Project(String projectName) {</b>
 <b class="fc">&nbsp;        this.projectName = projectName;</b>
-<b class="fc">&nbsp;        this.projectID = projectID;</b>
 <b class="fc">&nbsp;        this.activities = new ArrayList&lt;&gt;();</b>
 &nbsp;    }
 &nbsp;
@@ -164,10 +163,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public boolean equals(Object obj) {
-<b class="fc">&nbsp;        if (this == obj) return true;</b>
-<b class="pc">&nbsp;        if (obj == null || getClass() != obj.getClass()) return false;</b>
-<b class="fc">&nbsp;        Project project = (Project) obj;</b>
-<b class="fc">&nbsp;        return projectName.equals(project.projectName);</b>
+<b class="fc">&nbsp;        if (obj instanceof Project) {</b>
+<b class="fc">&nbsp;            return Objects.equals(getProjectName(), ((Project) obj).getProjectName());</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
 &nbsp;    }
 &nbsp;
 &nbsp;    public Activity getActivityFromName(String activityName) {
@@ -175,12 +175,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String toString() {
-<b class="nc">&nbsp;        if (Objects.equals(projectName, &quot;&quot;)) {</b>
-<b class="nc">&nbsp;            return projectID;</b>
-&nbsp;        } else {
-<b class="nc">&nbsp;            return projectName;</b>
+<b class="fc">&nbsp;            return projectName;</b>
 &nbsp;        }
-&nbsp;    }
 &nbsp;
 &nbsp;    public boolean getFinalized() {
 <b class="fc">&nbsp;        return this.isFinalized;</b>
@@ -213,6 +209,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        String p2 = getEndDate() != null ? getEndDate().toString() : &quot;&quot;;</b>
 <b class="fc">&nbsp;        return p1 + &quot; - &quot; + p2;</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    public void renameActivity(Activity activity, String newName) throws Exception {
+<b class="fc">&nbsp;        for (Activity a : activities) {</b>
+<b class="fc">&nbsp;            if (a.getActivityName().equals(newName)) {</b>
+<b class="fc">&nbsp;                throw new Exception(&quot;An activity with name &quot; + newName + &quot; already exists within &quot;+ this.getProjectName() + &quot;. Two activities cannot exist with the same name within the same project.&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        activity.setActivityName(newName);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void setProjectID(String id) {
+<b class="fc">&nbsp;        this.projectID = id;</b>
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -237,7 +247,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-09 20:41</div>
+    <div style="float:right;">generated on 2025-05-11 00:07</div>
 </div>
 </body>
 </html>

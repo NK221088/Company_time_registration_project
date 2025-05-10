@@ -17,4 +17,5 @@ public interface projectInterface {
     void assignProjectLead(Project project, User user);
     void incProjectCount();
     int getProjectCount();
+    void renameProject(Project project, String newName);
 }

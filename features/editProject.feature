@@ -43,4 +43,5 @@ Feature: Editing already existing projects
     And a project, "Project 1", exists in the system
     And a project, "Project 2", exists in the system
     When the user changes the project name of "Project 1" to "Project 2"
-    Then the error message "A project with name 'Project 2' already exists and two projects cannot exist with the same name." is given
+    Then the project name is not changed
+    And the error message "A project with name Project 2 already exists and two projects cannot exist with the same name." is given

@@ -6,6 +6,7 @@ Feature: Add project
     Given the user "huba" is logged in
     And the current year is 2025
     And the current project count is 2
+    And no project with project name "Project Add" exists in the system
     When a new project with name "Project Add" is added
     Then a project named "Project Add" should exist in the system
     And the project is assigned a project id "25003"

@@ -67,7 +67,6 @@ public class Activity {
             throw new RuntimeException("The user can not be unassigned from an activity they are not assigned to");
         }
     }
-
     public void addContributingUser(User user) {
         if (!contributingUsers.contains(user)) {
             contributingUsers.add(user);

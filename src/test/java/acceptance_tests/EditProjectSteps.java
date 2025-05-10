@@ -18,7 +18,7 @@ public class EditProjectSteps {
     private Project project;
     private ActivityHolder activityHolder;
     private Activity activity;
-    private Map<String, Object> info;
+    private String oldName;
 
     public EditProjectSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder, ActivityHolder activityHolder) {
         this.timeManager = timeManager;
@@ -73,7 +73,15 @@ public class EditProjectSteps {
 
     @When("the user changes the project name of {string} to {string}")
     public void theUserChangesTheProjectNameOfTo(String projectName1, String projectName2) {
-        this.project.setProjectName(projectName2);
+        this.oldName = project.getProjectName();
+        try {timeManager.renameProject(this.project, projectName2);}
+        catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+    @Then("the project name is not changed")
+    public void theProjectNameIsNotChanged() {
+        assertEquals(project.getProjectName(), this.oldName);
     }
     @Then("the project name is changed to {string}")
     public void theProjectNameIsChangedTo(String projectName) {

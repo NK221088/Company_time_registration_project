@@ -11,17 +11,16 @@ import java.time.LocalDate;
 
 public class AddTimeRegistrationSteps {
     private Activity registeredActivity;
-    private int registeredHours;
     private LocalDate registeredDate;
     private double workedHours = 0;
     private TimeRegistration timeRegistration;
     private ActivityHolder activityHolder;
-
     private TimeManager timeManager;
     private ProjectHolder projectHolder;
     private Project project;
     private ErrorMessageHolder errorMessage;
     private Activity activity;
+    private User user;
 
     public AddTimeRegistrationSteps(TimeManager timeManager, ErrorMessageHolder errorMessage, ProjectHolder projectHolder, ActivityHolder activityHolder) {
         this.timeManager = timeManager;
@@ -38,29 +37,22 @@ public class AddTimeRegistrationSteps {
         project.addActivity(activity);
         assertFalse(activity.getFinalized());
     }
-    @When("the user starts a new time registration")
-    public void theUserStartsANewTimeRegistration() throws Exception {
-        this.timeRegistration = new TimeRegistration(timeManager.getCurrentUser());
+
+    @When("the user adds a new time registration on the date {string} with activity {string} and {int} worked hours")
+    public void theUserAddsANewTimeRegistrationOnTheDateWithActivityAndWorkedHours(String date, String activityName, Integer workedHours) {
+        try {
+            this.user = timeManager.getCurrentUser();
+            this.timeRegistration = new TimeRegistration(user, activity, workedHours, LocalDate.parse(date));
+        } catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
     }
-    @When("the user selects the activity {string}")
-    public void theUserSelectsTheActivity(String activityName) throws Exception {
-        this.timeRegistration.setRegisteredActivity((this.project.getActivityFromName(activityName)));
-    }
-    @When("the user enters {string} hours")
-    public void theUserEntersHours(String activityHours) {
-        this.timeRegistration.setRegisteredHours(Integer.parseInt(activityHours));
-    }
-    @When("the user selects the date {string}")
-    public void theUserSelectsTheDate(String activityDate) {
-        this.timeRegistration.setRegisteredDate(LocalDate.parse(activityDate));
-    }
+
     @Then("a new time registration is added with:")
     public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) throws Exception {
         assertEquals(this.timeRegistration.getRegisteredActivity().getActivityName(),    dataTable.cell(1, 0));
         assertEquals(Integer.toString((int) this.timeRegistration.getRegisteredHours()), dataTable.cell(1, 1));
         assertEquals(this.timeRegistration.getRegisteredDate().toString(),               dataTable.cell(1, 2));
-        timeManager.addTimeRegistration(timeRegistration);
-        timeRegistration.getRegisteredUser().addTimeRegistration(timeRegistration);
     }
     @Given("that the project has an activity named {string} which is set as finalized")
     public void thatTheProjectHasAnActivityNamedWhichIsSetAsFinalized(String activityName) throws Exception {
@@ -79,4 +71,5 @@ public class AddTimeRegistrationSteps {
     public void theHoursWorkedOnTheActivityIs(Integer workedHours) {
         assertEquals(this.activity.getWorkedHours(), Double.valueOf(workedHours));
     }
+
 }
