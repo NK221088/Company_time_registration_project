@@ -44,6 +44,7 @@ public class AddTimeRegistrationSteps {
         try {
             this.user = timeManager.getCurrentUser();
             this.timeRegistration = new TimeRegistration(user, activity, workedHours, LocalDate.parse(date));
+            timeManager.addTimeRegistration(timeRegistration);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
         }

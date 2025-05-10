@@ -1,20 +1,15 @@
 package dtu.timemanager.domain;
 import dtu.timemanager.services.projectService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class TimeManager {
     private User current_user;
     private List<User> users = new ArrayList<>();
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
-    private List<TimeRegistration> time_registrations = new ArrayList<>();
+    private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
     private projectService IProjectService = new projectService();
 
@@ -89,11 +84,11 @@ public class TimeManager {
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
-        time_registrations.add(timeRegistration);
+        timeRegistrations.add(timeRegistration);
     }
 
     public List<TimeRegistration> getTimeRegistrations() {
-        return time_registrations;
+        return timeRegistrations;
     }
 
     public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {

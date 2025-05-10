@@ -21,9 +21,9 @@ public class User {
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
         Activity a = timeRegistration.getRegisteredActivity();
-        List<TimeRegistration> activity_value = activityRegistrations.get(a);
-        if (activity_value != null) {
-            activity_value.add(timeRegistration);
+        List<TimeRegistration> activityValue = activityRegistrations.get(a);
+        if (activityValue != null) {
+            activityValue.add(timeRegistration);
         } else {
             ArrayList<TimeRegistration> timeReg = new ArrayList<>();
             timeReg.add(timeRegistration);
