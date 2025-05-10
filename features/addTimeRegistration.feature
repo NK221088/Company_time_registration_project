@@ -6,9 +6,8 @@ Feature: Add time registration
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
     And that the project has an activity named "Activity 1" which is set as in progress
-    And the hours worked on the activity is 0
-    When the user selects the activity "Activity 1"
-    And the user tries to add a time registration
+    When the user starts a new time registration
+    And the user selects the activity "Activity 1"
     And the user enters "4" hours
     And the user selects the date "2025-04-20"
     Then a new time registration is added with:
@@ -20,7 +19,6 @@ Feature: Add time registration
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
     And that the project has an activity named "Activity 1" which is set as finalized
-    When the user selects the activity "Activity 1"
-    And the user tries to add a time registration
+    When the user starts a new time registration
     Then the time registration is not created
     And the error message "The activity is set as finalized: time registrations can't be added." is given

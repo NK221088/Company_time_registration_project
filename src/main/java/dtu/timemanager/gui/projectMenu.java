@@ -448,7 +448,11 @@ public class projectMenu {
         Label idLabel = new Label("Project ID: " + projectReport.getProjectID());
 
         // Display project ID (non-editable)
-        Label projectLeadLabel = new Label("Project lead: " + projectReport.getProjectLead());
+        Object projectLead = projectReport.getProjectLead();
+        if (projectLead == null) {
+            projectLead = "";
+        }
+        Label projectLeadLabel = new Label("Project lead: " + projectLead);
         setupEditableProjectLead(projectLeadLabel, selectedProject);
 
         // Display interval (editable)
@@ -775,7 +779,7 @@ public class projectMenu {
                             reportText.append("   Assigned Users: None\n");
                         }
                         // Get all contributing users
-                        ArrayList<User> contributedUsers = activity.getWorkingUsers();
+                        ArrayList<User> contributedUsers = activity.getContributingUsers();
                         if (contributedUsers != null && !contributedUsers.isEmpty()) {
                             reportText.append("   Contributing Users: ");
                             for (int j = 0; j < contributedUsers.size(); j++) {

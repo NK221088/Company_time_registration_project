@@ -1,6 +1,5 @@
 package dtu.timemanager.domain;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,23 +31,18 @@ public class ProjectReport {
     }
 
     public Map<Activity, Double> getWorkedHours() {
-        return this.activities.stream()
-                .collect(Collectors.toMap(Function.identity(), Activity::getWorkedHours));
+        return this.activities.stream().collect(Collectors.toMap(Function.identity(), Activity::getWorkedHours));
     }
     public Map<Activity, Double> getExpectedHours() {
-        return this.activities.stream()
-                .collect(Collectors.toMap(Function.identity(), Activity::getExpectedWorkHours));
+        return this.activities.stream().collect(Collectors.toMap(Function.identity(), Activity::getExpectedWorkHours));
     }
     public Map<Activity, List<User>> getAssignedUsers() {
-        return this.activities.stream()
-                .collect(Collectors.toMap(Function.identity(), Activity::getAssignedUsers));
+        return this.activities.stream().collect(Collectors.toMap(Function.identity(), Activity::getAssignedUsers));
     }
     public Map<Activity, List<User>> getContributingEmployees() {
-        return this.activities.stream()
-                .collect(Collectors.toMap(Function.identity(), Activity::getWorkingUsers));
+        return this.activities.stream().collect(Collectors.toMap(Function.identity(), Activity::getContributingUsers));
     }
     public Map<Activity, String> getActivityIntervals() {
-        return this.activities.stream()
-                .collect(Collectors.toMap(Function.identity(), Activity::getTimeInterval));
+        return this.activities.stream().collect(Collectors.toMap(Function.identity(), Activity::getTimeInterval));
     }
 }

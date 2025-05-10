@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 public class User {
-    private String user_initials;
-    private Map<Activity, List<TimeRegistration>> activity_registrations = new HashMap<Activity, List<TimeRegistration>>();
+    private String userInitials;
+    private Map<Activity, List<TimeRegistration>> activityRegistrations = new HashMap<Activity, List<TimeRegistration>>();
     private Integer activityCount = 0;
 
     public User(String userInitials) {
-        this.user_initials = userInitials;
+        this.userInitials = userInitials;
     }
 
     public String getUserInitials() {
-        return this.user_initials;
+        return this.userInitials;
     }
 
     public Integer getActivityCount() {
@@ -23,25 +23,24 @@ public class User {
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
-
         Activity a = timeRegistration.getRegisteredActivity();
-        List<TimeRegistration> activity_value = activity_registrations.get(a);
+        List<TimeRegistration> activity_value = activityRegistrations.get(a);
         if (activity_value != null) {
             activity_value.add(timeRegistration);
         } else {
             ArrayList<TimeRegistration> timeReg = new ArrayList<>();
             timeReg.add(timeRegistration);
-            activity_registrations.put(a, timeReg);
+            activityRegistrations.put(a, timeReg);
         }
-        a.addWorkingUser(timeRegistration.getRegisteredUser());
+        a.addContributingUser(timeRegistration.getRegisteredUser());
     }
 
     public Map<Activity, List<TimeRegistration>> getActivityRegistrations() {
-        return activity_registrations;
+        return activityRegistrations;
     }
 
     public String toString() {
-        return user_initials;
+        return userInitials;
     }
 
     public void incrementActivityCount() {

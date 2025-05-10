@@ -9,7 +9,7 @@ public class Activity {
 
     private String activityName;
     private ArrayList<User> assignedUsers = new ArrayList<>();
-    private ArrayList<User> workingUsers = new ArrayList<>();
+    private ArrayList<User> contributingUsers = new ArrayList<>();
     private double expectedWorkHours;
     private LocalDate activityStartTime;
     private LocalDate activityEndTime;
@@ -24,7 +24,7 @@ public class Activity {
 
     public double getWorkedHours() {
         double workedHours = 0.0;
-        for (User user : getWorkingUsers()) {
+        for (User user : getContributingUsers()) {
             for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {
                 workedHours += timeReg.getRegisteredHours();
             }
@@ -39,7 +39,7 @@ public class Activity {
         Map<String,Object> info = new HashMap();
         info.put("Name", getActivityName());
         info.put("Assigned employees", getAssignedUsers());
-        info.put("Contributing employees", getWorkingUsers());
+        info.put("Contributing employees", getContributingUsers());
         info.put("ExpectedWorkHours", getExpectedWorkHours());
         info.put("WorkedHours", getWorkedHours());
         info.put("Time interval", getTimeInterval());
@@ -68,9 +68,9 @@ public class Activity {
         }
     }
 
-    public void addWorkingUser(User user) {
-        if (!workingUsers.contains(user)) {
-            workingUsers.add(user);
+    public void addContributingUser(User user) {
+        if (!contributingUsers.contains(user)) {
+            contributingUsers.add(user);
         }
     }
     public boolean equals(Object obj) {
@@ -80,7 +80,7 @@ public class Activity {
         return activityName.equals(activity.getActivityName());
     }
 
-    public ArrayList<User> getWorkingUsers() { return this.workingUsers; }
+    public ArrayList<User> getContributingUsers() { return this.contributingUsers; }
 
     public String toString() {
         return activityName;

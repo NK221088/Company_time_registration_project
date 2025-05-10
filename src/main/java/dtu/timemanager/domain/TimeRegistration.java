@@ -10,6 +10,10 @@ public class TimeRegistration {
     private double registeredHours;
     private LocalDate registeredDate;
 
+    public TimeRegistration(User user) throws Exception {
+        registeredUser = user;
+    }
+
     public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) throws Exception {
         this.registeredUser = registeredUser;
         this.registeredActivity = registeredActivity;
@@ -41,15 +45,18 @@ public class TimeRegistration {
         List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
 
         if (this.registeredUser != null && this.registeredUser != registeredUser && actRegList.size() <= 1) {
-            this.registeredActivity.getWorkingUsers().remove(this.registeredUser);
+            this.registeredActivity.getContributingUsers().remove(this.registeredUser);
             this.registeredUser = registeredUser;
 
         } else { this.registeredUser = registeredUser;}
 
     }
 
-    public void setRegisteredActivity(Activity registeredActivity) {
+    public void setRegisteredActivity(Activity registeredActivity) throws Exception {
         this.registeredActivity = registeredActivity;
+        if (this.registeredActivity.getFinalized()) {
+            throw new Exception("The activity is set as finalized: Time registrations can't be added.");
+        }
     }
     public void setRegisteredHours(double registeredHours) {
         this.registeredHours = registeredHours;

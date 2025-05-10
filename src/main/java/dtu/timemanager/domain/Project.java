@@ -76,9 +76,14 @@ public class Project {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Project project = (Project) obj;
-        return getProjectName().equals(project.getProjectName());
+        if (obj == null) return false;
+        if (obj instanceof Project project) {
+            return getProjectName().equals(project.getProjectName());
+        }
+        if (obj instanceof String) {
+            return getProjectName().equals(obj);
+        }
+        return false;
     }
 
     public Activity getActivityFromName(String activityName) {

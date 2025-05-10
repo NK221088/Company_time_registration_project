@@ -82,10 +82,17 @@ public class TimeManager {
         return IProjectService.getProjectCount();
     }
 
-    public boolean projectExists(Project project) {
-
-        return IProjectService.projectExists(project);
+    public boolean projectExists(Project project2) {
+        for (Project project1 : IProjectService.getProjects()) {
+            if (project1.getProjectName().equals(project2.getProjectName())) {
+                return true;
+            }
+        }
+        return false;
+//        return IProjectService.projectExists(project);
     }
+
+
     public boolean projectExists(String projectName) {
         return IProjectService.projectExists(projectName);
     }

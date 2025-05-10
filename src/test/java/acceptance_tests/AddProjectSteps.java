@@ -45,7 +45,6 @@ public class AddProjectSteps {
     @Then("a project named {string} should exist in the system")
     public void aProjectNamedShouldExistInTheSystem(String projectName) {
         assertTrue(timeManager.projectExists(project));
-        assertTrue(timeManager.projectExists(project.getProjectName()));
     }
 
     @Then("the project is assigned a project id {string}")

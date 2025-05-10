@@ -497,7 +497,7 @@
                 for (Activity activity : project.getActivities()) {
                     // Check if user is assigned to or working on this activity
                     boolean isUserInvolved = (activity.getAssignedUsers() != null && activity.getAssignedUsers().contains(currentUser)) ||
-                            (activity.getWorkingUsers() != null && activity.getWorkingUsers().contains(currentUser));
+                            (activity.getContributingUsers() != null && activity.getContributingUsers().contains(currentUser));
 
                     List<TimeRegistration> activityRegistrations = new ArrayList<>();
 
@@ -808,7 +808,7 @@
             List<Activity> assignedActivities = this.timeManager.getProjects().stream()
                     .flatMap(p -> p.getActivities().stream())
                     .filter(a -> a.getAssignedUsers().contains(currentUser)
-                            || a.getWorkingUsers().contains(currentUser))
+                            || a.getContributingUsers().contains(currentUser))
                     .distinct()
                     .toList();
             activityChoiceBox.getItems().addAll(assignedActivities);

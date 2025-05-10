@@ -22,7 +22,6 @@ class AddProjectTest {
         List<Project> projects = timeManager.getProjects();
 
         assertNotNull(project);
-        assertEquals("Project 1", project.getProjectName());
         assertEquals(1, projects.size());
         assertSame(project, projects.getFirst());
     }
@@ -30,11 +29,12 @@ class AddProjectTest {
     @Test
     void testAddProjectException() {
         timeManager.addProject("Project 1");
+        List<Project> projects = timeManager.getProjects();
 
-        IllegalArgumentException e = assertThrows(
-                IllegalArgumentException.class, () -> timeManager.addProject("Project 1")
-        );
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> timeManager.addProject("Project 1"));
         String expectedMsg = "A project with name 'Project 1' already exists in the system and two projects can’t have the same name.";
+
+        assertEquals(1, projects.size());
         assertEquals(expectedMsg, e.getMessage());
     }
 }

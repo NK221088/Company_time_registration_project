@@ -8,7 +8,7 @@ public class IntervalTimeRegistration extends TimeRegistration {
     private String leaveOption;
 
     public IntervalTimeRegistration(User user, String leaveOption, LocalDate startDate, LocalDate endDate) throws Exception {
-        super(user, null, 0.0, LocalDate.now());
+        super(user, null, 0.0, null);
 
         if (endDate.isBefore(startDate)) { throw new IllegalArgumentException("End date must not be before start date"); }
 
