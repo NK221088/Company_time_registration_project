@@ -12,6 +12,7 @@ public class AddUserSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;
     User user;
+    String userInitials;
 
     public AddUserSteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
         this.timeManager = timeManager;
@@ -21,6 +22,7 @@ public class AddUserSteps {
     @When("a new user with initials {string} is added to the system")
     public void aNewUserWithInitialsIsAddedToTheSystem(String userInitials) {
         try {
+            this.userInitials = userInitials;
             this.user = new User(userInitials);
             timeManager.addUser(user);
 
@@ -32,6 +34,8 @@ public class AddUserSteps {
     @Then("the new user is registered in the system")
     public void theNewUserIsRegisteredInTheSystem() {
         assertTrue(timeManager.getUsers().contains(user));
+        assertEquals(userInitials, user.toString());
+        assertFalse(user.equals(null));
     }
     @Then("the new user is not registered in the system again")
     public void theNewUserIsNotRegisteredInTheSystemAgain() {

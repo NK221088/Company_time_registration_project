@@ -1,9 +1,6 @@
 package dtu.timemanager.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class User {
     private String userInitials;
@@ -50,10 +47,12 @@ public class User {
     public void decrementActivityCount() {
     activityCount--;}
 
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        User user = (User) obj;
-        return getUserInitials().equals(user.getUserInitials());
+        if (obj instanceof User) {
+            return Objects.equals(getUserInitials(), ((User) obj).userInitials);
+        } else {
+            return false;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package acceptance_tests;
 
 import dtu.timemanager.domain.*;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -49,10 +50,11 @@ public class AddTimeRegistrationSteps {
     }
 
     @Then("a new time registration is added with:")
-    public void aNewTimeRegistrationIsAddedWith(io.cucumber.datatable.DataTable dataTable) throws Exception {
+    public void aNewTimeRegistrationIsAddedWith(DataTable dataTable) throws Exception {
         assertEquals(this.timeRegistration.getRegisteredActivity().getActivityName(),    dataTable.cell(1, 0));
         assertEquals(Integer.toString((int) this.timeRegistration.getRegisteredHours()), dataTable.cell(1, 1));
         assertEquals(this.timeRegistration.getRegisteredDate().toString(),               dataTable.cell(1, 2));
+        assertTrue(timeManager.getTimeRegistrations().contains(this.timeRegistration));
     }
     @Given("that the project has an activity named {string} which is set as finalized")
     public void thatTheProjectHasAnActivityNamedWhichIsSetAsFinalized(String activityName) throws Exception {
@@ -70,6 +72,20 @@ public class AddTimeRegistrationSteps {
     @Then("the hours worked on the activity is {int}")
     public void theHoursWorkedOnTheActivityIs(Integer workedHours) {
         assertEquals(this.activity.getWorkedHours(), Double.valueOf(workedHours));
+    }
+    @Then("the user {string} is not added to contributing users again")
+    public void theUserIsNotAddedToContributingUsersAgain(String userInitials) {
+        Integer count = 0;
+        for (User user : activity.getContributingUsers()) {
+            if (user.getUserInitials().equals(userInitials)) {
+                count++;
+            }
+        }
+        assertFalse(count > 1);
+    }
+    @Then("the registered date is not changed")
+    public void theRegisteredDateIsNotChanged() {
+        assertEquals(activityHolder.getOldDate(), activityHolder.getTimeRegistration().getRegisteredDate().toString());
     }
 
 }

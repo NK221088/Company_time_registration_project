@@ -16,6 +16,7 @@ public class EditTimeRegistrationSteps {
     private ErrorMessageHolder errorMessage;
     private Activity activity;
     private ActivityHolder activityHolder;
+    Activity oldActivity;
 
     private TimeRegistration timeRegistration;
 
@@ -32,6 +33,7 @@ public class EditTimeRegistrationSteps {
         User user = timeManager.getUserFromInitials(userInitials);
         Activity registeredActivity = activityHolder.getActivity();
         this.timeRegistration = new TimeRegistration(user, registeredActivity, 8, LocalDate.now());
+        activityHolder.setTimeRegistration(timeRegistration);
         assertEquals(user.getActivityRegistrations().get(registeredActivity).size(), numberOfActivities);
     }
     @Given("there are registered {int} work hours on the project")
@@ -69,6 +71,7 @@ public class EditTimeRegistrationSteps {
     @When("the user changes the registered date to {string}")
     public void theUserChangesTheRegisteredDateTo(String newDate) {
         try {
+            activityHolder.setOldDate(timeRegistration.getRegisteredDate().toString());
             timeRegistration.setRegisteredDate(LocalDate.parse(newDate));
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
@@ -78,6 +81,20 @@ public class EditTimeRegistrationSteps {
     public void theUserChangesTheRegisteredHoursTo(Integer newHours) {
         timeRegistration.setRegisteredHours(newHours);
     }
+    @When("the user changes the registered activity on the time registration to {string}")
+    public void theUserChangesTheRegisteredActivityOnTheTimeRegistrationTo(String activityName) throws Exception {
+        Activity newActivity = project.getActivityFromName(activityName);
+        try {
+            this.oldActivity = timeRegistration.getRegisteredActivity();
+            timeRegistration.setRegisteredActivity(newActivity);}
+        catch (Exception e) {
+            this.errorMessage.setErrorMessage(e.getMessage());
+        }
+    }
+    @Then("the registered activity on the time registration is not changed")
+    public void theRegisteredActivityOnTheTimeRegistrationIsNotChanged() {
+        assertEquals(this.oldActivity, this.timeRegistration.getRegisteredActivity());
+    }
     @Then("the registered date is changed to {string}")
     public void theRegisteredDateIsChangedTo(String newDate) {
         assertEquals(timeRegistration.getRegisteredDate().toString(), newDate);
@@ -86,5 +103,10 @@ public class EditTimeRegistrationSteps {
     public void theRegisteredHoursIsChangedTo(Integer newHours) {
         Double registeredHours = timeRegistration.getRegisteredHours();
         assertEquals(registeredHours, newHours, 0.0001);
+    }
+    @Then("the registered activity on the time registration is changed")
+    public void theRegisteredActivityOnTheTimeRegistrationIsChanged() {
+        assertNotEquals(this.oldActivity, this.timeRegistration.getRegisteredActivity());
+
     }
 }

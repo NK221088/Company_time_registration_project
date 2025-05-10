@@ -30,3 +30,22 @@ Feature: Editing already existing time registrations
     When the user changes the registered hours to 5
     Then the registered hours is changed to 5
     And the hours worked on the activity is 5
+
+  Scenario: Try changing the registered activity on a time registration to another activity set as finalized
+    Given the user "huba" is logged in
+    And a project, "Project 1", exists in the system
+    And that the project has an activity named "Activity 1" which is set as in progress
+    And that the project has an activity named "Activity 2" which is set as finalized
+    And the user "huba" has 1 time registration with "Activity 1"
+    When the user changes the registered activity on the time registration to "Activity 2"
+    Then the registered activity on the time registration is not changed
+    And the error message "The activity is set as finalized: Time registrations can't be added." is given
+
+  Scenario: Try changing the registered activity on a time registration to another activity set as in progress
+    Given the user "huba" is logged in
+    And a project, "Project 1", exists in the system
+    And that the project has an activity named "Activity 1" which is set as in progress
+    And the user "huba" has 1 time registration with "Activity 1"
+    And that the project has an activity named "Activity 2" which is set as in progress
+    When the user changes the registered activity on the time registration to "Activity 2"
+    Then the registered activity on the time registration is changed

@@ -72,11 +72,14 @@ public class Activity {
             contributingUsers.add(user);
         }
     }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Activity activity = (Activity) obj;
-        return activityName.equals(activity.getActivityName());
+        if (obj instanceof Activity) {
+            return Objects.equals(getActivityName(), ((Activity) obj).getActivityName());
+        } else {
+            return false;
+        }
     }
 
     public ArrayList<User> getContributingUsers() { return this.contributingUsers; }

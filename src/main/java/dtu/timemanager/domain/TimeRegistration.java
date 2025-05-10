@@ -53,10 +53,9 @@ public class TimeRegistration {
     }
 
     public void setRegisteredActivity(Activity registeredActivity) throws Exception {
-        this.registeredActivity = registeredActivity;
-        if (this.registeredActivity.getFinalized()) {
-            throw new Exception("The activity is set as finalized: Time registrations can't be added.");
-        }
+        if (!registeredActivity.getFinalized()) {
+            this.registeredActivity = registeredActivity;
+        } else {throw new Exception("The activity is set as finalized: Time registrations can't be added.");}
     }
     public void setRegisteredHours(double registeredHours) {
         this.registeredHours = registeredHours;

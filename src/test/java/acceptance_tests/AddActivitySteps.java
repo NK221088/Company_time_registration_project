@@ -37,6 +37,8 @@ public class AddActivitySteps {
         List<Activity> activities = project.getActivities();
         assertTrue(activities.stream().map(Activity::getActivityName).anyMatch(name -> name.equals(activityName)));
         assertEquals(activityName, activity.toString());
+        assertFalse(activity.equals(null));
+
     }
 
     @Then("the activity should not be added to the project")
