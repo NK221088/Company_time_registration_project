@@ -31,18 +31,13 @@ public class IntervalTimeRegistration extends TimeRegistration {
         return endDate;
     }
 
-    @Override
-    public LocalDate getRegisteredDate() {
-        return endDate;
-    }
-
     public String getLeaveOption() {
         return leaveOption;
     }
 
     public String getTimeInterval() {
-        String p1 = getStartDate() != null ? getStartDate().toString() : "";
-        String p2 = getEndDate() != null ? getEndDate().toString() : "";
+        String p1 = getStartDate().toString();
+        String p2 = getEndDate().toString();
         return p1 + " - " + p2;
     }
 }
