@@ -21,6 +21,7 @@ Feature: Editing already existing time registrations
     And the user "isak" is registered
     When the user changes the registered user on the time registration to "isak"
     Then the registered user on the time registration is "isak"
+    And the user "huba" has contributed to the activity
     And the user "isak" has contributed to the activity
 
   Scenario: Successful edit of registered date on time registration

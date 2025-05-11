@@ -39,19 +39,19 @@ public class TimeRegistration {
     public void setRegisteredUser(User registeredUser) {
         if (this instanceof IntervalTimeRegistration) {
             this.registeredUser = registeredUser;
-        } else {
-            Map<Activity, List<TimeRegistration>> registrationList = this.registeredUser.getActivityRegistrations();
-            List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
-            if (this.registeredUser != null && this.registeredUser != registeredUser) {
-                if (actRegList.size() <= 1) {
-                    this.registeredActivity.getContributingUsers().remove(this.registeredUser);
-                    this.registeredUser = registeredUser;
-                    this.registeredActivity.addContributingUser(this.registeredUser);
-                }
-            } else {
-                this.registeredUser = registeredUser;
-            }
+            return;
         }
+
+        Map<Activity, List<TimeRegistration>> registrationList = this.registeredUser.getActivityRegistrations();
+        List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
+
+        if (this.registeredUser != registeredUser) { // IF CHANGE TO NEW USER
+            if (actRegList.size() < 2) {
+                this.registeredActivity.getContributingUsers().remove(this.registeredUser);
+            }
+            this.registeredActivity.addContributingUser(registeredUser);
+        }
+        this.registeredUser = registeredUser;
     }
 
     public void setRegisteredActivity(Activity registeredActivity) throws Exception {
