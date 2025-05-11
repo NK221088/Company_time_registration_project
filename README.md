@@ -20,6 +20,6 @@ You can log in with the following predefined users:
 ---
 ### Running JUnit tests (Whitebox) or Cucumber tests
 
-The Whitebox tests are located at `/src/test/java/whitebox_tests`
-The Cucumber features are located at `/features`
-And the Cucumber Step implementations are located at `/src/test/java/acceptance_tests`
+The Whitebox tests are located at `/src/test/java/whitebox_tests`  
+The Cucumber features are located at `/features`  
+And the Cucumber Step implementations are located at `/src/test/java/acceptance_tests`  
