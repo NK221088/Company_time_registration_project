@@ -48,13 +48,19 @@ public class Activity {
     }
 
     public void assignUser(User user) {
+        assert user != null && getAssignedUsers() != null && getActivityName() != null && user.getActivityCount() >= 0 && user.getActivityCount() <= 20 : "precondition";
+        int activityCountAtPre = user.getActivityCount();
         if (user.getActivityCount() < 20){ // 1
             if(assignedUsers.contains(user)){ // 2
+                assert (assignedUsers.contains(user) && user.getActivityCount() == activityCountAtPre);
                 throw new RuntimeException("'" + user.getUserInitials() + "' is already assigned to the activity '" + getActivityName() + "'"); // 3
             }
             assignedUsers.add(user); // 4
             user.incrementActivityCount(); // 5
+            assert (assignedUsers.contains(user) &&
+                    user.getActivityCount() == activityCountAtPre +1);
         } else {
+            assert (!assignedUsers.contains(user) && user.getActivityCount() == activityCountAtPre && user.getActivityCount() == 20);
             throw new RuntimeException("'" + user.getUserInitials() + "' is already assigned to the maximum number of 20 activities"); // 6
         }
     }
