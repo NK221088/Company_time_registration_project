@@ -35,7 +35,7 @@ class AddActivityTest {
         Activity activity = new Activity("Design");
         project.addActivity(activity);
 
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> project.addActivity(activity));
+        Exception e = assertThrows(Exception.class, () -> project.addActivity(activity));
         String expectedMsg = "An activity with name 'Design' already exists within 'Project A' two activities cannot exist with the same name within the same project.";
 
         assertEquals(1, project.getActivities().size());

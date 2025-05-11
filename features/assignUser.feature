@@ -23,7 +23,7 @@ Feature: Assign activity
     And the user "isak" has 20 assigned activities
     When the user "huba" assigns the user "isak" to the activity "Activity 1" in "Project 1"
     Then the user "isak" isn't assigned to "Activity 1" in "Project 1"
-    And the error message "isak is already assigned to the maximum number of 20 activities" is given
+    And the error message "'isak' is already assigned to the maximum number of 20 activities" is given
 
   Scenario: Cannot assign someone to the same activity twice
     Given the user "huba" is logged in
@@ -32,4 +32,4 @@ Feature: Assign activity
     And the user "bria" has 1 assigned activity, "Activity 1" in "Project 1"
     When the user "huba" assigns the user "bria" to the activity "Activity 1" in "Project 1"
     Then the user "bria" isn't assigned to "Activity 1" in "Project 1" again
-    Then the error message "bria is already assigned to the activity Activity 1" is given
+    Then the error message "'bria' is already assigned to the activity 'Activity 1'" is given
