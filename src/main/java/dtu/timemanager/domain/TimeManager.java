@@ -1,5 +1,5 @@
 package dtu.timemanager.domain;
-import dtu.timemanager.services.projectService;
+import dtu.timemanager.services.IProjectService;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ public class TimeManager {
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
-    private projectService IProjectService = new projectService();
+    private IProjectService projectService = new IProjectService();
 
     public TimeManager() {}
 
@@ -64,23 +64,23 @@ public class TimeManager {
     }
 
     public Project addProject(String projectName) {
-        return IProjectService.addProject(projectName);
+        return projectService.addProject(projectName);
     }
 
     public List<Project> getProjects() {
-        return IProjectService.getProjects();
+        return projectService.getProjects();
     }
 
     public int getProjectCount() {
-        return IProjectService.getProjectCount();
+        return projectService.getProjectCount();
     }
 
     public boolean projectExists(Project project2) {
-        return IProjectService.getProjects().contains(project2);
+        return projectService.getProjects().contains(project2);
     }
 
     public ProjectReport getProjectReport(Project project) {
-        return IProjectService.getProjectReport(project);
+        return projectService.getProjectReport(project);
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
@@ -101,6 +101,6 @@ public class TimeManager {
     }
 
     public void renameProject(Project project, String newName) {
-        IProjectService.renameProject(project, newName);
+        projectService.renameProject(project, newName);
     }
 }

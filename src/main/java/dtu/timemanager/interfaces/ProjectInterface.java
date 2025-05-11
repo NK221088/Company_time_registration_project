@@ -4,10 +4,9 @@ import dtu.timemanager.domain.User;
 import dtu.timemanager.domain.ProjectReport;
 
 import java.util.List;
-import java.util.Map;
 
 
-public interface projectInterface {
+public interface ProjectInterface {
     Project addProject(String projectName);
     List<Project> getProjects();
     Project getProjectFromName(String projectName);

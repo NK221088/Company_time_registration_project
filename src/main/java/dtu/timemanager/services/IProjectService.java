@@ -1,12 +1,12 @@
 package dtu.timemanager.services;
 import dtu.timemanager.domain.ProjectReport;
 import dtu.timemanager.domain.User;
-import dtu.timemanager.interfaces.projectInterface;
+import dtu.timemanager.interfaces.ProjectInterface;
 import dtu.timemanager.domain.Project;
 
 import java.util.*;
 
-public class projectService implements projectInterface {
+public class IProjectService implements ProjectInterface {
     private final List<Project> projects = new ArrayList<>();
     private int projectCount = 0;
 
