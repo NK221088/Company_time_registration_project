@@ -42,10 +42,12 @@ public class TimeRegistration {
         } else {
             Map<Activity, List<TimeRegistration>> registrationList = this.registeredUser.getActivityRegistrations();
             List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
-            if (this.registeredUser != null && this.registeredUser != registeredUser && actRegList.size() <= 1) {
-                this.registeredActivity.getContributingUsers().remove(this.registeredUser);
-                this.registeredUser = registeredUser;
-                this.registeredActivity.addContributingUser(this.registeredUser);
+            if (this.registeredUser != null && this.registeredUser != registeredUser) {
+                if (actRegList.size() <= 1) {
+                    this.registeredActivity.getContributingUsers().remove(this.registeredUser);
+                    this.registeredUser = registeredUser;
+                    this.registeredActivity.addContributingUser(this.registeredUser);
+                }
             } else {
                 this.registeredUser = registeredUser;
             }

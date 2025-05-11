@@ -2,7 +2,7 @@ Feature: Editing already existing time registrations
   Description: A user edit a time registration in the system
   Actors: User
 
-  Scenario: Successful edit of user on time registration
+  Scenario: Successful edit of user with 1 time registration on activity
     Given the user "huba" is logged in
     And a project, "Project 1", exists in the system
     And that the project has an activity named "Activity 1" which is set as in progress
@@ -11,6 +11,16 @@ Feature: Editing already existing time registrations
     When the user changes the registered user on the time registration to "isak"
     Then the registered user on the time registration is "isak"
     And the user "huba" has not contributed to the activity
+    And the user "isak" has contributed to the activity
+
+  Scenario: Successful edit of user with 2 time registration on activity
+    Given the user "huba" is logged in
+    And a project, "Project 1", exists in the system
+    And that the project has an activity named "Activity 1" which is set as in progress
+    And the user "huba" has 2 time registration with "Activity 1"
+    And the user "isak" is registered
+    When the user changes the registered user on the time registration to "isak"
+    Then the registered user on the time registration is "isak"
     And the user "isak" has contributed to the activity
 
   Scenario: Successful edit of registered date on time registration

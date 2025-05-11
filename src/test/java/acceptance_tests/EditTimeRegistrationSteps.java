@@ -34,6 +34,9 @@ public class EditTimeRegistrationSteps {
         Activity registeredActivity = activityHolder.getActivity();
         this.timeRegistration = new TimeRegistration(user, registeredActivity, 8, LocalDate.now());
         activityHolder.setTimeRegistration(timeRegistration);
+        for (int i = 0; i < numberOfActivities-1; i++) {
+            TimeRegistration newTimeRegistration = new TimeRegistration(user, registeredActivity, 8, LocalDate.now());
+        }
         assertEquals(user.getActivityRegistrations().get(registeredActivity).size(), numberOfActivities);
     }
     @Given("there are registered {int} work hours on the project")
