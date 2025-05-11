@@ -24,13 +24,20 @@ public class IProjectService implements ProjectInterface {
 
     @Override
     public Project addProject(String projectName) {
+        assert projectName != null && getProjects() != null && getProjectCount() == projects.size();
+        List<Project> projectsPre = getProjects();
+        int projectCountPre = getProjectCount();
+
         Project project = new Project(projectName);
         if (!projectExists(project)) {
             String id = formatID(++this.projectCount);
             project.setProjectID(id);
             projects.add(project);
+
+            assert !projectsPre.contains(project) && projects.contains(project) && getProjectCount() == projectCountPre + 1 && project.getProjectID().equals(formatID(getProjectCount()));
             return project;
         } else {
+            assert projectsPre.contains(project) && projects.equals(projectsPre) && getProjectCount() == projectCountPre;
             throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
     }
@@ -41,42 +48,14 @@ public class IProjectService implements ProjectInterface {
     }
 
     @Override
-    public Project getProjectFromName(String projectName) {
-        return projects.stream()
-                .filter(project -> project.getProjectName().equals(projectName))
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Override
     public boolean projectExists(Project project) {
         return projects.contains(project);
-    }
-
-    @Override
-    public boolean projectExists(String projectName) {
-        return projects.contains(projectName);
     }
 
     @Override
     public ProjectReport getProjectReport(Project project) {
         return new ProjectReport(project);
     }
-
-    @Override
-    public void assignProjectLead(Project project, User user) {
-        project.setProjectLead(user);
-    }
-
-    @Override
-    public void incProjectCount() {
-        ++projectCount;
-    }
-
-//    @Override
-//    public void decProjectCount() {
-//        projectCount--;
-//    }
 
     @Override
     public int getProjectCount() {return projectCount;}

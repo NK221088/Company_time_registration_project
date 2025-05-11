@@ -75,8 +75,8 @@ public class TimeManager {
         return projectService.getProjectCount();
     }
 
-    public boolean projectExists(Project project2) {
-        return projectService.getProjects().contains(project2);
+    public boolean projectExists(Project project) {
+        return projectService.getProjects().contains(project);
     }
 
     public ProjectReport getProjectReport(Project project) {
