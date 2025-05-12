@@ -1,21 +1,30 @@
 package dtu.timemanager.domain;
 
+import dtu.timemanager.app.ActivityRepository;
+import dtu.timemanager.app.ProjectRepository;
+import dtu.timemanager.app.TimeRegistrationRepository;
+import dtu.timemanager.app.UserRepository;
 import dtu.timemanager.persistence.SqliteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TimeManager {
-    private SqliteRepository repository;
     private User current_user;
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
+    private ActivityRepository activityRepository;
+    private ProjectRepository projectRepository;
+    private TimeRegistrationRepository timeRegistrationRepository;
+    private UserRepository userRepository;
 
-    public TimeManager(SqliteRepository repository) {
-        this.repository = repository;
+    public TimeManager(ActivityRepository activityRepository, ProjectRepository projectRepository, TimeRegistrationRepository timeRegistrationRepository, UserRepository userRepository) {
+        this.activityRepository = activityRepository;
+        this.projectRepository = projectRepository;
+        this.timeRegistrationRepository = timeRegistrationRepository;
+        this.userRepository = userRepository;
     }
-
     public void assignUser(Activity activity, User user) {
         activity.assignUser(user);
     }
@@ -29,7 +38,7 @@ public class TimeManager {
     }
 
     public void addUser(User user) throws Exception {
-        repository.addUser(user);
+        userRepository.addUser(user);
 //        String initials = user.getUserInitials();
 //
 //        if (!initials.matches("[a-zA-Z]{4}")) {
@@ -44,7 +53,7 @@ public class TimeManager {
     }
 
     public User getUserFromInitials(String user_initials) {
-        return repository.getUserByUsername(user_initials);
+        return userRepository.getUserByUsername(user_initials);
 //        try {
 //            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
 //        } catch (Exception e) {
@@ -52,7 +61,7 @@ public class TimeManager {
 //        }
     }
 
-    public List<User> getUsers() { return repository.getUsers(); }
+    public List<User> getUsers() { return userRepository.getUsers(); }
 
     public User getCurrentUser() { return current_user; }
 
@@ -73,7 +82,7 @@ public class TimeManager {
         if (!projectExists(project)) {
             String id = formatID(++this.projectCount);
             project.setProjectID(id);
-            repository.addProject(projectName);
+            projectRepository.addProject(projectName);
             return project;
         } else {
             throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
@@ -81,13 +90,13 @@ public class TimeManager {
     }
 
     public List<Project> getProjects() {
-        return new ArrayList<>(repository.getProjects());
+        return new ArrayList<>(projectRepository.getProjects());
     }
 
     public int getProjectCount() {return projectCount;}
 
     public boolean projectExists(Project project) {
-        return repository.projectExists(project);
+        return projectRepository.projectExists(project);
     }
 
     public ProjectReport getProjectReport(Project project) {
@@ -95,7 +104,7 @@ public class TimeManager {
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) throws Exception {
-        repository.addTimeRegistration(timeRegistration.getRegisteredUser(), timeRegistration.getRegisteredActivity(), timeRegistration.getRegisteredHours(), timeRegistration.getRegisteredDate());
+        timeRegistrationRepository.addTimeRegistration(timeRegistration.getRegisteredUser(), timeRegistration.getRegisteredActivity(), timeRegistration.getRegisteredHours(), timeRegistration.getRegisteredDate());
     }
 
     public List<TimeRegistration> getTimeRegistrations() {
@@ -103,7 +112,7 @@ public class TimeManager {
     }
 
     public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) throws Exception {
-        repository.addIntervalTimeRegistration(intervalTimeRegistration.getRegisteredUser(), intervalTimeRegistration.getLeaveOption(), intervalTimeRegistration.getStartDate(), intervalTimeRegistration.getEndDate());
+        timeRegistrationRepository.addIntervalTimeRegistration(intervalTimeRegistration.getRegisteredUser(), intervalTimeRegistration.getLeaveOption(), intervalTimeRegistration.getStartDate(), intervalTimeRegistration.getEndDate());
     }
 
     public List<IntervalTimeRegistration> getIntervalTimeRegistrations() {
@@ -111,7 +120,7 @@ public class TimeManager {
     }
 
     public void renameProject(Project project, String newName) throws IllegalArgumentException {
-        for (Project p : repository.getProjects()) {
+        for (Project p : projectRepository.getProjects()) {
             if (p.getProjectName().equals(newName)) {
                 throw new RuntimeException("A project with name " + newName + " already exists and two projects cannot exist with the same name.");
             }
@@ -121,5 +130,13 @@ public class TimeManager {
 
     public void assignProjectLead(Project project, User user) {
         project.setProjectLead(user);
+    }
+
+    public void clearDatabase() {
+        activityRepository.clearActivityDataBase();
+        projectRepository.clearProjectDataBase();
+        timeRegistrationRepository.clearTimeRegistrationDataBase();
+        userRepository.clearUserDatabase();
+
     }
 }

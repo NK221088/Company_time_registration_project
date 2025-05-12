@@ -26,7 +26,8 @@ public class TimeManagerProvider {
 
     public static TimeManager getInstance() throws Exception {
         if (instance == null) {
-            instance = new TimeManager(new SqliteRepository(true));
+            SqliteRepository sqliteRepository = new SqliteRepository(false);
+            instance = new TimeManager(sqliteRepository, sqliteRepository, sqliteRepository, sqliteRepository);
             appInitialize(instance);
         }
         return instance;

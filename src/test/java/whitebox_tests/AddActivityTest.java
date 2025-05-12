@@ -15,7 +15,8 @@ class AddActivityTest {
 
     @BeforeEach
     void setUp() {
-        this.timeManager = new TimeManager(new SqliteRepository(false));
+        SqliteRepository sqliteRepository = new SqliteRepository(false);
+        this.timeManager = new TimeManager(sqliteRepository, sqliteRepository, sqliteRepository, sqliteRepository);
     }
 
     @Test

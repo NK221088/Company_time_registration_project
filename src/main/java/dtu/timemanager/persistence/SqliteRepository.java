@@ -87,6 +87,11 @@ public class SqliteRepository implements
         });
     }
 
+    @Override
+    public void clearProjectDataBase() {
+
+    }
+
     // UserRepository Implementation
     @Override
     public void addUser(User user) {
@@ -107,6 +112,11 @@ public class SqliteRepository implements
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Override
+    public void clearUserDatabase() {
+
     }
 
     // ActivityRepository Implementation
@@ -163,6 +173,11 @@ public class SqliteRepository implements
         });
     }
 
+    @Override
+    public void clearActivityDataBase() {
+
+    }
+
     // TimeRegistrationRepository Implementation
     @Override
     public TimeRegistration addTimeRegistration(User user, Activity activity, double hours, LocalDate date) throws Exception {
@@ -208,6 +223,11 @@ public class SqliteRepository implements
     @Override
     public void updateTimeRegistration(TimeRegistration registration) {
         withinTransaction(() -> em.merge(registration));
+    }
+
+    @Override
+    public void clearTimeRegistrationDataBase() {
+
     }
 
     // Helper method for transaction management

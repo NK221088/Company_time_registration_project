@@ -19,7 +19,8 @@ public class AssignUserTest {
 
     @BeforeEach
     void setUp() {
-        this.timeManager = new TimeManager(new SqliteRepository(false));
+        SqliteRepository sqLiteRepository = new SqliteRepository(false);
+        this.timeManager = new TimeManager(sqLiteRepository, sqLiteRepository, sqLiteRepository, sqLiteRepository);
     }
 
     @Test

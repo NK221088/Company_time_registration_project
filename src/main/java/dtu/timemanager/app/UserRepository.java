@@ -8,4 +8,6 @@ public interface UserRepository {
     void addUser(User user);
     List<User> getUsers();
     User getUserByUsername(String username);
+
+    void clearUserDatabase();
 }

@@ -11,4 +11,6 @@ public interface ActivityRepository {
     Activity getActivityByName(Project project, String activityName);
     void setActivityFinalized(Activity activity, boolean finalized);
     void renameActivity(Activity activity, String newName) throws Exception;
+
+    void clearActivityDataBase();
 }
