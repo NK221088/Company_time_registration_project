@@ -1,18 +1,23 @@
 package dtu.timemanager.domain;
 
-import java.util.ArrayList;
+import dtu.timemanager.persistence.SqliteRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TimeManager {
     private User currentUser;
     private List<Project> projects = new ArrayList<>();
     private List<User> users = new ArrayList<>();
+    private SqliteRepository repository;
+    private User current_user;
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
 
-    public TimeManager() {}
+    public TimeManager(SqliteRepository repository) {
+        this.repository = repository;
+    }
 
     public void assignUser(Activity activity, User user) {
         activity.assignUser(user);
@@ -28,29 +33,31 @@ public class TimeManager {
 
     // Nikolai Kuhl
     public void addUser(User user) throws Exception {
-        String initials = user.getUserInitials();
-
-        if (!initials.matches("[a-zA-Z]{4}")) {
-            throw new Exception("The user initials must be 4 letters.");
-        }
-
-        if (!users.contains(user)) {
-            users.add(user);
-        } else {
-            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
-        }
+        repository.addUser(user);
+//        String initials = user.getUserInitials();
+//
+//        if (!initials.matches("[a-zA-Z]{4}")) {
+//            throw new Exception("The user initials must be 4 letters.");
+//        }
+//
+//        if (!users.contains(user)) {
+//            users.add(user);
+//        } else {
+//            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
+//        }
     }
 
     // Alexander Wittrup
     public User getUserFromInitials(String user_initials) {
-        try {
-            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
-        } catch (Exception e) {
-            throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
-        }
+        return repository.getUserByUsername(user_initials);
+//        try {
+//            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
+//        } catch (Exception e) {
+//            throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
+//        }
     }
 
-    public List<User> getUsers() { return users; }
+    public List<User> getUsers() { return repository.getUsers(); }
 
     public User getCurrentUser() { return currentUser; }
 
@@ -77,7 +84,8 @@ public class TimeManager {
         if (!projectExists(project)) {
             String id = formatID(++this.projectCount);
             project.setProjectID(id);
-            projects.add(project);
+            repository.addProject(projectName);
+//            projects.add(project);
 
             assert !projectsPre.contains(project)
                     && projects.contains(project)
@@ -93,7 +101,7 @@ public class TimeManager {
     }
 
     public List<Project> getProjects() {
-        return projects;
+        return new ArrayList<>(repository.getProjects());
     }
 
     public int getProjectCount() {
@@ -101,23 +109,23 @@ public class TimeManager {
     }
 
     public boolean projectExists(Project project) {
-        return getProjects().contains(project);
+        return repository.projectExists(project);
     }
 
     public ProjectReport getProjectReport(Project project) {
         return new ProjectReport(project);
     }
 
-    public void addTimeRegistration(TimeRegistration timeRegistration) {
-        timeRegistrations.add(timeRegistration);
+    public void addTimeRegistration(TimeRegistration timeRegistration) throws Exception {
+        repository.addTimeRegistration(timeRegistration.getRegisteredUser(), timeRegistration.getRegisteredActivity(), timeRegistration.getRegisteredHours(), timeRegistration.getRegisteredDate());
     }
 
     public List<TimeRegistration> getTimeRegistrations() {
         return timeRegistrations;
     }
 
-    public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {
-        intervalTimeRegistrations.add(intervalTimeRegistration);
+    public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) throws Exception {
+        repository.addIntervalTimeRegistration(intervalTimeRegistration.getRegisteredUser(), intervalTimeRegistration.getLeaveOption(), intervalTimeRegistration.getStartDate(), intervalTimeRegistration.getEndDate());
     }
 
     public List<IntervalTimeRegistration> getIntervalTimeRegistrations() {
@@ -126,7 +134,7 @@ public class TimeManager {
 
     // Nikolai Kuhl
     public void renameProject(Project project, String newName) throws IllegalArgumentException {
-        for (Project p : projects) {
+        for (Project p : repository.getProjects()) {
             if (p.getProjectName().equals(newName)) {
                 throw new RuntimeException("A project with name " + newName + " already exists and two projects cannot exist with the same name.");
             }

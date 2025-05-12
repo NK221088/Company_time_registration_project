@@ -4,6 +4,7 @@ import dtu.timemanager.domain.Activity;
 import dtu.timemanager.domain.Project;
 import dtu.timemanager.domain.TimeManager;
 import dtu.timemanager.domain.User;
+import dtu.timemanager.persistence.SqliteRepository;
 
 public class TimeManagerProvider {
 
@@ -25,7 +26,7 @@ public class TimeManagerProvider {
 
     public static TimeManager getInstance() throws Exception {
         if (instance == null) {
-            instance = new TimeManager();
+            instance = new TimeManager(new SqliteRepository(true));
             appInitialize(instance);
         }
         return instance;

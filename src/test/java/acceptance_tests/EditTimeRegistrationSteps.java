@@ -83,7 +83,7 @@ public class EditTimeRegistrationSteps {
         }
     }
     @When("the user changes the registered hours to {int}")
-    public void theUserChangesTheRegisteredHoursTo(Integer newHours) {
+    public void theUserChangesTheRegisteredHoursTo(Integer newHours) throws Exception {
         timeRegistration.setRegisteredHours(newHours);
     }
     @When("the user changes the registered activity on the time registration to {string}")

@@ -1,42 +1,87 @@
 package dtu.timemanager.domain;
 
+import jakarta.persistence.Entity;
+
+import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.*;
 
 // Nikolai Kuhl?
+@Entity
+@Table(name = "Activity")
 public class Activity {
+    @Id
     private String activityName;
-    private ArrayList<User> assignedUsers = new ArrayList<>();
-    private ArrayList<User> contributingUsers = new ArrayList<>();
+
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "activity_assigned_users",
+            joinColumns = @JoinColumn(name = "activity_name"),
+            inverseJoinColumns = @JoinColumn(name = "user_initials")
+    )
+    private List<User> assignedUsers = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "activity_contributing_users",
+            joinColumns = @JoinColumn(name = "activity_name"),
+            inverseJoinColumns = @JoinColumn(name = "user_initials")
+    )
+    private List<User> contributingUsers = new ArrayList<>();
+
     private double expectedWorkHours;
+
+    @Column(name = "start_time")
     private LocalDate activityStartTime;
+
+    @Column(name = "end_time")
     private LocalDate activityEndTime;
+
     private Boolean isFinalized = false;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @OneToMany(mappedBy = "registeredActivity", fetch = FetchType.LAZY)
+    private List<TimeRegistration> timeRegistrations = new ArrayList<>();
+
+    // No-args constructor required by JPA
+    public Activity() {}
 
     public Activity(String activityName) {
         this.activityName = activityName;
     }
 
-    public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }
+    public void setExpectedWorkHours(double expectedWorkHours) {
+        this.expectedWorkHours = expectedWorkHours;
+    }
 
-    public double getExpectedWorkHours() { return this.expectedWorkHours;}
+    public double getExpectedWorkHours() {
+        return this.expectedWorkHours;
+    }
 
     // Alexander Wittrup
     public double getWorkedHours() {
         double workedHours = 0.0;
-        for (User user : getContributingUsers()) {
-            for (TimeRegistration timeReg : user.getActivityRegistrations().getOrDefault(this, Collections.emptyList())) {
-                workedHours += timeReg.getRegisteredHours();
-            }
+        for (TimeRegistration timeReg : timeRegistrations) {
+            workedHours += timeReg.getRegisteredHours();
         }
         return workedHours;
     }
 
-    public ArrayList<User> getAssignedUsers() { return this.assignedUsers;}
+    public ArrayList<User> getAssignedUsers() { return this.assignedUsers; }
 
     public String getActivityName() { return this.activityName;}
+
+    public List<User> getAssignedUsers() {
+        return Collections.unmodifiableList(this.assignedUsers);
+    }
+
+    public String getActivityName() {
+        return this.activityName;
+    }
 
     // For TA, this is the code which was responsible for the Time Interval view in the GUI,
     // and the last two lines were missing. (StartTime and EndTime) making them null. Is fixed now.
@@ -58,15 +103,15 @@ public class Activity {
     public void assignUser(User user) {
         assert user != null && getAssignedUsers() != null && getActivityName() != null && user.getActivityCount() >= 0 && user.getActivityCount() <= 20 : "precondition";
         int activityCountAtPre = user.getActivityCount();
-        if (user.getActivityCount() < 20){ // 1
-            if(assignedUsers.contains(user)){ // 2
+        if (user.getActivityCount() < 20) { // 1
+            if (assignedUsers.contains(user)) { // 2
                 assert (assignedUsers.contains(user) && user.getActivityCount() == activityCountAtPre);
                 throw new RuntimeException("'" + user.getUserInitials() + "' is already assigned to the activity '" + getActivityName() + "'"); // 3
             }
             assignedUsers.add(user); // 4
             user.incrementActivityCount(); // 5
             assert (assignedUsers.contains(user) &&
-                    user.getActivityCount() == activityCountAtPre +1);
+                    user.getActivityCount() == activityCountAtPre + 1);
         } else {
             assert (!assignedUsers.contains(user) && user.getActivityCount() == activityCountAtPre && user.getActivityCount() == 20);
             throw new RuntimeException("'" + user.getUserInitials() + "' is already assigned to the maximum number of 20 activities"); // 6
@@ -99,7 +144,14 @@ public class Activity {
         }
     }
 
-    public ArrayList<User> getContributingUsers() { return this.contributingUsers; }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(activityName);
+    }
+
+    public List<User> getContributingUsers() {
+        return Collections.unmodifiableList(this.contributingUsers);
+    }
 
     public String toString() {
         return activityName;
@@ -115,7 +167,7 @@ public class Activity {
 
     // Nikolai Kuhl
     public void setActivityStartTime(LocalDate activityStartTime) throws Exception {
-        if (activityEndTime==null || activityStartTime.isBefore(activityEndTime)) {
+        if (activityEndTime == null || activityStartTime.isBefore(activityEndTime)) {
             this.activityStartTime = activityStartTime;
         } else {
             throw new Exception("The start date of the activity can't be after the start date of the activity.");
@@ -135,12 +187,11 @@ public class Activity {
 
     // Nikolai Kuhl
     public void setActivityEndTime(LocalDate activityEndTime) throws Exception {
-        if (activityStartTime==null || activityEndTime.isAfter(activityStartTime)) {
+        if (activityStartTime == null || activityEndTime.isAfter(activityStartTime)) {
             this.activityEndTime = activityEndTime;
         } else {
             throw new Exception("The end date of the activity can't be before the start date of the activity.");
         }
-
     }
 
     public void setActivityAsFinalized() {
@@ -153,5 +204,17 @@ public class Activity {
 
     public void setActivityAsUnFinalized() {
         this.isFinalized = false;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public List<TimeRegistration> getTimeRegistrations() {
+        return Collections.unmodifiableList(timeRegistrations);
     }
 }

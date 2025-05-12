@@ -3,6 +3,7 @@ package whitebox_tests;
 import dtu.timemanager.domain.*;
 import java.util.List;
 
+import dtu.timemanager.persistence.SqliteRepository;
 import io.cucumber.java.en_old.Ac;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ class AddActivityTest {
 
     @BeforeEach
     void setUp() {
-        this.timeManager = new TimeManager();
+        this.timeManager = new TimeManager(new SqliteRepository(false));
     }
 
     @Test
@@ -26,7 +27,7 @@ class AddActivityTest {
         assertNotNull(project);
         assertNotNull(activity);
         assertEquals(1, project.getActivities().size());
-        assertSame(activity, project.getActivities().getFirst());
+        assertSame(activity, project.getActivities().get(0));
     }
 
     @Test

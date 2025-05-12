@@ -1,7 +1,6 @@
 package acceptance_tests;
 
 import dtu.timemanager.domain.Activity;
-import dtu.timemanager.domain.Project;
 import dtu.timemanager.domain.TimeRegistration;
 
 public class ActivityHolder {
