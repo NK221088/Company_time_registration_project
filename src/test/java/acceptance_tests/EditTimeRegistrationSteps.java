@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Alexander Wittrup
 public class EditTimeRegistrationSteps {
     private TimeManager timeManager;
     private ProjectHolder projectHolder;

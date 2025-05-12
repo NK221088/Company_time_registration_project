@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Nikolai Kuhl
 public class FinalizeActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Nikolai Kuhl
 public class GenerateProjectReportSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

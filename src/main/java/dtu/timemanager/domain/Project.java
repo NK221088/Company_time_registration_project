@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
+// Nikolai Kuhl
 public class Project {
     private String projectName;
     private String projectID;
@@ -38,6 +38,7 @@ public class Project {
 
     public String getProjectID() { return projectID; }
 
+    // Nikolai Kuhl
     public void setProjectStartDate(LocalDate startDate) throws Exception {
         if (endDate==null || startDate.isBefore(endDate)) {
             this.startDate = startDate;
@@ -46,6 +47,7 @@ public class Project {
         }
     }
 
+    // Nikolai Kuhl
     public void setProjectEndDate(LocalDate endDate) throws Exception {
         if (startDate==null || endDate.isAfter(startDate)) {
             this.endDate = endDate;
@@ -64,12 +66,10 @@ public class Project {
 
     public ArrayList<Activity> getActivities() {return activities;}
 
-
+    // Isak Petrin
     public void addActivity(Activity activity) throws Exception {
         int activityCountpre = getActivities().size();
         ArrayList<Activity> activitiesListpre = activities;
-
-
 
         assert activity != null && activity.getActivityName() != null: "precondition";
         if (!activities.contains(activity)) {
@@ -91,6 +91,7 @@ public class Project {
         }
     }
 
+    // Alexander Wittrup
     public Activity getActivityFromName(String activityName) {
         return getActivities().stream().filter(activity -> activity.getActivityName().equals(activityName)).findFirst().orElse(null);
     }
@@ -107,6 +108,7 @@ public class Project {
         this.isFinalized = true;
     }
 
+    // Nikolai Kuhl
     public void setActivityAsFinalized(Activity activity) {
         activity.setActivityAsFinalized();
         boolean allFinalized = activities.stream()
@@ -116,6 +118,7 @@ public class Project {
         }
     }
 
+    // Nikolai Kuhl
     public void setActivityAsUnFinalized(Activity activity) {
         activity.setActivityAsUnFinalized();
         setUnFinalized(); // If any activity is unfinalized, we mark the whole as unfinalized
@@ -125,12 +128,14 @@ public class Project {
         this.isFinalized = false;
     }
 
+    // Alexander Wittrup
     public String getTimeInterval() {
         String p1 = getStartDate() != null ? getStartDate().toString() : "";
         String p2 = getEndDate() != null ? getEndDate().toString() : "";
         return p1 + " - " + p2;
     }
 
+    // Nikolai Kuhl
     public void renameActivity(Activity activity, String newName) throws Exception {
         for (Activity a : activities) {
             if (a.getActivityName().equals(newName)) {
@@ -139,7 +144,6 @@ public class Project {
         }
         activity.setActivityName(newName);
     }
-
 
     public void setProjectID(String id) {
         this.projectID = id;

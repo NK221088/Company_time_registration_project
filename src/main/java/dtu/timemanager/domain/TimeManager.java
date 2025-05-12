@@ -1,17 +1,16 @@
 package dtu.timemanager.domain;
-import dtu.timemanager.services.IProjectService;
 
 import java.util.ArrayList;
 
 import java.util.List;
 
 public class TimeManager {
-    private User current_user;
+    private User currentUser;
+    private List<Project> projects = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
-    private IProjectService projectService = new IProjectService();
 
     public TimeManager() {}
 
@@ -24,9 +23,10 @@ public class TimeManager {
     }
 
     public void setCurrentUser(User user) {
-        current_user = user;
+        currentUser = user;
     }
 
+    // Nikolai Kuhl
     public void addUser(User user) throws Exception {
         String initials = user.getUserInitials();
 
@@ -41,6 +41,7 @@ public class TimeManager {
         }
     }
 
+    // Alexander Wittrup
     public User getUserFromInitials(String user_initials) {
         try {
             return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
@@ -51,8 +52,9 @@ public class TimeManager {
 
     public List<User> getUsers() { return users; }
 
-    public User getCurrentUser() { return current_user; }
+    public User getCurrentUser() { return currentUser; }
 
+    // Alexander Wittrup
     public Project addExampleProject(String projectName, Integer numberOfActivities) throws Exception {
         Project project = addProject(projectName);
         try {
@@ -63,24 +65,47 @@ public class TimeManager {
         return project;
     }
 
+    private String formatID(int count) { return "25" + String.format("%03d", count); }
+
+    // Alexander Wittrup
     public Project addProject(String projectName) {
-        return projectService.addProject(projectName);
+        assert projectName != null && getProjectCount() == projects.size();
+        List<Project> projectsPre = new ArrayList<>(getProjects());
+        int projectCountPre = getProjectCount();
+
+        Project project = new Project(projectName);
+        if (!projectExists(project)) {
+            String id = formatID(++this.projectCount);
+            project.setProjectID(id);
+            projects.add(project);
+
+            assert !projectsPre.contains(project)
+                    && projects.contains(project)
+                    && getProjectCount() == projectCountPre + 1
+                    && project.getProjectID().equals(formatID(getProjectCount()));
+            return project;
+        } else {
+            assert projectsPre.contains(project)
+                    && projects.equals(projectsPre)
+                    && getProjectCount() == projectCountPre;
+            throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
+        }
     }
 
     public List<Project> getProjects() {
-        return projectService.getProjects();
+        return projects;
     }
 
     public int getProjectCount() {
-        return projectService.getProjectCount();
+        return projectCount;
     }
 
     public boolean projectExists(Project project) {
-        return projectService.getProjects().contains(project);
+        return getProjects().contains(project);
     }
 
     public ProjectReport getProjectReport(Project project) {
-        return projectService.getProjectReport(project);
+        return new ProjectReport(project);
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
@@ -92,7 +117,6 @@ public class TimeManager {
     }
 
     public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {
-
         intervalTimeRegistrations.add(intervalTimeRegistration);
     }
 
@@ -100,7 +124,13 @@ public class TimeManager {
         return intervalTimeRegistrations;
     }
 
-    public void renameProject(Project project, String newName) {
-        projectService.renameProject(project, newName);
+    // Nikolai Kuhl
+    public void renameProject(Project project, String newName) throws IllegalArgumentException {
+        for (Project p : projects) {
+            if (p.getProjectName().equals(newName)) {
+                throw new RuntimeException("A project with name " + newName + " already exists and two projects cannot exist with the same name.");
+            }
+        }
+        project.setProjectName(newName);
     }
 }

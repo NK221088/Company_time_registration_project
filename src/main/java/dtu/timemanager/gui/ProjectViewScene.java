@@ -177,9 +177,6 @@ public class ProjectViewScene {
         LocalDate startDate = (LocalDate) activityInfo.get("StartTime");
         LocalDate endDate = (LocalDate) activityInfo.get("EndTime");
 
-        System.out.println(startDate);
-        System.out.println(endDate);
-
         String startTime = (startDate != null)
                 ? "Week " + startDate.get(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear()) + ", " + startDate.getYear()
                 : "";
@@ -189,9 +186,6 @@ public class ProjectViewScene {
                 : "";
 
         String intervalText;
-        System.out.println(startTime);
-        System.out.println(endTime);
-
         if (!startTime.isEmpty() && !endTime.isEmpty()) {
             intervalText = startTime + " to " + endTime;
         } else if (!startTime.isEmpty()) {

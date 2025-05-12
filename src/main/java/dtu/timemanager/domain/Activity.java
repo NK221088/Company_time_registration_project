@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.*;
 
+// Nikolai Kuhl?
 public class Activity {
-
     private String activityName;
     private ArrayList<User> assignedUsers = new ArrayList<>();
     private ArrayList<User> contributingUsers = new ArrayList<>();
@@ -20,8 +20,10 @@ public class Activity {
     }
 
     public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }
+
     public double getExpectedWorkHours() { return this.expectedWorkHours;}
 
+    // Alexander Wittrup
     public double getWorkedHours() {
         double workedHours = 0.0;
         for (User user : getContributingUsers()) {
@@ -33,10 +35,12 @@ public class Activity {
     }
 
     public ArrayList<User> getAssignedUsers() { return this.assignedUsers;}
+
     public String getActivityName() { return this.activityName;}
 
     // For TA, this is the code which was responsible for the Time Interval view in the GUI,
     // and the last two lines were missing. (StartTime and EndTime) making them null. Is fixed now.
+    // Isak Petrin
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
         info.put("Name", getActivityName());
@@ -50,6 +54,7 @@ public class Activity {
         return info;
     }
 
+    // Nikolai Kuhl
     public void assignUser(User user) {
         assert user != null && getAssignedUsers() != null && getActivityName() != null && user.getActivityCount() >= 0 && user.getActivityCount() <= 20 : "precondition";
         int activityCountAtPre = user.getActivityCount();
@@ -68,6 +73,7 @@ public class Activity {
         }
     }
 
+    // Isak Petrin
     public void unassignUser(User user) {
         if (this.assignedUsers.contains(user)) {
             user.decrementActivityCount();
@@ -76,12 +82,14 @@ public class Activity {
             throw new RuntimeException("The user can not be unassigned from an activity they are not assigned to");
         }
     }
+
     public void addContributingUser(User user) {
         if (!contributingUsers.contains(user)) {
             contributingUsers.add(user);
         }
     }
 
+    // Nikolai Kuhl
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Activity) {
@@ -105,24 +113,27 @@ public class Activity {
         return activityStartTime;
     }
 
+    // Nikolai Kuhl
     public void setActivityStartTime(LocalDate activityStartTime) throws Exception {
-
         if (activityEndTime==null || activityStartTime.isBefore(activityEndTime)) {
             this.activityStartTime = activityStartTime;
         } else {
             throw new Exception("The start date of the activity can't be after the start date of the activity.");
         }
     }
+
     public LocalDate getActivityEndTime() {
         return activityEndTime;
     }
 
+    // Alexander Wittrup
     public String getTimeInterval() {
         String p1 = getActivityStartTime() != null ? getActivityStartTime().toString() : "";
         String p2 = getActivityEndTime() != null ? getActivityEndTime().toString() : "";
         return p1 + " - " + p2;
     }
 
+    // Nikolai Kuhl
     public void setActivityEndTime(LocalDate activityEndTime) throws Exception {
         if (activityStartTime==null || activityEndTime.isAfter(activityStartTime)) {
             this.activityEndTime = activityEndTime;

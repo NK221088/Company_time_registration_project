@@ -2,6 +2,7 @@ package dtu.timemanager.domain;
 
 import java.time.LocalDate;
 
+// Alexander Wittrup
 public class IntervalTimeRegistration extends TimeRegistration {
     private LocalDate startDate;
     private LocalDate endDate;
@@ -20,6 +21,7 @@ public class IntervalTimeRegistration extends TimeRegistration {
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -27,6 +29,7 @@ public class IntervalTimeRegistration extends TimeRegistration {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
     public LocalDate getEndDate() {
         return endDate;
     }

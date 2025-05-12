@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
+// Alexander Wittrup
 public class AddTimeRegistrationSteps {
     private Activity registeredActivity;
     private LocalDate registeredDate;

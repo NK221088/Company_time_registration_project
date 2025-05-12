@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Isak Petrin
 public class ViewActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

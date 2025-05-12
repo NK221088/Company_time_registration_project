@@ -2,6 +2,7 @@ package dtu.timemanager.domain;
 
 import java.util.*;
 
+// Alexander Wittrup
 public class User {
     private String userInitials;
     private Map<Activity, List<TimeRegistration>> activityRegistrations = new HashMap<Activity, List<TimeRegistration>>();
@@ -19,6 +20,7 @@ public class User {
         return activityCount;
     }
 
+    // Alexander Wittrup
     public void addTimeRegistration(TimeRegistration timeRegistration) {
         Activity a = timeRegistration.getRegisteredActivity();
         List<TimeRegistration> activityValue = activityRegistrations.get(a);
@@ -45,7 +47,8 @@ public class User {
     }
 
     public void decrementActivityCount() {
-    activityCount--;}
+        activityCount--;
+    }
 
     @Override
     public boolean equals(Object obj) {
