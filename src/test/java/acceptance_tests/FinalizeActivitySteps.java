@@ -6,6 +6,7 @@ import dtu.timemanager.app.TimeRegistrationRepository;
 import dtu.timemanager.app.UserRepository;
 import dtu.timemanager.domain.*;
 import dtu.timemanager.persistence.SqliteRepository;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -29,6 +30,10 @@ public class FinalizeActivitySteps {
     public FinalizeActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
         this.timeManager = timeManager;
         this.errorMessage = errorMessage;
+    }
+    @Before
+    public void clearDatabase() {
+        timeManager.clearDatabase();
     }
 
     @Given("two unfinalized activities exists in a project")

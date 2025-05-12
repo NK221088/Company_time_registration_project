@@ -87,10 +87,6 @@ public class SqliteRepository implements
         });
     }
 
-    @Override
-    public void clearProjectDataBase() {
-
-    }
 
     // UserRepository Implementation
     @Override
@@ -114,10 +110,6 @@ public class SqliteRepository implements
         }
     }
 
-    @Override
-    public void clearUserDatabase() {
-
-    }
 
     // ActivityRepository Implementation
     @Override
@@ -173,10 +165,6 @@ public class SqliteRepository implements
         });
     }
 
-    @Override
-    public void clearActivityDataBase() {
-
-    }
 
     // TimeRegistrationRepository Implementation
     @Override
@@ -225,10 +213,6 @@ public class SqliteRepository implements
         withinTransaction(() -> em.merge(registration));
     }
 
-    @Override
-    public void clearTimeRegistrationDataBase() {
-
-    }
 
     // Helper method for transaction management
     private void withinTransaction(UnitFunction f) {
@@ -258,5 +242,56 @@ public class SqliteRepository implements
         if (emf != null && emf.isOpen()) {
             emf.close();
         }
+    }
+
+    // In SqliteRepository.java
+
+    @Override
+    public void clearActivityDataBase() {
+        if (isProduction) {
+            throw new Error("clearActivityDataBase should not be called with a production database");
+        }
+        em.getTransaction().begin();
+        // Clear any junction tables first to avoid foreign key constraint violations
+        em.createNativeQuery("DELETE FROM activity_assigned_users").executeUpdate();
+        em.createNativeQuery("DELETE FROM activity_contributing_users").executeUpdate();
+        em.createNativeQuery("DELETE FROM Activity").executeUpdate();
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void clearProjectDataBase() {
+        if (isProduction) {
+            throw new Error("clearProjectDataBase should not be called with a production database");
+        }
+        em.getTransaction().begin();
+        // Clear any foreign key references first
+        // If you have any project-specific association tables, clear them here
+        em.createNativeQuery("DELETE FROM Project").executeUpdate();
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void clearTimeRegistrationDataBase() {
+        if (isProduction) {
+            throw new Error("clearTimeRegistrationDataBase should not be called with a production database");
+        }
+        em.getTransaction().begin();
+        // Clear interval time registrations first (if they have a foreign key to time_registrations)
+        em.createNativeQuery("DELETE FROM interval_time_registrations").executeUpdate();
+        em.createNativeQuery("DELETE FROM time_registrations").executeUpdate();
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void clearUserDatabase() {
+        if (isProduction) {
+            throw new Error("clearUserDatabase should not be called with a production database");
+        }
+        em.getTransaction().begin();
+        // Clear any association tables that reference users first
+        // If you have any user-specific association tables, clear them here
+        em.createNativeQuery("DELETE FROM User").executeUpdate();
+        em.getTransaction().commit();
     }
 }
