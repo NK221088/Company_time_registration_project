@@ -100,10 +100,12 @@ public class TimeManager {
             project.setProjectID(id);
             projectRepository.addProject(projectName);
 
-            assert !projectsPre.contains(project)
-                    && projectRepository.getProjects().contains(project)
-                    && getProjectCount() == projectCountPre + 1
-                    && project.getProjectID().equals(formatID(getProjectCount()));
+            assert !projectsPre.contains(project);
+
+            assert projectRepository.getProjects().contains(project);
+
+            assert getProjectCount() == projectCountPre + 1;
+            assert project.getProjectID().equals(formatID(getProjectCount()));
             return project;
         } else {
             assert projectsPre.contains(project)
@@ -160,13 +162,5 @@ public class TimeManager {
         projectRepository.clearProjectDataBase();
         timeRegistrationRepository.clearTimeRegistrationDataBase();
         userRepository.clearUserDatabase();
-    }
-
-    public void clearDatabase() {
-        activityRepository.clearActivityDataBase();
-        projectRepository.clearProjectDataBase();
-        timeRegistrationRepository.clearTimeRegistrationDataBase();
-        userRepository.clearUserDatabase();
-
     }
 }

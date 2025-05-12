@@ -106,7 +106,10 @@ public class Project {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Project) {
+        if (obj instanceof Project project) {
+            if (project.getProjectName() == this.getProjectName()) {
+                return true;
+            }
             return Objects.equals(getId(), ((Project) obj).getId());
         } else {
             return false;
