@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.List;
 
+// Alexander Wittrup
 public class AddIntervalTimeRegistrationSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

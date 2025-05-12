@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+// Alexander Wittrup
 public class ProjectReport {
     private Project project;
     private List<Activity> activities;

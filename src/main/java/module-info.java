@@ -11,4 +11,6 @@ module hellofx {
 
     opens dtu.timemanager.gui to javafx.fxml;
     opens dtu.timemanager.domain to jakarta.persistence; // reflection access for JPA
+//    exports dtu.timemanager.gui.helper;
+//    opens dtu.timemanager.gui.helper to javafx.fxml;
 }

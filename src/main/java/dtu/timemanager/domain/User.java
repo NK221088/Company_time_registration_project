@@ -3,6 +3,7 @@ package dtu.timemanager.domain;
 import java.util.*;
 import jakarta.persistence.*;
 
+// Alexander Wittrup
 @Entity
 public class User {
     @Id
@@ -31,10 +32,21 @@ public class User {
         return activityCount;
     }
 
+    // Alexander Wittrup
     public void addTimeRegistration(TimeRegistration timeRegistration) {
         if (!timeRegistrations.contains(timeRegistration)) {
             timeRegistrations.add(timeRegistration);
         }
+//        Activity a = timeRegistration.getRegisteredActivity();
+//        List<TimeRegistration> activityValue = activityRegistrations.get(a);
+//        if (activityValue != null) {
+//            activityValue.add(timeRegistration);
+//        } else {
+//            ArrayList<TimeRegistration> timeReg = new ArrayList<>();
+//            timeReg.add(timeRegistration);
+//            activityRegistrations.put(a, timeReg);
+//        }
+//        a.addContributingUser(timeRegistration.getRegisteredUser());
     }
 
     // Helper method to get activity registrations as a map

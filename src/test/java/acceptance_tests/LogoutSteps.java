@@ -7,6 +7,7 @@ import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+// Isak Petrin
 public class LogoutSteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

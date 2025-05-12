@@ -6,6 +6,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "interval_time_registrations")
 @DiscriminatorValue("INTERVAL")
+// Alexander Wittrup
 public class IntervalTimeRegistration extends TimeRegistration {
     @Id
     private int id;
@@ -19,7 +20,6 @@ public class IntervalTimeRegistration extends TimeRegistration {
     @Column(name = "leave_option")
     private String leaveOption;
 
-    // JPA requires a no-arg constructor
     public IntervalTimeRegistration() {
         super();
     }

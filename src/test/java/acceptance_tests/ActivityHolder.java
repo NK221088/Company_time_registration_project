@@ -3,8 +3,6 @@ package acceptance_tests;
 import dtu.timemanager.domain.Activity;
 import dtu.timemanager.domain.TimeRegistration;
 
-import java.sql.Time;
-
 public class ActivityHolder {
         private Activity activity;
         private String oldDate;

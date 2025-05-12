@@ -10,6 +10,7 @@ import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Nikolai Kuhl
 public class AssignActivitySteps {
     private Integer projectCountBeforeAssign;
     private TimeManager timeManager;

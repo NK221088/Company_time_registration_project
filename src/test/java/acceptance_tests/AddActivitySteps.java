@@ -9,6 +9,7 @@ import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
+// Nikolai Kuhl
 public class AddActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

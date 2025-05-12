@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Nikolai Kuhl
 public class EditActivitySteps {
     private TimeManager timeManager;
     private ErrorMessageHolder errorMessage;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+// Alexander Wittrup
 @Entity
 @Table(name = "time_registrations")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -73,10 +74,26 @@ public class TimeRegistration {
         return registeredDate;
     }
 
+    // Alexander Wittrup
     public void setRegisteredUser(User registeredUser) {
+//        if (this instanceof IntervalTimeRegistration) {
+//            this.registeredUser = registeredUser;
+//            return;
+//        }
+//
+//        Map<Activity, List<TimeRegistration>> registrationList = this.registeredUser.getActivityRegistrations();
+//        List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
+//
+//        if (this.registeredUser != registeredUser) { // IF CHANGE TO NEW USER
+//            if (actRegList.size() < 2) {
+//                this.registeredActivity.getContributingUsers().remove(this.registeredUser);
+//            }
+//            this.registeredActivity.addContributingUser(registeredUser);
+//        }
         this.registeredUser = registeredUser;
     }
 
+    // Nikolai Kuhl
     public void setRegisteredActivity(Activity registeredActivity) throws Exception {
         if (registeredActivity == null || !registeredActivity.getFinalized()) {
             this.registeredActivity = registeredActivity;
@@ -92,6 +109,7 @@ public class TimeRegistration {
         this.registeredHours = registeredHours;
     }
 
+    // Nikolai Kuhl
     public void setRegisteredDate(LocalDate registeredDate) throws Exception {
         if (registeredDate == null || !registeredDate.isAfter(LocalDate.now())) {
             this.registeredDate = registeredDate;

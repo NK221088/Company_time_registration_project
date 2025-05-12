@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimeManager {
-    private User current_user;
+    private User currentUser;
+    private SqliteRepository repository;
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
@@ -41,9 +42,10 @@ public class TimeManager {
     }
 
     public void setCurrentUser(User user) {
-        current_user = user;
+        currentUser = user;
     }
 
+    // Nikolai Kuhl
     public void addUser(User user) throws Exception {
         userRepository.addUser(user);
 //        String initials = user.getUserInitials();
@@ -59,6 +61,7 @@ public class TimeManager {
 //        }
     }
 
+    // Alexander Wittrup
     public User getUserFromInitials(String user_initials) {
         return userRepository.getUserByUsername(user_initials);
 //        try {
@@ -70,8 +73,9 @@ public class TimeManager {
 
     public List<User> getUsers() { return userRepository.getUsers(); }
 
-    public User getCurrentUser() { return current_user; }
+    public User getCurrentUser() { return currentUser; }
 
+    // Alexander Wittrup
     public Project addExampleProject(String projectName, Integer numberOfActivities) throws Exception {
         Project project = addProject(projectName);
         try {
@@ -84,14 +88,27 @@ public class TimeManager {
 
     private String formatID(int count) { return "25" + String.format("%03d", count); }
 
+    // Alexander Wittrup
     public Project addProject(String projectName) {
+        assert projectName != null && getProjectCount() == projectRepository.getProjects().size();
+        List<Project> projectsPre = new ArrayList<>(getProjects());
+        int projectCountPre = getProjectCount();
+
         Project project = new Project(projectName);
         if (!projectExists(project)) {
             String id = formatID(++this.projectCount);
             project.setProjectID(id);
             projectRepository.addProject(projectName);
+
+            assert !projectsPre.contains(project)
+                    && projectRepository.getProjects().contains(project)
+                    && getProjectCount() == projectCountPre + 1
+                    && project.getProjectID().equals(formatID(getProjectCount()));
             return project;
         } else {
+            assert projectsPre.contains(project)
+                    && projectRepository.getProjects().equals(projectsPre)
+                    && getProjectCount() == projectCountPre;
             throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
     }
@@ -100,7 +117,9 @@ public class TimeManager {
         return new ArrayList<>(projectRepository.getProjects());
     }
 
-    public int getProjectCount() {return projectCount;}
+    public int getProjectCount() {
+        return projectCount;
+    }
 
     public boolean projectExists(Project project) {
         return projectRepository.projectExists(project);
@@ -126,6 +145,7 @@ public class TimeManager {
         return intervalTimeRegistrations;
     }
 
+    // Nikolai Kuhl
     public void renameProject(Project project, String newName) throws IllegalArgumentException {
         for (Project p : projectRepository.getProjects()) {
             if (p.getProjectName().equals(newName)) {
@@ -135,8 +155,11 @@ public class TimeManager {
         project.setProjectName(newName);
     }
 
-    public void assignProjectLead(Project project, User user) {
-        project.setProjectLead(user);
+    public void clearDatabase() {
+        activityRepository.clearActivityDataBase();
+        projectRepository.clearProjectDataBase();
+        timeRegistrationRepository.clearTimeRegistrationDataBase();
+        userRepository.clearUserDatabase();
     }
 
     public void clearDatabase() {

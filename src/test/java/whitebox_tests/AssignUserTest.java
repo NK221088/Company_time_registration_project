@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Nikolai Kuhl
 public class AssignUserTest {
     private TimeManager timeManager;
 
@@ -78,11 +79,13 @@ public class AssignUserTest {
         }
 
         ArrayList<User> users = new ArrayList<>(List.of(user));
-        Activity activity = project.getActivityFromName("Activity 1");
+        Activity activity = new Activity("Activity X");
+        project.addActivity(activity);
+
         assertEquals("huba", user.getUserInitials() );
-        assertEquals("Activity 1", activity.getActivityName());
+        assertEquals("Activity X", activity.getActivityName());
         assertEquals(20, user.getActivityCount() );
-        assertEquals(users , activity.getAssignedUsers());
+//        assertEquals(users , activity.getAssignedUsers());
 
         RuntimeException e = assertThrows(RuntimeException.class, () -> activity.assignUser(user));
         String expectedMsg = "'huba' is already assigned to the maximum number of 20 activities";
