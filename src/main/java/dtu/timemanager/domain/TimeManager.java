@@ -104,16 +104,11 @@ public class TimeManager {
             project.setProjectID(id);
             projectRepository.addProject(projectName);
 
-            assert !projectsPre.contains(project);
-
-            assert projectRepository.getProjects().contains(project);
-
-            assert getProjectCount() == projectCountPre + 1;
-            assert project.getProjectID().equals(formatID(getProjectCount()));
+            assert !projectsPre.contains(project) && getProjects().contains(project) && getProjectCount() == projectCountPre + 1 && project.getProjectID().equals(formatID(getProjectCount()));
             return project;
         } else {
             assert projectsPre.contains(project)
-                    && projectRepository.getProjects().equals(projectsPre)
+                    && getProjects().equals(projectsPre)
                     && getProjectCount() == projectCountPre;
             throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }

@@ -32,10 +32,6 @@ public class TimeRegistration {
     public TimeRegistration() {}
 
     public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) throws Exception {
-        if (registeredHours <= 0) {
-            throw new Exception("Hours must be positive");
-        }
-
         this.registeredUser = registeredUser;
         this.registeredActivity = registeredActivity;
         this.registeredHours = registeredHours;
@@ -103,9 +99,6 @@ public class TimeRegistration {
     }
 
     public void setRegisteredHours(double registeredHours) throws Exception {
-        if (registeredHours <= 0) {
-            throw new Exception("Hours must be positive");
-        }
         this.registeredHours = registeredHours;
     }
 
