@@ -69,7 +69,6 @@ public class Project {
     // Isak Petrin
     public void addActivity(Activity activity) throws Exception {
         int activityCountpre = getActivities().size();
-        ArrayList<Activity> activitiesListpre = activities;
 
         assert activity != null && activity.getActivityName() != null: "precondition";
         if (!activities.contains(activity)) {
@@ -77,7 +76,7 @@ public class Project {
             activities.add(activity);
             assert (activities.contains(activity) && activityCountpre != getActivities().size());
         } else {
-            assert (activitiesListpre == getActivities() && activityCountpre == getActivities().size()) ;
+            assert (activityCountpre == getActivities().size()) ;
             throw new Exception("An activity with name '" + activity.getActivityName() + "' already exists within '" + this.getProjectName() + "' two activities cannot exist with the same name within the same project.");
         }
     }
