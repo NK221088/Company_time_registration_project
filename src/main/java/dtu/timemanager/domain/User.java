@@ -1,11 +1,21 @@
 package dtu.timemanager.domain;
 
 import java.util.*;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
     private String userInitials;
+
+    @Transient // This complex structure needs custom handling
     private Map<Activity, List<TimeRegistration>> activityRegistrations = new HashMap<Activity, List<TimeRegistration>>();
+
     private Integer activityCount = 0;
+
+    // No-args constructor required by JPA
+    protected User() {}
 
     public User(String userInitials) {
         this.userInitials = userInitials;
@@ -20,16 +30,16 @@ public class User {
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
-        Activity a = timeRegistration.getRegisteredActivity();
-        List<TimeRegistration> activityValue = activityRegistrations.get(a);
-        if (activityValue != null) {
-            activityValue.add(timeRegistration);
+        Activity activity = timeRegistration.getRegisteredActivity(); // 1
+        List<TimeRegistration> activityValue = activityRegistrations.get(activity); // 2
+        if (activityValue != null) { // 3
+            activityValue.add(timeRegistration); // 4
         } else {
-            ArrayList<TimeRegistration> timeReg = new ArrayList<>();
-            timeReg.add(timeRegistration);
-            activityRegistrations.put(a, timeReg);
+            ArrayList<TimeRegistration> timeReg = new ArrayList<>(); // 5
+            timeReg.add(timeRegistration); // 6
+            activityRegistrations.put(activity, timeReg); // 7
         }
-        a.addContributingUser(timeRegistration.getRegisteredUser());
+        activity.addContributingUser(timeRegistration.getRegisteredUser()); // 8
     }
 
     public Map<Activity, List<TimeRegistration>> getActivityRegistrations() {
@@ -45,7 +55,8 @@ public class User {
     }
 
     public void decrementActivityCount() {
-    activityCount--;}
+        activityCount--;
+    }
 
     @Override
     public boolean equals(Object obj) {

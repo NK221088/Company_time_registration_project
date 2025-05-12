@@ -1,19 +1,21 @@
 package dtu.timemanager.domain;
-import dtu.timemanager.services.IProjectService;
+
+import dtu.timemanager.persistence.SqliteRepository;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 public class TimeManager {
+    private SqliteRepository repository = new SqliteRepository(false);
     private User current_user;
     private List<User> users = new ArrayList<>();
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
-    private IProjectService projectService = new IProjectService();
 
-    public TimeManager() {}
+    public TimeManager(SqliteRepository repository) {
+        this.repository = repository;
+    }
 
     public void assignUser(Activity activity, User user) {
         activity.assignUser(user);
@@ -63,44 +65,60 @@ public class TimeManager {
         return project;
     }
 
+    private String formatID(int count) { return "25" + String.format("%03d", count); }
+
     public Project addProject(String projectName) {
-        return projectService.addProject(projectName);
+        Project project = new Project(projectName);
+        if (!projectExists(project)) {
+            String id = formatID(++this.projectCount);
+            project.setProjectID(id);
+            repository.addProject(projectName);
+            return project;
+        } else {
+            throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
+        }
     }
 
     public List<Project> getProjects() {
-        return projectService.getProjects();
+        return new ArrayList<>(repository.getProjects());
     }
 
-    public int getProjectCount() {
-        return projectService.getProjectCount();
-    }
+    public int getProjectCount() {return projectCount;}
 
     public boolean projectExists(Project project) {
-        return projectService.getProjects().contains(project);
+        return repository.projectExists(project);
     }
 
     public ProjectReport getProjectReport(Project project) {
-        return projectService.getProjectReport(project);
+        return new ProjectReport(project);
     }
 
-    public void addTimeRegistration(TimeRegistration timeRegistration) {
-        timeRegistrations.add(timeRegistration);
+    public void addTimeRegistration(TimeRegistration timeRegistration) throws Exception {
+        repository.addTimeRegistration(timeRegistration.getRegisteredUser(), timeRegistration.getRegisteredActivity(), timeRegistration.getRegisteredHours(), timeRegistration.getRegisteredDate());
     }
 
     public List<TimeRegistration> getTimeRegistrations() {
         return timeRegistrations;
     }
 
-    public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) {
-
-        intervalTimeRegistrations.add(intervalTimeRegistration);
+    public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) throws Exception {
+        repository.addIntervalTimeRegistration(intervalTimeRegistration.getRegisteredUser(), intervalTimeRegistration.getLeaveOption(), intervalTimeRegistration.getStartDate(), intervalTimeRegistration.getEndDate());
     }
 
     public List<IntervalTimeRegistration> getIntervalTimeRegistrations() {
         return intervalTimeRegistrations;
     }
 
-    public void renameProject(Project project, String newName) {
-        projectService.renameProject(project, newName);
+    public void renameProject(Project project, String newName) throws IllegalArgumentException {
+        for (Project p : repository.getProjects()) {
+            if (p.getProjectName().equals(newName)) {
+                throw new RuntimeException("A project with name " + newName + " already exists and two projects cannot exist with the same name.");
+            }
+        }
+        project.setProjectName(newName);
+    }
+
+    public void assignProjectLead(Project project, User user) {
+        project.setProjectLead(user);
     }
 }

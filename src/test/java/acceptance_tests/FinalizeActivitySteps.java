@@ -1,6 +1,7 @@
 package acceptance_tests;
 
 import dtu.timemanager.domain.*;
+import dtu.timemanager.persistence.SqliteRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -28,13 +29,13 @@ public class FinalizeActivitySteps {
 
     @Given("two unfinalized activities exists in a project")
     public void twoUnfinalizedActivitiesExistsInAProject() throws Exception {
-        this.timeManager = new TimeManager();
+        this.timeManager = new TimeManager(new SqliteRepository(false));
         this.project = timeManager.addProject("Project with finalized activity");;
         this.firstActivity = new Activity("Activity to be finalized");
         this.secondActivity = new Activity("Unfinalized activity");
         this.project.addActivity(firstActivity);
         this.project.addActivity(secondActivity);
-        registeredHours = this.firstActivity.getWorkedHours();
+        this.registeredHours = this.firstActivity.getWorkedHours();
         assertFalse(this.firstActivity.getFinalized() || this.secondActivity.getFinalized());
 
 
@@ -79,7 +80,7 @@ public class FinalizeActivitySteps {
 
         this.project.addActivity(firstActivity);
         this.project.addActivity(secondActivity);
-
+        this.registeredHours = this.firstActivity.getWorkedHours();
         assertTrue(this.firstActivity.getFinalized());
     }
     @Given("an unfinalized activity exists in the project")
@@ -101,9 +102,11 @@ public class FinalizeActivitySteps {
     }
     @Then("it's possible to add time registrations to the activity")
     public void itSPossibleToAddTimeRegistrationsToTheActivity() {
-        this.hours = this.firstActivity.getWorkedHours();
+        double hours = 8;
+        this.hours = hours;
+        LocalDate date = LocalDate.now();
         try {
-            TimeRegistration timeRegistration = new TimeRegistration(this.user, this.firstActivity, hours, date);
+            TimeRegistration timeRegistration = new TimeRegistration(timeManager.getCurrentUser(), this.firstActivity, hours, date);
             timeManager.addTimeRegistration(timeRegistration);
             assertNotEquals(registeredHours, this.firstActivity.getWorkedHours());
         } catch (Exception e) {

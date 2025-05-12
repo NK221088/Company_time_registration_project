@@ -1,22 +1,43 @@
 package dtu.timemanager.domain;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
+@Entity
+@Table(name = "projects")
 public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // Database ID for JPA
+
     private String projectName;
     private String projectID;
+
+    @Column(name = "start_date")
     private LocalDate startDate;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
+
+    @ManyToOne
+    @JoinColumn(name = "project_lead_id")
     private User projectLead;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private ArrayList<Activity> activities;
+
     private boolean isFinalized;
 
-    public Project(String projectName) {
-        this.projectName = projectName;
+    // No-arg constructor required by JPA
+    protected Project() {
         this.activities = new ArrayList<>();
+    }
+
+    public Project(String projectName) {
+        this(); // Call no-arg constructor to initialize activities
+        this.projectName = projectName;
     }
 
     public void setProjectLead(User projectLead) {
@@ -133,5 +154,9 @@ public class Project {
 
     public void setProjectID(String id) {
         this.projectID = id;
+    }
+
+    public Object getId() {
+        return id;
     }
 }

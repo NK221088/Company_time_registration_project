@@ -4,6 +4,7 @@ import dtu.timemanager.domain.Activity;
 import dtu.timemanager.domain.Project;
 import dtu.timemanager.domain.TimeManager;
 import dtu.timemanager.domain.User;
+import dtu.timemanager.persistence.SqliteRepository;
 import io.cucumber.java.bs.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ public class AssignUserTest {
 
     @BeforeEach
     void setUp() {
-        this.timeManager = new TimeManager();
+        this.timeManager = new TimeManager(new SqliteRepository(false));
     }
 
     @Test

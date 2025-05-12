@@ -1,12 +1,17 @@
 package dtu.timemanager.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.*;
 
+@Entity
 public class Activity {
-
+    @Id
     private String activityName;
     private ArrayList<User> assignedUsers = new ArrayList<>();
     private ArrayList<User> contributingUsers = new ArrayList<>();
@@ -15,8 +20,16 @@ public class Activity {
     private LocalDate activityEndTime;
     private Boolean isFinalized = false;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     public Activity(String activityName) {
         this.activityName = activityName;
+    }
+
+    public Activity() {
+
     }
 
     public void setExpectedWorkHours(double expectedWorkHours) { this.expectedWorkHours = expectedWorkHours; }
