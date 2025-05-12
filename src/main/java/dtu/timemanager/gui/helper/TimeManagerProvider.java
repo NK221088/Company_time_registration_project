@@ -1,4 +1,4 @@
-package dtu.timemanager.gui;
+package dtu.timemanager.gui.helper;
 
 import dtu.timemanager.domain.Activity;
 import dtu.timemanager.domain.Project;

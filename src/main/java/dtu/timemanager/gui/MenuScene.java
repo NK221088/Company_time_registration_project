@@ -1,11 +1,12 @@
 package dtu.timemanager.gui;
 
 import dtu.timemanager.domain.TimeManager;
+import dtu.timemanager.gui.helper.TimeManagerProvider;
 import javafx.event.ActionEvent;
 
 import java.io.IOException;
 
-public class main {
+public class MenuScene {
     public void projectMenu(ActionEvent actionEvent) throws IOException {
         App.setRoot("projectMenu");
     }

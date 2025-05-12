@@ -1,6 +1,7 @@
     package dtu.timemanager.gui;
 
     import dtu.timemanager.domain.*;
+    import dtu.timemanager.gui.helper.TimeManagerProvider;
     import javafx.beans.property.SimpleStringProperty;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
@@ -25,14 +26,12 @@
     import java.util.regex.Pattern;
     import java.util.stream.Collectors;
 
-    public class TimeOverview implements Initializable {
+    public class TimeOverviewScene implements Initializable {
         private TimeManager timeManager;
-
-        @FXML
-        private AnchorPane rootPane;
-
-        @FXML
-        private TabPane tabPane;
+        private int daysToShow = 7; // Default number of days to show
+        private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM");
+        private TreeTableView<TimeEntryRow> personalTableView;
+        private TableView<Map<String, String>> teamTableView;
 
         @FXML
         private Tab personalTab;
@@ -52,12 +51,6 @@
         @FXML
         private Label userLabel;
 
-        private int daysToShow = 7; // Default number of days to show
-        private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM");
-        private TreeTableView<TimeEntryRow> personalTableView;
-        private TableView<Map<String, String>> teamTableView;
-
-        // Class to represent rows in the personal time view
         private static class TimeEntryRow {
             private final String name;
             private final Map<String, String> hoursByDate;
@@ -109,9 +102,6 @@
             }
         }
 
-        /**
-         * Initialize the controller with data from TimeManager
-         */
         public void initialize(URL location, ResourceBundle resources) {
             try {
                 timeManager = TimeManagerProvider.getInstance();
@@ -123,19 +113,15 @@
                     new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, daysToShow);
             daysSpinner.setValueFactory(valueFactory);
 
-            // Initialize date picker with current date
             if (datePicker == null) {
-                // If not defined in FXML, create programmatically
                 datePicker = new DatePicker(LocalDate.now());
             } else {
                 datePicker.setValue(LocalDate.now());
             }
 
-            // Create table views
             personalTableView = new TreeTableView<>();
             teamTableView = new TableView<>();
 
-            // Setup both tabs with VBox layouts to hold their content
             VBox personalVBox = new VBox(10);
             personalVBox.getChildren().add(personalTableView);
             VBox.setVgrow(personalTableView, Priority.ALWAYS);
@@ -146,30 +132,22 @@
             VBox.setVgrow(teamTableView, Priority.ALWAYS);
             teamTab.setContent(teamVBox);
 
-            // Add update button action
             updateButton.setOnAction(event -> {
                 daysToShow = daysSpinner.getValue();
                 refreshViews();
             });
 
-            // Check if userLabel exists in FXML
             if (userLabel == null) {
                 System.err.println("WARNING: userLabel is null! Check your FXML file.");
             } else {
-                // Setup user info directly
                 setupUserInfo();
             }
 
-            // Setup double-click listener for time registrations
             setupTimeRegistrationClickListener();
 
-            // Initialize the views
             refreshViews();
         }
 
-        /**
-         * Setup mouse event handler for editing time registrations
-         */
         private void setupTimeRegistrationClickListener() {
             personalTableView.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -184,9 +162,6 @@
             });
         }
 
-        /**
-         * Open dialog to edit existing time registration
-         */
         private void editTimeRegistration(TimeRegistration tr) {
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Edit Time Registration");
@@ -195,15 +170,10 @@
             ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
             dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
-            // --- Create input fields ---
-
-            // 1. User choice box
             ChoiceBox<User> userChoiceBox = new ChoiceBox<>();
             userChoiceBox.getItems().addAll(this.timeManager.getUsers());
             userChoiceBox.setValue(tr.getRegisteredUser()); // Current user
 
-            // 2. Activity choice box (optional - only if you want to allow changing activity)
-            // Get the project of the current activity
             Project currentProject = null;
             for (Project p : this.timeManager.getProjects()) {
                 if (p.getActivities().contains(tr.getRegisteredActivity())) {
@@ -216,12 +186,10 @@
             if (currentProject != null) {
                 activityChoiceBox.getItems().addAll(currentProject.getActivities());
             } else {
-                // If project not found, add just the current activity
                 activityChoiceBox.getItems().add(tr.getRegisteredActivity());
             }
             activityChoiceBox.setValue(tr.getRegisteredActivity());
 
-            // 3. Hours and minutes dropdowns
             double currentHours = tr.getRegisteredHours();
             int wholeHours = (int) currentHours;
             int minutes = (int) ((currentHours - wholeHours) * 60);
@@ -236,16 +204,13 @@
             for (int i = 0; i < 60; i += 5) {
                 minutesChoiceBox.getItems().add(i);  // increments of 5 minutes
             }
-            // Find closest 5-minute interval
             int closestMinutes = (minutes / 5) * 5;
             minutesChoiceBox.setValue(closestMinutes);
 
-            // 4. Date picker
             DatePicker datePicker = new DatePicker();
             datePicker.setValue(tr.getRegisteredDate());
             datePicker.setEditable(false);
 
-            // Optional: Restrict future dates
             datePicker.setDayCellFactory(picker -> new DateCell() {
                 @Override
                 public void updateItem(LocalDate date, boolean empty) {
@@ -257,7 +222,6 @@
                 }
             });
 
-            // --- Layout ---
             GridPane grid = new GridPane();
             grid.setHgap(10);
             grid.setVgap(10);
@@ -273,7 +237,6 @@
 
             dialog.getDialogPane().setContent(grid);
 
-            // Add button functionality
             final Button updateButton = (Button) dialog.getDialogPane().lookupButton(updateButtonType);
             updateButton.addEventFilter(ActionEvent.ACTION, event -> {
                 User selectedUser = userChoiceBox.getValue();
@@ -292,7 +255,6 @@
 
                 LocalDate date = datePicker.getValue();
 
-                // Validation
                 if (selectedUser == null) {
                     showError("Please select a user.");
                     event.consume();
@@ -312,7 +274,6 @@
                 }
 
                 try {
-                    // Update the time registration object
                     tr.setRegisteredUser(selectedUser);
                     tr.setRegisteredActivity(selectedActivity);
                     tr.setRegisteredHours(totalHours);
@@ -324,7 +285,6 @@
                     successAlert.setContentText("Time registration updated successfully!");
                     successAlert.showAndWait();
 
-                    // Refresh view to show updated data
                     refreshViews();
 
                 } catch (Exception e) {
@@ -337,29 +297,13 @@
             dialog.showAndWait();
         }
 
-        /**
-         * Set the TimeManager reference and initialize the views
-         * Note: This method is no longer needed if TimeManager is entirely static
-         * but kept for compatibility in case other code calls it
-         */
-        public void setTimeManager(TimeManager timeManager) {
-            // We don't need to store the reference anymore
-            // Just refresh the views
-            setupUserInfo();
-            refreshViews();
-        }
-
-        /**
-         * Set up user info display
-         */
         private void setupUserInfo() {
             if (userLabel == null) {
                 System.err.println("ERROR: userLabel is null! Check your FXML file.");
                 return;
             }
 
-            // Access static TimeManager methods directly
-            User currentUser = this.timeManager.getCurrentUser();
+            User currentUser = timeManager.getCurrentUser();
             if (currentUser != null) {
                 userLabel.setText("Current User: " + currentUser.getUserInitials());
             } else {
@@ -367,9 +311,6 @@
             }
         }
 
-        /**
-         * Show an error dialog
-         */
         private void showError(String message) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -378,21 +319,14 @@
             alert.showAndWait();
         }
 
-        /**
-         * Refresh both views with current data
-         */
         private void refreshViews() {
             refreshPersonalView();
             refreshTeamView();
         }
 
-        /**
-         * Refresh the personal time overview with hierarchical project-activity structure
-         */
         private void refreshPersonalView() {
             personalTableView.getColumns().clear();
 
-            // Initialize root if it doesn't exist
             if (personalTableView.getRoot() == null) {
                 personalTableView.setRoot(new TreeItem<>(new TimeEntryRow("Root", false, false, false)));
             } else {
@@ -401,15 +335,12 @@
 
             User currentUser = this.timeManager.getCurrentUser();
             if (currentUser == null) {
-                // No user logged in, show message
                 return;
             }
 
-            // Get dates for the column headers
             List<LocalDate> dates = new ArrayList<>();
             LocalDate selectedDate = datePicker != null ? datePicker.getValue() : LocalDate.now();
 
-            // Calculate start date based on selected date and days to show
             int daysBeforeSelected = daysToShow / 2;
             LocalDate startDate = selectedDate.minusDays(daysBeforeSelected);
 
@@ -417,12 +348,10 @@
                 dates.add(startDate.plusDays(i));
             }
 
-            // Create name column
             TreeTableColumn<TimeEntryRow, String> nameColumn = new TreeTableColumn<>("Project/Activity");
             nameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getValue().getName()));
             personalTableView.getColumns().add(nameColumn);
 
-            // Create date columns
             for (LocalDate date : dates) {
                 String dateStr = dateFormatter.format(date);
                 final LocalDate columnDate = date;  // <-- keep the real LocalDate!
@@ -443,23 +372,19 @@
                         }
 
                         TimeEntryRow rowData = getTreeTableRow().getItem();
-                        // default: clear
                         setText(empty ? null : item);
                         setStyle("-fx-alignment: CENTER;");
 
                         if (rowData == null) return;
 
-                        // 1) PROJECT row styling...
                         if (rowData.isProject()) {
                             setStyle("-fx-alignment: CENTER; -fx-font-weight: bold;");
                             return;
                         }
-                        // 2) ACTIVITY row styling...
                         if (rowData.isActivity()) {
                             setStyle("-fx-alignment: CENTER; -fx-font-style: italic;");
                             return;
                         }
-                        // 3) TIME REGISTRATION row
                         if (rowData.isTimeRegistration()) {
                             TimeRegistration tr = rowData.getTimeRegistration();
                             // --- INTERVAL CASE ---
@@ -482,26 +407,21 @@
                 personalTableView.getColumns().add(dateColumn);
             }
 
-            // Create root for the tree table
             TreeItem<TimeEntryRow> root = new TreeItem<>(new TimeEntryRow("Root", false, false, false));
             personalTableView.setRoot(root);
             personalTableView.setShowRoot(false);
 
-            // User's time registrations by project and activity
             Map<Project, Map<Activity, List<TimeRegistration>>> userTimeRegByProject = new HashMap<>();
 
-            // Get all time registrations for the current user and organize them by project and activity
             for (Project project : this.timeManager.getProjects()) {
                 Map<Activity, List<TimeRegistration>> activitiesMap = new HashMap<>();
 
                 for (Activity activity : project.getActivities()) {
-                    // Check if user is assigned to or working on this activity
                     boolean isUserInvolved = (activity.getAssignedUsers() != null && activity.getAssignedUsers().contains(currentUser)) ||
                             (activity.getContributingUsers() != null && activity.getContributingUsers().contains(currentUser));
 
                     List<TimeRegistration> activityRegistrations = new ArrayList<>();
 
-                    // Get time registrations for this activity
                     for (TimeRegistration tr : this.timeManager.getTimeRegistrations()) {
                         if (tr.getRegisteredUser().equals(currentUser) &&
                                 tr.getRegisteredActivity().equals(activity)) {
@@ -510,7 +430,6 @@
                         }
                     }
 
-                    // Include this activity if user is involved (assigned, working, or has registrations)
                     if (isUserInvolved) {
                         activitiesMap.put(activity, activityRegistrations);
                     }
@@ -521,7 +440,6 @@
                 }
             }
 
-            // Build the tree structure
             Map<String, Integer> projectTotals = new HashMap<>();
             Map<String, Map<String, Integer>> activityTotals = new HashMap<>();
 
@@ -529,48 +447,40 @@
                 Project project = projectEntry.getKey();
                 Map<Activity, List<TimeRegistration>> activities = projectEntry.getValue();
 
-                // Create project row
                 TimeEntryRow projectRow = new TimeEntryRow(project.getProjectName(), true, false, false);
                 TreeItem<TimeEntryRow> projectItem = new TreeItem<>(projectRow);
                 root.getChildren().add(projectItem);
                 projectItem.setExpanded(true);
 
-                // Initialize project totals for each date
                 for (LocalDate date : dates) {
                     String dateStr = dateFormatter.format(date);
                     projectTotals.put(dateStr, 0);
                 }
 
                 List<Map.Entry<Activity, List<TimeRegistration>>> sortedActivities =
-                        activities.entrySet()                    // Set …
-                                .stream()                      //  ⇢ Stream
-                                // If Activity exposes a number: .sorted(Comparator.comparingInt(e -> e.getKey().getActivityNumber()))
+                        activities.entrySet()
+                                .stream()
                                 .sorted(Comparator.comparingInt(
                                         e -> extractLeadingNumber(e.getKey().getActivityName())))
                                 .collect(Collectors.toList());
 
-                // Add activities for this project
                 for (Map.Entry<Activity, List<TimeRegistration>> activityEntry : sortedActivities) {
                     Activity activity = activityEntry.getKey();
                     List<TimeRegistration> timeRegs = activityEntry.getValue();
 
-                    // Create activity row
                     TimeEntryRow activityRow = new TimeEntryRow(activity.getActivityName(), false, true, false);
                     TreeItem<TimeEntryRow> activityItem = new TreeItem<>(activityRow);
                     projectItem.getChildren().add(activityItem);
                     activityItem.setExpanded(true);
 
-                    // Initialize activity totals for each date
                     Map<String, Integer> activityDateTotals = new HashMap<>();
                     for (LocalDate date : dates) {
                         String dateStr = dateFormatter.format(date);
                         activityDateTotals.put(dateStr, 0);
                     }
 
-                    // Add time registrations for this activity
                     for (TimeRegistration tr : timeRegs) {
                         if (tr instanceof IntervalTimeRegistration itr) {
-                            // create one row for the whole interval
                             String description = String.format("Interval: %s–%s",
                                     dateFormatter.format(itr.getStartDate()),
                                     dateFormatter.format(itr.getEndDate()));
@@ -578,12 +488,10 @@
                             TreeItem<TimeEntryRow> trItem = new TreeItem<>(trRow);
                             activityItem.getChildren().add(trItem);
 
-                            // mark each day in the interval
                             for (LocalDate d : dates) {
                                 if (!d.isBefore(itr.getStartDate()) && !d.isAfter(itr.getEndDate())) {
                                     String dayStr = dateFormatter.format(d);
-                                    trRow.setHoursForDate(dayStr, "◼");   // or "V" for vacation, your choice
-                                    // accumulate to totals if you like:
+                                    trRow.setHoursForDate(dayStr, "◼");
                                     activityDateTotals.put(dayStr, activityDateTotals.get(dayStr) + 1);
                                     projectTotals.put(dayStr, projectTotals.get(dayStr) + 1);
                                 }
@@ -604,7 +512,6 @@
                         }
                     }
 
-                    // Set activity totals for each date
                     for (LocalDate date : dates) {
                         String dateStr = dateFormatter.format(date);
                         int total = activityDateTotals.get(dateStr);
@@ -616,7 +523,6 @@
                     activityTotals.put(activity.getActivityName(), activityDateTotals);
                 }
 
-                // Set project totals for each date
                 for (LocalDate date : dates) {
                     String dateStr = dateFormatter.format(date);
                     int total = projectTotals.get(dateStr);
@@ -626,12 +532,10 @@
                 }
             }
 
-            // Add a "Total" row at the end
             TimeEntryRow totalRow = new TimeEntryRow("TOTAL", true, false, false);
             TreeItem<TimeEntryRow> totalItem = new TreeItem<>(totalRow);
             root.getChildren().add(totalItem);
 
-            // Calculate and set user total hours for each date
             for (LocalDate date : dates) {
                 String dateStr = dateFormatter.format(date);
                 int totalHours = 0;
@@ -648,39 +552,29 @@
                 }
             }
 
-            // Set column resize policy to make columns fill the available space
             personalTableView.setColumnResizePolicy(param -> {
                 double width = personalTableView.getWidth();
-                double nameColumnWidth = width * 0.4; // Name column takes 40% of space
-                double dateColumnWidth = (width - nameColumnWidth) / dates.size(); // Remaining space divided equally
+                double nameColumnWidth = width * 0.4;
+                double dateColumnWidth = (width - nameColumnWidth) / dates.size();
 
-                // Set width for name column
                 nameColumn.setPrefWidth(nameColumnWidth);
 
-                // Set width for all date columns
                 for (int i = 1; i < personalTableView.getColumns().size(); i++) {
                     personalTableView.getColumns().get(i).setPrefWidth(dateColumnWidth);
                 }
-
                 return true;
             });
 
-            // Set tooltip for the personal table view to inform users about editing
             personalTableView.setTooltip(new Tooltip("Double-click on a time registration to edit it"));
         }
 
-        /**
-         * Refresh the team time overview
-         */
         private void refreshTeamView() {
             teamTableView.getColumns().clear();
             teamTableView.getItems().clear();
 
-            // Get dates for the column headers (selected date and previous/following days)
             List<LocalDate> dates = new ArrayList<>();
             LocalDate selectedDate = datePicker != null ? datePicker.getValue() : LocalDate.now();
 
-            // Calculate start date based on selected date and days to show
             int daysBeforeSelected = daysToShow / 2;
             LocalDate startDate = selectedDate.minusDays(daysBeforeSelected);
 
@@ -688,18 +582,15 @@
                 dates.add(startDate.plusDays(i));
             }
 
-            // Create columns
             TableColumn<Map<String, String>, String> userColumn = new TableColumn<>("User");
             userColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get("user")));
             teamTableView.getColumns().add(userColumn);
 
-            // Create date columns
             for (LocalDate date : dates) {
                 String dateStr = dateFormatter.format(date);
                 TableColumn<Map<String, String>, String> dateColumn = new TableColumn<>(dateStr);
                 dateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().get(dateStr)));
 
-                // Custom cell factory for color coding remaining hours
                 dateColumn.setCellFactory(new Callback<TableColumn<Map<String, String>, String>,
                         TableCell<Map<String, String>, String>>() {
                     @Override
@@ -727,7 +618,6 @@
                                             setStyle("-fx-background-color: #c8ffc8; -fx-alignment: CENTER;"); // Light green
                                         }
                                     } catch (NumberFormatException e) {
-                                        // Not a number, use default style
                                         setStyle("-fx-alignment: CENTER;");
                                     }
                                 }
@@ -739,15 +629,12 @@
                 teamTableView.getColumns().add(dateColumn);
             }
 
-            // Create data rows
             ObservableList<Map<String, String>> items = FXCollections.observableArrayList();
 
-            // Add data for each user
             for (User user : this.timeManager.getUsers()) {
                 Map<String, String> rowData = new HashMap<>();
                 rowData.put("user", user.getUserInitials());
 
-                // For each date, calculate 7.5 - hours registered
                 for (LocalDate date : dates) {
                     String dateStr = dateFormatter.format(date);
                     int registeredHours = 0;
@@ -770,17 +657,13 @@
 
             teamTableView.setItems(items);
 
-            // Force the columns to be equal width (except the user column)
             teamTableView.setColumnResizePolicy(param -> {
-                // Calculate width for date columns
                 double width = teamTableView.getWidth();
-                double userColumnWidth = width * 0.3; // User column takes 30% of space
-                double dateColumnWidth = (width - userColumnWidth) / dates.size(); // Remaining space divided equally
+                double userColumnWidth = width * 0.3;
+                double dateColumnWidth = (width - userColumnWidth) / dates.size();
 
-                // Set width for user column
                 userColumn.setPrefWidth(userColumnWidth);
 
-                // Set width for all date columns
                 for (int i = 1; i < teamTableView.getColumns().size(); i++) {
                     teamTableView.getColumns().get(i).setPrefWidth(dateColumnWidth);
                 }
@@ -803,7 +686,6 @@
 
             User currentUser = this.timeManager.getCurrentUser();
 
-            // ←— NEW: rebuild the activity choice box
             ChoiceBox<Activity> activityChoiceBox = new ChoiceBox<>();
             List<Activity> assignedActivities = this.timeManager.getProjects().stream()
                     .flatMap(p -> p.getActivities().stream())
@@ -813,7 +695,6 @@
                     .toList();
             activityChoiceBox.getItems().addAll(assignedActivities);
 
-            // --- add a toggle between single-date vs. interval ---
             CheckBox intervalCheckBox = new CheckBox("Register as interval");
 
             // FOR INTERVAL TIME REGISTRATIONS:
@@ -823,7 +704,6 @@
             leaveTypeChoiceBox.setValue("Vacation");
             leaveTypeChoiceBox.setVisible(false);
 
-            // Single-date controls:
             ChoiceBox<Integer> hoursChoiceBox = new ChoiceBox<>();
             for (int i = 0; i <= 23; i++) hoursChoiceBox.getItems().add(i);
             hoursChoiceBox.setValue(0);
@@ -832,13 +712,11 @@
             minutesChoiceBox.setValue(0);
             DatePicker singleDatePicker = new DatePicker(LocalDate.now());
 
-            // Interval controls (initially hidden):
             DatePicker startPicker = new DatePicker(LocalDate.now());
             DatePicker endPicker   = new DatePicker(LocalDate.now());
             startPicker.setVisible(false);
             endPicker  .setVisible(false);
 
-            // When toggling, show/hide relevant controls:
             intervalCheckBox.selectedProperty().addListener((obs, oldV, isInterval) -> {
                 activityChoiceBox.setVisible(!isInterval);
                 leaveTypeChoiceBox.setVisible(isInterval);
@@ -872,9 +750,7 @@
             registerButton.addEventFilter(ActionEvent.ACTION, event -> {
                 boolean isInterval = intervalCheckBox.isSelected();
 
-                // 1) Validate activity or leave type
                 if (!isInterval) {
-                    // single-day: must pick an activity
                     Activity a = activityChoiceBox.getValue();
                     if (a == null) {
                         showError("Please select an activity.");
@@ -882,7 +758,6 @@
                         return;
                     }
                 } else {
-                    // interval: must pick a leave type
                     String leaveType = leaveTypeChoiceBox.getValue();
                     if (leaveType == null) {
                         showError("Please select a leave type.");
@@ -901,13 +776,11 @@
                             event.consume();
                             return;
                         }
-                        // map leaveType → the proper Activity instance
                         String leaveActivity = new Activity(leaveTypeChoiceBox.getValue()).getActivityName();
                         IntervalTimeRegistration itr = new IntervalTimeRegistration(currentUser, leaveActivity, start, end);
                         timeManager.addTimeRegistration(itr);
 
                     } else {
-                        // SINGLE‐DAY registration
                         Activity a      = activityChoiceBox.getValue();
                         LocalDate date  = singleDatePicker.getValue();
                         int h           = hoursChoiceBox.getValue();
@@ -924,7 +797,6 @@
                                 new TimeRegistration(currentUser, a, totalHours, date);
                         timeManager.addTimeRegistration(tr);
                     }
-
                     dialog.close();
                     refreshViews();
 
@@ -933,14 +805,11 @@
                     event.consume();
                 }
             });
-
             dialog.showAndWait();
         }
 
-
         private int extractLeadingNumber(String text) {
             Matcher m = Pattern.compile("(\\d+)").matcher(text);
-            return m.find() ? Integer.parseInt(m.group(1)) : Integer.MAX_VALUE; // non-numbered go last
+            return m.find() ? Integer.parseInt(m.group(1)) : Integer.MAX_VALUE;
         }
-
     }

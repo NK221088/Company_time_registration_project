@@ -43,7 +43,8 @@ public class Activity {
         info.put("ExpectedWorkHours", getExpectedWorkHours());
         info.put("WorkedHours", getWorkedHours());
         info.put("Time interval", getTimeInterval());
-
+        info.put("StartTime", getActivityStartTime());
+        info.put("EndTime", getActivityEndTime());
         return info;
     }
 
