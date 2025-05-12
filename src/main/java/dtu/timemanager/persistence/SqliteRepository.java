@@ -21,6 +21,10 @@ public class SqliteRepository implements
     private EntityManagerFactory emf;
     private EntityManager em;
 
+    public SqliteRepository() {
+        this(false);
+    }
+
     public SqliteRepository(boolean isProduction) {
         Map<String, String> properties = new HashMap<>();
 

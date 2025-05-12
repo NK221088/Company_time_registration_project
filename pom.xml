@@ -12,6 +12,9 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cucumber.version>7.20.1</cucumber.version>
+		<junit.jupiter.version>5.10.2</junit.jupiter.version>
+		<junit.platform.version>1.10.2</junit.platform.version>
 	</properties>
 
 	<dependencies>
@@ -19,6 +22,11 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
+			<version>21.0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
 			<version>21.0.7</version>
 		</dependency>
 
@@ -36,13 +44,41 @@
 			<version>3.36.0.3</version>
 		</dependency>
 
+		<!-- Cucumber -->
 		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-			<version>21.0.7</version>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit-platform-engine</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-picocontainer</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
 		</dependency>
 
-		<!-- JUnit -->
+		<!-- JUnit 5 (Jupiter API + Engine + Platform Suite) -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-suite</artifactId>
+			<version>${junit.platform.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 4 (Optional: if you have legacy JUnit 4 tests) -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
