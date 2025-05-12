@@ -35,6 +35,8 @@ public class Activity {
     public ArrayList<User> getAssignedUsers() { return this.assignedUsers;}
     public String getActivityName() { return this.activityName;}
 
+    // For TA, this is the code which was responsible for the Time Interval view in the GUI,
+    // and the last two lines were missing. (StartTime and EndTime) making them null. Is fixed now.
     public Map<String, Object> viewActivity() {
         Map<String,Object> info = new HashMap();
         info.put("Name", getActivityName());
