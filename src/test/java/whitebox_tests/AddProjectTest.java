@@ -24,7 +24,7 @@ class AddProjectTest {
 
         assertNotNull(project);
         assertEquals(1, projects.size());
-        assertSame(project, projects.getFirst());
+        assertSame(project, projects.get(0));
     }
 
     @Test

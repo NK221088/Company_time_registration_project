@@ -1,9 +1,8 @@
 package dtu.timemanager.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Entity
 @Table(name = "time_registrations")
@@ -12,15 +11,16 @@ import java.util.Map;
 public class TimeRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_initials")
     private User registeredUser;
 
     @ManyToOne
-    @JoinColumn(name = "activity_id")
+    @JoinColumn(name = "activity_name")
     private Activity registeredActivity;
+
 
     private double registeredHours;
 
@@ -28,9 +28,13 @@ public class TimeRegistration {
     private LocalDate registeredDate;
 
     // JPA requires a no-arg constructor
-    protected TimeRegistration() {}
+    public TimeRegistration() {}
 
     public TimeRegistration(User registeredUser, Activity registeredActivity, double registeredHours, LocalDate registeredDate) throws Exception {
+        if (registeredHours <= 0) {
+            throw new Exception("Hours must be positive");
+        }
+
         this.registeredUser = registeredUser;
         this.registeredActivity = registeredActivity;
         this.registeredHours = registeredHours;
@@ -42,6 +46,9 @@ public class TimeRegistration {
             }
             if (registeredUser != null) {
                 registeredUser.addTimeRegistration(this);
+            }
+            if (registeredActivity != null) {
+                registeredActivity.addContributingUser(registeredUser);
             }
         }
     }
@@ -67,22 +74,6 @@ public class TimeRegistration {
     }
 
     public void setRegisteredUser(User registeredUser) {
-        if (this instanceof IntervalTimeRegistration) {
-            this.registeredUser = registeredUser;
-            return;
-        }
-
-        if (this.registeredUser != null && this.registeredActivity != null) {
-            Map<Activity, List<TimeRegistration>> registrationList = this.registeredUser.getActivityRegistrations();
-            List<TimeRegistration> actRegList = registrationList.get(this.registeredActivity);
-
-            if (this.registeredUser != registeredUser) { // IF CHANGE TO NEW USER
-                if (actRegList != null && actRegList.size() < 2) {
-                    this.registeredActivity.getContributingUsers().remove(this.registeredUser);
-                }
-                this.registeredActivity.addContributingUser(registeredUser);
-            }
-        }
         this.registeredUser = registeredUser;
     }
 
@@ -94,7 +85,10 @@ public class TimeRegistration {
         }
     }
 
-    public void setRegisteredHours(double registeredHours) {
+    public void setRegisteredHours(double registeredHours) throws Exception {
+        if (registeredHours <= 0) {
+            throw new Exception("Hours must be positive");
+        }
         this.registeredHours = registeredHours;
     }
 
@@ -104,5 +98,21 @@ public class TimeRegistration {
         } else {
             throw new Exception("Registered date cannot be in the future.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeRegistration that = (TimeRegistration) o;
+        return Double.compare(that.registeredHours, registeredHours) == 0 &&
+                Objects.equals(registeredDate, that.registeredDate) &&
+                Objects.equals(registeredUser, that.registeredUser) &&
+                Objects.equals(registeredActivity, that.registeredActivity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(registeredHours, registeredDate, registeredUser, registeredActivity);
     }
 }

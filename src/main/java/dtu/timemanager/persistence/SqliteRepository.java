@@ -6,7 +6,7 @@ import dtu.timemanager.app.TimeRegistrationRepository;
 import dtu.timemanager.app.UserRepository;
 import dtu.timemanager.domain.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +35,7 @@ public class SqliteRepository implements
             properties.put("javax.persistence.jdbc.url", "jdbc:sqlite:lib/db/test.db");
         }
 
-        emf = Persistence.createEntityManagerFactory("TimeManager", properties);
+        emf = Persistence.createEntityManagerFactory("timemanager", properties);
         em = emf.createEntityManager();
     }
 
@@ -96,18 +96,6 @@ public class SqliteRepository implements
     @Override
     public List<User> getUsers() {
         return em.createQuery("SELECT u FROM User u", User.class).getResultList();
-    }
-
-    @Override
-    public boolean userExists(String username) {
-        try {
-            long count = (long) em.createQuery("SELECT COUNT(u) FROM User u WHERE u.userInitials = :username")
-                    .setParameter("username", username)
-                    .getSingleResult();
-            return count > 0;
-        } catch (NoResultException e) {
-            return false;
-        }
     }
 
     @Override

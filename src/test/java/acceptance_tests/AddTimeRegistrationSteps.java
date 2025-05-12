@@ -66,7 +66,7 @@ public class AddTimeRegistrationSteps {
     }
     @Then("the time registration is not created")
     public void theTimeRegistrationIsNotCreated() {
-        Activity activity = timeManager.getProjects().getFirst().getActivities().getFirst();
+        Activity activity = timeManager.getProjects().get(0).getActivities().get(0);
         assertEquals(workedHours, activity.getWorkedHours());
     }
 

@@ -27,7 +27,7 @@ class AddActivityTest {
         assertNotNull(project);
         assertNotNull(activity);
         assertEquals(1, project.getActivities().size());
-        assertSame(activity, project.getActivities().getFirst());
+        assertSame(activity, project.getActivities().get(0));
     }
 
     @Test

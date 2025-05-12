@@ -1,5 +1,9 @@
 package acceptance_tests;
 
+import dtu.timemanager.app.ActivityRepository;
+import dtu.timemanager.app.ProjectRepository;
+import dtu.timemanager.app.TimeRegistrationRepository;
+import dtu.timemanager.app.UserRepository;
 import dtu.timemanager.domain.*;
 import dtu.timemanager.persistence.SqliteRepository;
 import io.cucumber.java.en.Given;
@@ -21,6 +25,10 @@ public class FinalizeActivitySteps {
     private double hours;
     private LocalDate date;
     private double registeredHours;
+    private UserRepository userRepository;
+    private ActivityRepository activityRepository;
+    private ProjectRepository projectRepository;
+    private TimeRegistrationRepository timeRegistrationRepository;
 
     public FinalizeActivitySteps(TimeManager timeManager, ErrorMessageHolder errorMessage) {
         this.timeManager = timeManager;
@@ -29,7 +37,7 @@ public class FinalizeActivitySteps {
 
     @Given("two unfinalized activities exists in a project")
     public void twoUnfinalizedActivitiesExistsInAProject() throws Exception {
-        this.timeManager = new TimeManager(new SqliteRepository(false));
+        this.timeManager = new TimeManager(new SqliteRepository(true));
         this.project = timeManager.addProject("Project with finalized activity");;
         this.firstActivity = new Activity("Activity to be finalized");
         this.secondActivity = new Activity("Unfinalized activity");

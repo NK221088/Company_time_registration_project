@@ -765,7 +765,7 @@ public class projectMenu {
                         reportText.append(i+1).append(". ").append(activity.getActivityName()).append("\n");
 
                         // Get all assigned users
-                        ArrayList<User> assignedUsers = activity.getAssignedUsers();
+                        ArrayList<User> assignedUsers = (ArrayList<User>) activity.getAssignedUsers();
                         if (assignedUsers != null && !assignedUsers.isEmpty()) {
                             reportText.append("   Assigned employees: ");
                             for (int j = 0; j < assignedUsers.size(); j++) {
@@ -779,7 +779,7 @@ public class projectMenu {
                             reportText.append("   Assigned Users: None\n");
                         }
                         // Get all contributing users
-                        ArrayList<User> contributedUsers = activity.getContributingUsers();
+                        ArrayList<User> contributedUsers = (ArrayList<User>) activity.getContributingUsers();
                         if (contributedUsers != null && !contributedUsers.isEmpty()) {
                             reportText.append("   Contributing Users: ");
                             for (int j = 0; j < contributedUsers.size(); j++) {

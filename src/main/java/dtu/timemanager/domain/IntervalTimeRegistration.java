@@ -1,12 +1,14 @@
 package dtu.timemanager.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "interval_time_registrations")
 @DiscriminatorValue("INTERVAL")
 public class IntervalTimeRegistration extends TimeRegistration {
+    @Id
+    private int id;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -18,7 +20,7 @@ public class IntervalTimeRegistration extends TimeRegistration {
     private String leaveOption;
 
     // JPA requires a no-arg constructor
-    protected IntervalTimeRegistration() {
+    public IntervalTimeRegistration() {
         super();
     }
 

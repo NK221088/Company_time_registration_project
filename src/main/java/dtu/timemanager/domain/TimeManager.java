@@ -8,7 +8,6 @@ import java.util.List;
 public class TimeManager {
     private SqliteRepository repository;
     private User current_user;
-    private List<User> users = new ArrayList<>();
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
     private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
@@ -30,28 +29,30 @@ public class TimeManager {
     }
 
     public void addUser(User user) throws Exception {
-        String initials = user.getUserInitials();
-
-        if (!initials.matches("[a-zA-Z]{4}")) {
-            throw new Exception("The user initials must be 4 letters.");
-        }
-
-        if (!users.contains(user)) {
-            users.add(user);
-        } else {
-            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
-        }
+        repository.addUser(user);
+//        String initials = user.getUserInitials();
+//
+//        if (!initials.matches("[a-zA-Z]{4}")) {
+//            throw new Exception("The user initials must be 4 letters.");
+//        }
+//
+//        if (!users.contains(user)) {
+//            users.add(user);
+//        } else {
+//            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
+//        }
     }
 
     public User getUserFromInitials(String user_initials) {
-        try {
-            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
-        } catch (Exception e) {
-            throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
-        }
+        return repository.getUserByUsername(user_initials);
+//        try {
+//            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
+//        } catch (Exception e) {
+//            throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
+//        }
     }
 
-    public List<User> getUsers() { return users; }
+    public List<User> getUsers() { return repository.getUsers(); }
 
     public User getCurrentUser() { return current_user; }
 

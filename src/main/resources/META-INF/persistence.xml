@@ -2,28 +2,21 @@
 <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
-    <persistence-unit name="TimeManager" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="timemanager" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>dtu.timemanager.domain.User</class>
         <class>dtu.timemanager.domain.Project</class>
         <class>dtu.timemanager.domain.Activity</class>
         <class>dtu.timemanager.domain.TimeRegistration</class>
         <class>dtu.timemanager.domain.IntervalTimeRegistration</class>
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
-            <!-- Note the use of a relative path as the database URL.
-                 This allows the database to be located in the root directory
-                 of the Eclipse project, and thus is independent on which computer and OS
-                 the Eclipse project is run.  -->
-            <property name="javax.persistence.jdbc.url"
-                      value="jdbc:sqlite:lib/db/production.db" />
-            <!-- <property name="javax.persistence.jdbc.user" value="test" />
-            <property name="javax.persistence.jdbc.password" value="test" /> -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:lib/db/test.db" />
 
-            <!-- EclipseLink should create the database schema automatically -->
+            <!-- EclipseLink properties -->
             <property name="eclipselink.ddl-generation" value="create-tables" />
-            <property name="eclipselink.ddl-generation.output-mode"
-                      value="database" />
-        </properties>
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
 
+        </properties>
     </persistence-unit>
 </persistence>

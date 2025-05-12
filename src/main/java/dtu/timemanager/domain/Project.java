@@ -1,42 +1,39 @@
 package dtu.timemanager.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "Project")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Database ID for JPA
 
-    private String projectName;
-    private String projectID;
+    public Long id;
+
+    public String projectName;
+    public String projectID;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    public LocalDate startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    public LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "project_lead_id")
-    private User projectLead;
+    @JoinColumn(name = "project_lead_initials")
+    public User projectLead;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Activity> activities;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    public List<Activity> activities = new ArrayList<>();
 
-    private boolean isFinalized;
+    public boolean isFinalized;
 
     // No-arg constructor required by JPA
-    protected Project() {
-        this.activities = new ArrayList<>();
-    }
+    public Project() {}
 
     public Project(String projectName) {
-        this(); // Call no-arg constructor to initialize activities
         this.projectName = projectName;
     }
 
@@ -56,10 +53,12 @@ public class Project {
         return projectName;
     }
 
-    public String getProjectID() { return projectID; }
+    public String getProjectID() {
+        return projectID;
+    }
 
     public void setProjectStartDate(LocalDate startDate) throws Exception {
-        if (endDate==null || startDate.isBefore(endDate)) {
+        if (endDate == null || startDate.isBefore(endDate)) {
             this.startDate = startDate;
         } else {
             throw new Exception("The start date of the project can't be after the end date of the project.");
@@ -67,7 +66,7 @@ public class Project {
     }
 
     public void setProjectEndDate(LocalDate endDate) throws Exception {
-        if (startDate==null || endDate.isAfter(startDate)) {
+        if (startDate == null || endDate.isAfter(startDate)) {
             this.endDate = endDate;
         } else {
             throw new Exception("The end date of the project can't be before the start date of the project.");
@@ -82,12 +81,14 @@ public class Project {
         return endDate;
     }
 
-    public ArrayList<Activity> getActivities() {return activities;}
-
+    public List<Activity> getActivities() {
+        return Collections.unmodifiableList(activities);
+    }
 
     public void addActivity(Activity activity) throws Exception {
         if (!activities.contains(activity)) {
             activities.add(activity);
+            activity.setProject(this);
         } else {
             throw new Exception("An activity with name '" + activity.getActivityName() + "' already exists within '" + this.getProjectName() + "' two activities cannot exist with the same name within the same project.");
         }
@@ -96,19 +97,27 @@ public class Project {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Project) {
-            return Objects.equals(getProjectName(), ((Project) obj).getProjectName());
+            return Objects.equals(getId(), ((Project) obj).getId());
         } else {
             return false;
         }
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
     public Activity getActivityFromName(String activityName) {
-        return getActivities().stream().filter(activity -> activity.getActivityName().equals(activityName)).findFirst().orElse(null);
+        return getActivities().stream()
+                .filter(activity -> activity.getActivityName().equals(activityName))
+                .findFirst()
+                .orElse(null);
     }
 
     public String toString() {
-            return projectName;
-        }
+        return projectName;
+    }
 
     public boolean getFinalized() {
         return this.isFinalized;
@@ -151,12 +160,11 @@ public class Project {
         activity.setActivityName(newName);
     }
 
-
     public void setProjectID(String id) {
         this.projectID = id;
     }
 
-    public Object getId() {
+    public Long getId() {
         return id;
     }
 }

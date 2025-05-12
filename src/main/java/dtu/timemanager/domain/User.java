@@ -1,21 +1,23 @@
 package dtu.timemanager.domain;
 
 import java.util.*;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
 public class User {
     @Id
-    private String userInitials;
+    public String userInitials;
 
-    @Transient // This complex structure needs custom handling
-    private Map<Activity, List<TimeRegistration>> activityRegistrations = new HashMap<Activity, List<TimeRegistration>>();
+    public int activityCount = 0;
 
-    private Integer activityCount = 0;
+    @OneToMany(mappedBy = "registeredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<TimeRegistration> timeRegistrations = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "assignedUsers", fetch = FetchType.LAZY)
+    public List<Activity> assignedActivities = new ArrayList<>();
 
     // No-args constructor required by JPA
-    protected User() {}
+    public User() {}
 
     public User(String userInitials) {
         this.userInitials = userInitials;
@@ -25,25 +27,39 @@ public class User {
         return this.userInitials;
     }
 
-    public Integer getActivityCount() {
+    public int getActivityCount() {
         return activityCount;
     }
 
     public void addTimeRegistration(TimeRegistration timeRegistration) {
-        Activity activity = timeRegistration.getRegisteredActivity(); // 1
-        List<TimeRegistration> activityValue = activityRegistrations.get(activity); // 2
-        if (activityValue != null) { // 3
-            activityValue.add(timeRegistration); // 4
-        } else {
-            ArrayList<TimeRegistration> timeReg = new ArrayList<>(); // 5
-            timeReg.add(timeRegistration); // 6
-            activityRegistrations.put(activity, timeReg); // 7
+        if (!timeRegistrations.contains(timeRegistration)) {
+            timeRegistrations.add(timeRegistration);
         }
-        activity.addContributingUser(timeRegistration.getRegisteredUser()); // 8
     }
 
+    // Helper method to get activity registrations as a map
     public Map<Activity, List<TimeRegistration>> getActivityRegistrations() {
+        Map<Activity, List<TimeRegistration>> activityRegistrations = new HashMap<>();
+
+        for (TimeRegistration registration : timeRegistrations) {
+            Activity activity = registration.getRegisteredActivity();
+            if (activity != null) {
+                if (!activityRegistrations.containsKey(activity)) {
+                    activityRegistrations.put(activity, new ArrayList<>());
+                }
+                activityRegistrations.get(activity).add(registration);
+            }
+        }
+
         return activityRegistrations;
+    }
+
+    public List<TimeRegistration> getTimeRegistrations() {
+        return Collections.unmodifiableList(timeRegistrations);
+    }
+
+    public List<Activity> getAssignedActivities() {
+        return Collections.unmodifiableList(assignedActivities);
     }
 
     public String toString() {
@@ -65,5 +81,10 @@ public class User {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(userInitials);
     }
 }
