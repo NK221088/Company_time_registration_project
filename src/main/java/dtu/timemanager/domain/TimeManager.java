@@ -25,6 +25,13 @@ public class TimeManager {
         this.timeRegistrationRepository = timeRegistrationRepository;
         this.userRepository = userRepository;
     }
+    public TimeManager() {
+        SqliteRepository sqliteRepository = new SqliteRepository(false);
+        this.activityRepository = sqliteRepository;
+        this.projectRepository = sqliteRepository;
+        this.timeRegistrationRepository = sqliteRepository;
+        this.userRepository = sqliteRepository;
+    }
     public void assignUser(Activity activity, User user) {
         activity.assignUser(user);
     }
