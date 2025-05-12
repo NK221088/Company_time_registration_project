@@ -21,10 +21,6 @@ public class SqliteRepository implements
     private EntityManagerFactory emf;
     private EntityManager em;
 
-    public SqliteRepository() {
-        this(false);
-    }
-
     public SqliteRepository(boolean isProduction) {
         Map<String, String> properties = new HashMap<>();
 
@@ -44,6 +40,7 @@ public class SqliteRepository implements
         properties.put("eclipselink.logging.exceptions", "true");
 
         try {
+
             emf = Persistence.createEntityManagerFactory("TimeManager", properties);
             em = emf.createEntityManager();
         } catch (PersistenceException e) {

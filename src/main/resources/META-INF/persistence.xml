@@ -19,7 +19,7 @@
         <properties>
             <!-- Database connection -->
             <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:lib/db/library.db" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:lib/db/timeManager.db" />
 
             <!-- EclipseLink specific properties -->
             <property name="eclipselink.ddl-generation" value="create-tables" />

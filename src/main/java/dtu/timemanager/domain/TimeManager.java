@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimeManager {
-    private SqliteRepository repository = new SqliteRepository(false);
+    private SqliteRepository repository;
     private User current_user;
     private List<User> users = new ArrayList<>();
     private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
