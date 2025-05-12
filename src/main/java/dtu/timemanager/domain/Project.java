@@ -3,6 +3,7 @@ package dtu.timemanager.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public class Project {
@@ -65,9 +66,18 @@ public class Project {
 
 
     public void addActivity(Activity activity) throws Exception {
+        int activityCountpre = getActivities().size();
+        ArrayList<Activity> activitiesListpre = activities;
+
+
+
+        assert activity != null && activity.getActivityName() != null: "precondition";
         if (!activities.contains(activity)) {
+            assert (!activities.contains(activity));
             activities.add(activity);
+            assert (activities.contains(activity) && activityCountpre != getActivities().size());
         } else {
+            assert (activitiesListpre == getActivities() && activityCountpre == getActivities().size()) ;
             throw new Exception("An activity with name '" + activity.getActivityName() + "' already exists within '" + this.getProjectName() + "' two activities cannot exist with the same name within the same project.");
         }
     }
