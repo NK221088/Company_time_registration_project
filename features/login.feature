@@ -10,4 +10,4 @@ Feature: Login
   Scenario: An unregistered user attempts to log in
     When the user types in their initials "huno"
     Then they aren't logged into the system
-    And the error message "The user huno don't exist in the system." is given
+    And the error message "The user huno doesn't exist in the system." is given

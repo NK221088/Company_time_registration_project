@@ -18,4 +18,6 @@ public interface TimeRegistrationRepository {
     void updateTimeRegistration(TimeRegistration registration);
 
     void clearTimeRegistrationDataBase();
+
+    List<TimeRegistration> getAllTimeRegistrations();
 }

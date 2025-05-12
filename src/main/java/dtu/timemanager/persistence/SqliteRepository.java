@@ -294,4 +294,10 @@ public class SqliteRepository implements
         em.createNativeQuery("DELETE FROM User").executeUpdate();
         em.getTransaction().commit();
     }
+
+    @Override
+    public List<TimeRegistration> getAllTimeRegistrations() {
+        return em.createQuery("SELECT t FROM TimeRegistration t WHERE TYPE(t) = TimeRegistration", TimeRegistration.class)
+                .getResultList();
+    }
 }

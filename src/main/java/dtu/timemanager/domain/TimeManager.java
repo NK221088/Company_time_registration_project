@@ -12,8 +12,6 @@ import java.util.List;
 public class TimeManager {
     private User currentUser;
     private SqliteRepository repository;
-    private List<IntervalTimeRegistration> intervalTimeRegistrations = new ArrayList<>();
-    private List<TimeRegistration> timeRegistrations = new ArrayList<>();
     private int projectCount = 0;
     private ActivityRepository activityRepository;
     private ProjectRepository projectRepository;
@@ -63,12 +61,18 @@ public class TimeManager {
 
     // Alexander Wittrup
     public User getUserFromInitials(String user_initials) {
-        return userRepository.getUserByUsername(user_initials);
-//        try {
-//            return users.stream().filter(user -> user.getUserInitials().equals(user_initials)).findFirst().get();
-//        } catch (Exception e) {
-//            throw new RuntimeException("The user " + user_initials + " don't exist in the system.");
-//        }
+        User user = userRepository.getUserByUsername(user_initials);
+        if (user != null) {
+            return user;
+        }
+        try {
+            return userRepository.getUsers().stream()
+                    .filter(u -> u.getUserInitials().equals(user_initials))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("The user " + user_initials + " doesn't exist in the system."));
+        } catch (Exception e) {
+            throw new RuntimeException("The user " + user_initials + " doesn't exist in the system.", e);
+        }
     }
 
     public List<User> getUsers() { return userRepository.getUsers(); }
@@ -136,16 +140,13 @@ public class TimeManager {
     }
 
     public List<TimeRegistration> getTimeRegistrations() {
-        return timeRegistrations;
+        return timeRegistrationRepository.getAllTimeRegistrations();
     }
 
     public void addIntervalTimeRegistration(IntervalTimeRegistration intervalTimeRegistration) throws Exception {
         timeRegistrationRepository.addIntervalTimeRegistration(intervalTimeRegistration.getRegisteredUser(), intervalTimeRegistration.getLeaveOption(), intervalTimeRegistration.getStartDate(), intervalTimeRegistration.getEndDate());
     }
 
-    public List<IntervalTimeRegistration> getIntervalTimeRegistrations() {
-        return intervalTimeRegistrations;
-    }
 
     // Nikolai Kuhl
     public void renameProject(Project project, String newName) throws IllegalArgumentException {
