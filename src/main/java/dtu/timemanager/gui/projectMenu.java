@@ -30,7 +30,13 @@ public class projectMenu {
     private VBox projectInfoStatusContainer;
 
     @FXML
+    public VBox activityInfoStatusContainer;
+
+    @FXML
     private Label projectInfoStatus;
+
+    @FXML
+    private Label activityInfoStatus;
 
     @FXML
     private Button assignEmployeeButton;
@@ -46,7 +52,6 @@ public class projectMenu {
 
     private Project selectedProject;
     private Activity selectedActivity;
-    private Boolean hasSelectedIndependent = false;
 
     @FXML
     private void initialize() throws Exception {
@@ -69,11 +74,9 @@ public class projectMenu {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
-                } else if (item instanceof Activity) {
-                    Activity activity = (Activity) item;
+                } else if (item instanceof Activity activity) {
                     setText(activity.getActivityName() + (activity.getFinalized() ? " ✓" : ""));
-                } else if (item instanceof Project) {
-                    Project project = (Project) item;
+                } else if (item instanceof Project project) {
                     boolean allFinalized = project.getActivities().stream().allMatch(Activity::getFinalized);
                     setText(project.getProjectName() + (allFinalized && !project.getActivities().isEmpty() ? " (Completed)" : ""));
                 } else {
@@ -123,34 +126,19 @@ public class projectMenu {
             expandedPaths = getExpandedPaths(projectTreeView.getRoot());
         }
 
-        TreeItem<Object> projectsItem = new TreeItem<>("Projects");
-        projectsItem.setExpanded(true);
+        TreeItem<Object> rootItem = new TreeItem<>("Projects");
+        rootItem.setExpanded(true);
 
         for (Project project : timeManager.getProjects()) {
             TreeItem<Object> projectItem = new TreeItem<>(project);
-
-            boolean allActivitiesFinalized = true;
-
             for (Activity activity : project.getActivities()) {
                 TreeItem<Object> activityItem = new TreeItem<>(activity);
-
-                if (!activity.getFinalized()) {
-                    allActivitiesFinalized = false;
-                }
-
                 projectItem.getChildren().add(activityItem);
             }
-
-            projectsItem.getChildren().add(projectItem);
+            rootItem.getChildren().add(projectItem);
         }
 
-        TreeItem<Object> independentActivitiesItem = new TreeItem<>("Independent Activities");
-        independentActivitiesItem.setExpanded(true);
-
-        TreeItem<Object> invisibleRoot = new TreeItem<>();
-        invisibleRoot.setExpanded(true);
-        invisibleRoot.getChildren().addAll(projectsItem, independentActivitiesItem);
-        projectTreeView.setRoot(invisibleRoot);
+        projectTreeView.setRoot(rootItem);
         projectTreeView.setShowRoot(false);
 
         if (expandedPaths != null) {
@@ -189,8 +177,6 @@ public class projectMenu {
                     selectedActivity = null;
                     showInformation(null);
                 }
-
-                hasSelectedIndependent = "Independent Activities".equals(selectedItem);
 
                 updateFinalizeButtonText();
                 updateButtonStates();  // ✅ Update button states based on selection
@@ -938,8 +924,8 @@ public class projectMenu {
 
 
     public void addActivity(ActionEvent actionEvent) {
-        if (!(selectedProject != null || hasSelectedIndependent)) {
-            showError("Please select a project or independent activities first before adding an activity.");
+        if (!(selectedProject != null)) {
+            showError("Please select a project first before adding an activity.");
             return;
         }
 
@@ -975,10 +961,7 @@ public class projectMenu {
 
             try {
                 Activity activity = new Activity(activityName);
-                if (hasSelectedIndependent) {
-                } else {
-                    selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
-                }
+                selectedProject.addActivity(activity); // <- This line calls your project.addActivity(name)
                 showInformation(null); // <- Refresh the project information view
                 loadProjectTree();
             } catch (Exception e) {

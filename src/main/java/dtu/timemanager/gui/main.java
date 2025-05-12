@@ -6,13 +6,7 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 
 public class main {
-    private TimeManager timeManager;
-
-    private void initialize() throws Exception {
-        timeManager = TimeManagerProvider.getInstance();
-    }
-
-        public void projectMenu(ActionEvent actionEvent) throws IOException {
+    public void projectMenu(ActionEvent actionEvent) throws IOException {
         App.setRoot("projectMenu");
     }
 
@@ -20,9 +14,9 @@ public class main {
         App.setRoot("TimeOverview");
     }
 
-    public void logout(ActionEvent actionEvent) throws IOException {
+    public void logout(ActionEvent actionEvent) throws Exception {
         App.setRoot("login");
-        // MAKE TIME MANAGER A GLOBALLY ACCESSED THINGAMAJIG
+        TimeManager timeManager = TimeManagerProvider.getInstance();
         timeManager.setCurrentUser(null);
     }
 }

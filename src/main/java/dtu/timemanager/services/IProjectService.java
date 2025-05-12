@@ -24,8 +24,8 @@ public class IProjectService implements ProjectInterface {
 
     @Override
     public Project addProject(String projectName) {
-        assert projectName != null && getProjects() != null && getProjectCount() == projects.size();
-        List<Project> projectsPre = getProjects();
+        assert projectName != null && getProjectCount() == projects.size();
+        List<Project> projectsPre = new ArrayList<>(getProjects());
         int projectCountPre = getProjectCount();
 
         Project project = new Project(projectName);
@@ -34,10 +34,15 @@ public class IProjectService implements ProjectInterface {
             project.setProjectID(id);
             projects.add(project);
 
-            assert !projectsPre.contains(project) && projects.contains(project) && getProjectCount() == projectCountPre + 1 && project.getProjectID().equals(formatID(getProjectCount()));
+            assert !projectsPre.contains(project)
+                    && projects.contains(project)
+                    && getProjectCount() == projectCountPre + 1
+                    && project.getProjectID().equals(formatID(getProjectCount()));
             return project;
         } else {
-            assert projectsPre.contains(project) && projects.equals(projectsPre) && getProjectCount() == projectCountPre;
+            assert projectsPre.contains(project)
+                    && projects.equals(projectsPre)
+                    && getProjectCount() == projectCountPre;
             throw new IllegalArgumentException("A project with name '" + project.getProjectName() + "' already exists in the system and two projects can’t have the same name.");
         }
     }

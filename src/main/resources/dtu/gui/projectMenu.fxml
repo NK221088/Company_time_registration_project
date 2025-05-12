@@ -23,12 +23,21 @@
       </padding>
    </VBox>
 
-   <!-- Right side: Project information -->
-   <VBox fx:id="projectInfoStatusContainer" alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
-      <children>
-         <Label fx:id="projectInfoStatus" text="" />
-      </children>
+<!--    Right side: Project information -->
+   <VBox>
+      <VBox fx:id="projectInfoStatusContainer" alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
+         <children>
+            <Label fx:id="projectInfoStatus" text="" />
+         </children>
+      </VBox>
+
+      <VBox fx:id="activityInfoStatusContainer" alignment="CENTER_LEFT" prefWidth="300.0" spacing="10.0">
+         <children>
+            <Label fx:id="activityInfoStatus" text="" />
+         </children>
+      </VBox>
    </VBox>
+
    <VBox alignment="CENTER" spacing="20.0">
       <children>
          <Label text="Project options" />
