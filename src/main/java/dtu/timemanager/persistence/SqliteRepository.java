@@ -20,38 +20,23 @@ public class SqliteRepository implements
 
     private EntityManagerFactory emf;
     private EntityManager em;
+    boolean isProduction = false;
 
     public SqliteRepository() {
         this(false);
     }
 
     public SqliteRepository(boolean isProduction) {
-        Map<String, String> properties = new HashMap<>();
-
-        properties.put("javax.persistence.jdbc.driver", "org.sqlite.JDBC");
-        properties.put("javax.persistence.jdbc.url", isProduction ?
-                "jdbc:sqlite:lib/db/production.db" :
-                "jdbc:sqlite:lib/db/test.db");
-
-        properties.put("eclipselink.ddl-generation", "create-tables");
-        properties.put("eclipselink.ddl-generation.output-mode", "database");
-        properties.put("eclipselink.target-database", "org.eclipse.persistence.platform.database.SQLitePlatform");
-
-        properties.put("eclipselink.logging.level", "FINE");
-        properties.put("eclipselink.logging.timestamp", "true");
-        properties.put("eclipselink.logging.thread", "true");
-        properties.put("eclipselink.logging.session", "true");
-        properties.put("eclipselink.logging.exceptions", "true");
-
-        try {
-
-            emf = Persistence.createEntityManagerFactory("TimeManager", properties);
-            em = emf.createEntityManager();
-        } catch (PersistenceException e) {
-            System.err.println("Persistence initialization error: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
+        this.isProduction = isProduction;
+        Map<String, String> properties = new HashMap<String, String>();
+        if (isProduction) {
+            properties.put("javax.persistence.jdbc.url", "jdbc:sqlite:lib/db/production.db");
+        } else {
+            properties.put("javax.persistence.jdbc.url", "jdbc:sqlite:lib/db/test.db");
         }
+
+        emf = Persistence.createEntityManagerFactory("TimeManager", properties);
+        em = emf.createEntityManager();
     }
 
     // ProjectRepository Implementation
