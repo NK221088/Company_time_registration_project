@@ -11,8 +11,7 @@ import java.util.*;
 @Table(name = "Activity")
 public class Activity {
     @Id
-    private String activityName;
-
+    public String activityName;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -20,7 +19,7 @@ public class Activity {
             joinColumns = @JoinColumn(name = "activity_name"),
             inverseJoinColumns = @JoinColumn(name = "user_initials")
     )
-    private List<User> assignedUsers = new ArrayList<>();
+    public List<User> assignedUsers = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -28,24 +27,24 @@ public class Activity {
             joinColumns = @JoinColumn(name = "activity_name"),
             inverseJoinColumns = @JoinColumn(name = "user_initials")
     )
-    private List<User> contributingUsers = new ArrayList<>();
+    public List<User> contributingUsers = new ArrayList<>();
 
-    private double expectedWorkHours;
+    public double expectedWorkHours;
 
     @Column(name = "start_time")
-    private LocalDate activityStartTime;
+    public LocalDate activityStartTime;
 
     @Column(name = "end_time")
-    private LocalDate activityEndTime;
+    public LocalDate activityEndTime;
 
-    private Boolean isFinalized = false;
+    public Boolean isFinalized = false;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "project_id")
-    private Project project;
+    public Project project;
 
-    @OneToMany(mappedBy = "registeredActivity", fetch = FetchType.LAZY)
-    private List<TimeRegistration> timeRegistrations = new ArrayList<>();
+    @OneToMany(mappedBy = "registeredActivity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<TimeRegistration> timeRegistrations = new ArrayList<>();
 
     // No-args constructor required by JPA
     public Activity() {}
@@ -69,6 +68,25 @@ public class Activity {
             workedHours += timeReg.getRegisteredHours();
         }
         return workedHours;
+    }
+
+    /**
+     * Adds a time registration to this activity and maintains the bidirectional relationship
+     */
+    public void addTimeRegistration(TimeRegistration timeRegistration) throws Exception {
+        if (!timeRegistrations.contains(timeRegistration)) {
+            // Add to this activity's collection
+            timeRegistrations.add(timeRegistration);
+
+            // Set the bidirectional relationship
+            timeRegistration.setRegisteredActivity(this);
+
+            // Add the user as a contributing user
+            User user = timeRegistration.getRegisteredUser();
+            if (user != null) {
+                addContributingUser(user);
+            }
+        }
     }
 
     public List<User> getAssignedUsers() {

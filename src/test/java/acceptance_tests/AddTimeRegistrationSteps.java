@@ -1,15 +1,11 @@
 package acceptance_tests;
-
 import dtu.timemanager.domain.*;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
-
 // Alexander Wittrup
 public class AddTimeRegistrationSteps {
     private Activity registeredActivity;
@@ -35,8 +31,8 @@ public class AddTimeRegistrationSteps {
     @Given("that the project has an activity named {string} which is set as in progress")
     public void thatTheProjectHasAnActivityNamedWhichIsSetAsInProgress(String activityName) throws Exception {
         this.activity = new Activity(activityName);
-        activityHolder.setActivity(activity);
         project.addActivity(activity);
+        activityHolder.setActivity(activity);
         assertFalse(activity.getFinalized());
     }
 
@@ -44,10 +40,12 @@ public class AddTimeRegistrationSteps {
     public void theUserAddsANewTimeRegistrationOnTheDateWithActivityAndWorkedHours(String date, String activityName, Integer workedHours) {
         try {
             this.user = timeManager.getCurrentUser();
-            this.timeRegistration = new TimeRegistration(user, activity, workedHours, LocalDate.parse(date));
+            this.timeRegistration = new TimeRegistration(user, project.getActivityFromName(activityName), workedHours, LocalDate.parse(date));
             timeManager.addTimeRegistration(timeRegistration);
         } catch (Exception e) {
             this.errorMessage.setErrorMessage(e.getMessage());
+            // Set timeRegistration to null to indicate it wasn't created
+            this.timeRegistration = null;
         }
     }
 
@@ -58,6 +56,7 @@ public class AddTimeRegistrationSteps {
         assertEquals(this.timeRegistration.getRegisteredDate().toString(),               dataTable.cell(1, 2));
         assertTrue(timeManager.getTimeRegistrations().contains(this.timeRegistration));
     }
+
     @Given("that the project has an activity named {string} which is set as finalized")
     public void thatTheProjectHasAnActivityNamedWhichIsSetAsFinalized(String activityName) throws Exception {
         this.activity = new Activity(activityName);
@@ -65,16 +64,35 @@ public class AddTimeRegistrationSteps {
         activity.setActivityAsFinalized();
         assertTrue(activity.getFinalized());
     }
+
     @Then("the time registration is not created")
     public void theTimeRegistrationIsNotCreated() {
-        Activity activity = timeManager.getProjects().get(0).getActivities().get(0);
-        assertEquals(workedHours, activity.getWorkedHours());
+        // Verify that the activity's worked hours have not changed
+        assertEquals(workedHours, this.activity.getWorkedHours());
+
+        // Verify that our time registration is null (it wasn't created)
+        assertNull(this.timeRegistration);
+
+        // Verify that no time registration was added to the activity
+        assertEquals(0, this.activity.getTimeRegistrations().size());
+
+        // Additionally, verify that no time registration for this activity exists in the time manager
+        boolean timeRegistrationExists = false;
+        for (TimeRegistration tr : timeManager.getTimeRegistrations()) {
+            if (tr.getRegisteredActivity() != null &&
+                    tr.getRegisteredActivity().equals(this.activity)) {
+                timeRegistrationExists = true;
+                break;
+            }
+        }
+        assertFalse(timeRegistrationExists);
     }
 
     @Then("the hours worked on the activity is {int}")
     public void theHoursWorkedOnTheActivityIs(Integer workedHours) {
-        assertEquals(this.activity.getWorkedHours(), Double.valueOf(workedHours));
+        assertEquals(Double.valueOf(workedHours), this.activity.getWorkedHours());
     }
+
     @Then("the user {string} is not added to contributing users again")
     public void theUserIsNotAddedToContributingUsersAgain(String userInitials) {
         Integer count = 0;
@@ -85,9 +103,9 @@ public class AddTimeRegistrationSteps {
         }
         assertFalse(count > 1);
     }
+
     @Then("the registered date is not changed")
     public void theRegisteredDateIsNotChanged() {
         assertEquals(activityHolder.getOldDate(), activityHolder.getTimeRegistration().getRegisteredDate().toString());
     }
-
 }

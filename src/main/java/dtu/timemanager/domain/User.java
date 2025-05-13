@@ -8,13 +8,12 @@ import jakarta.persistence.*;
 public class User {
     @Id
     public String userInitials;
-
     public int activityCount = 0;
 
     @OneToMany(mappedBy = "registeredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<TimeRegistration> timeRegistrations = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "assignedUsers", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "assignedUsers", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     public List<Activity> assignedActivities = new ArrayList<>();
 
     // No-args constructor required by JPA
@@ -32,27 +31,32 @@ public class User {
         return activityCount;
     }
 
-    // Alexander Wittrup
+    // Alexander Wittrup - Fixed implementation
     public void addTimeRegistration(TimeRegistration timeRegistration) {
         if (!timeRegistrations.contains(timeRegistration)) {
+            // Add to this user's collection
             timeRegistrations.add(timeRegistration);
+
+            // Set the bidirectional relationship
+            timeRegistration.setRegisteredUser(this);
+
+            // Get the activity associated with the time registration
+            Activity activity = timeRegistration.getRegisteredActivity();
+            if (activity != null) {
+                // Add this user as a contributing user to the activity
+                activity.addContributingUser(this);
+
+                // Add the time registration to the activity if not already there
+                if (!activity.timeRegistrations.contains(timeRegistration)) {
+                    activity.timeRegistrations.add(timeRegistration);
+                }
+            }
         }
-//        Activity a = timeRegistration.getRegisteredActivity();
-//        List<TimeRegistration> activityValue = activityRegistrations.get(a);
-//        if (activityValue != null) {
-//            activityValue.add(timeRegistration);
-//        } else {
-//            ArrayList<TimeRegistration> timeReg = new ArrayList<>();
-//            timeReg.add(timeRegistration);
-//            activityRegistrations.put(a, timeReg);
-//        }
-//        a.addContributingUser(timeRegistration.getRegisteredUser());
     }
 
     // Helper method to get activity registrations as a map
     public Map<Activity, List<TimeRegistration>> getActivityRegistrations() {
         Map<Activity, List<TimeRegistration>> activityRegistrations = new HashMap<>();
-
         for (TimeRegistration registration : timeRegistrations) {
             Activity activity = registration.getRegisteredActivity();
             if (activity != null) {
@@ -62,7 +66,6 @@ public class User {
                 activityRegistrations.get(activity).add(registration);
             }
         }
-
         return activityRegistrations;
     }
 

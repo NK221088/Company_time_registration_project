@@ -16,17 +16,17 @@ public class TimeRegistration {
 
     @ManyToOne
     @JoinColumn(name = "user_initials")
-    private User registeredUser;
+    public User registeredUser;
 
     @ManyToOne
     @JoinColumn(name = "activity_name")
-    private Activity registeredActivity;
+    public Activity registeredActivity;
 
 
-    private double registeredHours;
+    public double registeredHours;
 
     @Column(name = "registered_date")
-    private LocalDate registeredDate;
+    public LocalDate registeredDate;
 
     // JPA requires a no-arg constructor
     public TimeRegistration() {}
