@@ -7,5 +7,7 @@ htmlReport/
 .idea/
 *.iml
 
+*.db
+
 # Maven target directory
 target/
