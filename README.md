@@ -19,6 +19,8 @@ To run the application in Eclipse, you can run the App: `/src/main/java/dtu/time
 You can log in with the following predefined users:
 `huba`, `isak`, `bria`
 
+Although it might seem confusing, when unfamiliar, you have to double-click on the text label fields that represent that property to edit the properties of Projects or Activities. For example, to change the name, you have to double-click the text that says: "Project Name: xxx".
+
 ---
 ### Running JUnit tests (Whitebox) or Cucumber tests
 
