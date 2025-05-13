@@ -45,18 +45,17 @@ public class TimeManager {
 
     // Nikolai Kuhl
     public void addUser(User user) throws Exception {
-        userRepository.addUser(user);
-//        String initials = user.getUserInitials();
-//
-//        if (!initials.matches("[a-zA-Z]{4}")) {
-//            throw new Exception("The user initials must be 4 letters.");
-//        }
-//
-//        if (!users.contains(user)) {
-//            users.add(user);
-//        } else {
-//            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
-//        }
+        String initials = user.getUserInitials();
+
+        if (!initials.matches("[a-zA-Z]{4}")) {
+            throw new Exception("The user initials must be 4 letters.");
+        }
+
+        if (!userRepository.getUsers().contains(user)) {
+            userRepository.addUser(user);
+        } else {
+            throw new Exception("A user with initials '" + initials + "' is already registered in the system, please change the initials and try again.");
+        }
     }
 
     // Alexander Wittrup
